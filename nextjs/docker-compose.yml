@@ -9,7 +9,7 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    image: 'rostergo:latest'
+    image: 'michyipyhm/rostergo:latest'
     ports:
       - '3000:3000'
   postgres:
