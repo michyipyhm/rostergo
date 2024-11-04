@@ -1,6 +1,4 @@
-import { Knex } from "knex";
-
-export async function seed(knex: Knex): Promise<void> {
+exports.seed = async function (knex) {
     await knex("grades").del();
     await knex("positions").del();
     await knex("branches").del();
@@ -8,7 +6,7 @@ export async function seed(knex: Knex): Promise<void> {
     await knex("users").del();
     await knex("leave_types").del();
     await knex("shift_requests").del();
-    await knex("leave_requests").del();
+    await knex("leave_requests").del(); ``
     await knex("payslips").del();
     await knex("shifts").del();
 
@@ -83,4 +81,4 @@ export async function seed(knex: Knex): Promise<void> {
             start_time: '12:00:00', end_time: '15:00:00', leave_type_id: 1, status: "pending"
         },
     ]);
-}
+};
