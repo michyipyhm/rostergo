@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  rostergo:
+    env_file:
+      - ./envfile
+    depends_on:
+      - postgres
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: 'rostergo:latest'
+    ports:
+      - '3000:3000'
+  postgres:
+    image: 'postgres:15'
+    env_file:
+      - ./envfile
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data

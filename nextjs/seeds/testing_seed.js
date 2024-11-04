@@ -1,14 +1,18 @@
 exports.seed = async function (knex) {
-    await knex("grades").del();
-    await knex("positions").del();
-    await knex("branches").del();
-    await knex("shift_slots").del();
-    await knex("users").del();
-    await knex("leave_types").del();
-    await knex("shift_requests").del();
-    await knex("leave_requests").del(); ``
-    await knex("payslips").del();
-    await knex("shifts").del();
+    // await knex("shifts").del();
+    // await knex("payslips").del();
+    // await knex("leave_requests").del(); 
+    // await knex("shift_requests").del();
+    // await knex("leave_types").del();
+    // await knex("users").del();
+    // await knex("shift_slots").del();
+    // await knex("branches").del();
+    // await knex("positions").del();
+    // await knex("grades").del();
+
+    // reset table sequence
+
+     
 
     await knex("grades").insert([
         { name: "Manager", annual_leave_quota: 15 },
