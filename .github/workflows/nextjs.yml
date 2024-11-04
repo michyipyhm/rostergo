@@ -1,0 +1,39 @@
+name: nextjs
+
+on:
+  push:
+    branches:
+      - "production"
+
+jobs:
+  build-server:
+    runs-on: ubuntu-latest
+    container: docker:20.10.21-alpine3.16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Docker Build and Push
+        working-directory: nextjs
+        run: |
+          docker build .
+          docker push michyipyhm/rostergo:latest
+
+
+  # deploy-server:
+  #   needs: build-server
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Executing remote ssh
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: todolist.tecky.dev
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         username: ubuntu
+  #         script: |
+  #           docker compose pull
+  #           docker compose up -d
+  #           docker image prune -f 
