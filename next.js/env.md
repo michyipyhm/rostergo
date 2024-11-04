@@ -1,5 +1,4 @@
-DB_HOST=localhost
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_NAME=your_database_name
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
 NODE_ENV=
