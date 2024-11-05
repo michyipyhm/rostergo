@@ -22,6 +22,7 @@ jobs:
           docker build -t michyipyhm/rostergo:latest .
           docker push michyipyhm/rostergo:latest
 
+
   deploy-server:
     needs: build-server
     runs-on: ubuntu-latest
