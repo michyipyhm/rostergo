@@ -1,14 +1,14 @@
 exports.seed = async function (knex) {
-    await knex("grades").del();
-    await knex("positions").del();
-    await knex("branches").del();
-    await knex("shift_slots").del();
-    await knex("users").del();
-    await knex("leave_types").del();
-    await knex("shift_requests").del();
-    await knex("leave_requests").del(); ``
-    await knex("payslips").del();
     await knex("shifts").del();
+    await knex("payslips").del();
+    await knex("leave_requests").del();
+    await knex("shift_requests").del();
+    await knex("leave_types").del();
+    await knex("users").del();
+    await knex("shift_slots").del();
+    await knex("branches").del();
+    await knex("positions").del();
+    await knex("grades").del();
 
     await knex("grades").insert([
         { name: "Manager", annual_leave_quota: 15 },
@@ -19,9 +19,9 @@ exports.seed = async function (knex) {
     ]);
 
     await knex("positions").insert([
-        { name: "Manager", grade_id: 1, type: "full_time", full_time_wage: 30000, restDay_per_week: 2 },
-        { name: "Salesperson", grade_id: 3, type: "full_time", full_time_wage: 18000, restDay_per_week: 1.5 },
-        { name: "Salesperson", grade_id: 4, type: "full_time", full_time_wage: 16000, restDay_per_week: 1.5 },
+        { name: "Manager", grade_id: 1, type: "full_time", full_time_wage: 30000, weekend_restDay: true },
+        { name: "Salesperson", grade_id: 3, type: "full_time", full_time_wage: 18000, weekend_restDay: false, restDay_countBy: "Sunday" },
+        { name: "Salesperson", grade_id: 4, type: "full_time", full_time_wage: 16000, weekend_restDay: false, restDay_countBy: "Sunday" },
         { name: "Salesperson", grade_id: 5, type: "part_time", part_time_hour_wage: 65 },
     ]);
 
@@ -39,23 +39,23 @@ exports.seed = async function (knex) {
 
     await knex("users").insert([
         {
-            username: "admin", password: "123123", phone: "99887766", admin: true,
+            nickname: "admin", password: "123123", phone: "12312311", admin: true,
             branch_id: 1, position_id: 1, status: "active"
         },
         {
-            username: "ft1", password: "123123", phone: "99886677", admin: false,
+            nickname: "ft1", password: "123123", phone: "12312322", admin: false,
             branch_id: 1, position_id: 2, status: "active"
         },
         {
-            username: "ft2", password: "123123", phone: "99778866", admin: false,
+            nickname: "ft2", password: "123123", phone: "12312333", admin: false,
             branch_id: 1, position_id: 3, status: "active"
         },
         {
-            username: "pt1", password: "123123", phone: "99776688", admin: false,
+            nickname: "pt1", password: "123123", phone: "12312344", admin: false,
             branch_id: 1, position_id: 4, status: "active"
         },
         {
-            username: "pt2", password: "123123", phone: "99668877", admin: false,
+            nickname: "pt2", password: "123123", phone: "12312355", admin: false,
             branch_id: 1, position_id: 4, status: "active"
         },
     ]);
@@ -65,20 +65,20 @@ exports.seed = async function (knex) {
     ]);
 
     await knex("shift_requests").insert([
-        { user_id: 4, date: "2024-12-01", shift_slot_id: 3, status: "pending" },
-        { user_id: 4, date: "2024-12-02", shift_slot_id: 2, status: "pending" },
-        { user_id: 5, date: "2024-12-01", shift_slot_id: 1, status: "pending" },
-        { user_id: 5, date: "2024-12-02", shift_slot_id: 4, status: "pending" },
+        { user_id: 4, date: "2024-11-28", shift_slot_id: 3, status: "pending" },
+        { user_id: 4, date: "2024-11-29", shift_slot_id: 2, status: "pending" },
+        { user_id: 5, date: "2024-11-28", shift_slot_id: 1, status: "pending" },
+        { user_id: 5, date: "2024-11-29", shift_slot_id: 4, status: "pending" },
     ]);
 
     await knex("leave_requests").insert([
         {
-            user_id: 2, shift_slot_id: 1, start_date: "2024-12-01", end_date: "2024-12-01",
-            start_time: '09:00:00', end_time: '12:00:00', leave_type_id: 1, status: "pending"
+            user_id: 2, shift_slot_id: 1, start_date: "2024-11-28", end_date: "2024-11-01",
+            duration: "Full day", leave_type_id: 1, status: "pending"
         },
         {
-            user_id: 3, shift_slot_id: 2, start_date: "2024-12-02", end_date: "2024-12-02",
-            start_time: '12:00:00', end_time: '15:00:00', leave_type_id: 1, status: "pending"
+            user_id: 3, shift_slot_id: 2, start_date: "2024-11-29", end_date: "2024-11-02",
+            duration: "Full day", leave_type_id: 1, status: "pending"
         },
     ]);
 };
