@@ -9,9 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
+=======
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/icalendar": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "dotenv": "^16.4.5",
+    "knex": "^3.1.0",
+    "next": "15.0.2",
+    "pg": "^8.13.1",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.10.5",
+    "react-calendar": "^5.1.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.80.6",
+>>>>>>> e6bdf0d76bcfcd34e5dc7af42b8ad8d792f51e05
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
