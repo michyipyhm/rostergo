@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@expo/cli": "^0.18.30",
+    "@react-native-community/cli-server-api": "^15.1.0",
     "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
-    "react-native": "0.74.5"
+    "react-native": "0.74.5",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
