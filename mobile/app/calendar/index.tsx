@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
+import { useCalendarStore } from '../store/calendar';
 
-export default function CalendarPage() {
-  const [selected, setSelected] = useState('');
+export default function CalendarScreen() {
+  const { selectedDate, setSelectedDate } = useCalendarStore();
 
   const onDayPress = (day: DateData) => {
-    setSelected(day.dateString);
+    setSelectedDate(day.dateString);
   };
 
   return (
@@ -15,7 +16,7 @@ export default function CalendarPage() {
       <Calendar
         onDayPress={onDayPress}
         markedDates={{
-          [selected]: { selected: true, selectedColor: '#007AFF' }
+          [selectedDate]: { selected: true, selectedColor: '#007AFF' }
         }}
         theme={{
           backgroundColor: '#ffffff',
@@ -65,4 +66,3 @@ const styles = StyleSheet.create({
     margin: 16,
   },
 });
-
