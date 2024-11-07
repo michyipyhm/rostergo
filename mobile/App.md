@@ -2,8 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import LoginScreen from './app/auth/login';
-import PhoneVerificationScreen from './app/auth/verify';
+import LoginScreen from './app/(auth)/login';
+import PhoneVerificationScreen from './app/(auth)/verify';
 import CalendarScreen from './app/calendar';
 import LeaveRequestList from './app/tabs/main';
 
@@ -32,3 +32,4 @@ export default function App() {
     
   );
 }
+

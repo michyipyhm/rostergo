@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useAuthStore } from '../store/auth';
 import CustomKeypad from '../components/CustomKeypad';
 
-export default function PhoneVerificationScreen({ navigation }: { navigation: any }) {
-  const [phoneNumber, setPhoneNumber] = useState('');
+
+export default function PhoneVerificationScreen() {
+  const router = useRouter();
+  const { phoneNumber, setPhoneNumber, setVerified } = useAuthStore();
 
   const handleNumberPress = (num: string) => {
     if (phoneNumber.length < 8) {
-      setPhoneNumber(prev => prev + num);
+      setPhoneNumber(phoneNumber + num);
     }
   };
 
   const handleDelete = () => {
-    setPhoneNumber(prev => prev.slice(0, -1));
+    setPhoneNumber(phoneNumber.slice(0, -1));
   };
 
   const handleVerify = () => {
     if (phoneNumber.length === 8) {
-      navigation.navigate('Calendar');
+      setVerified(true);
+      router.push('/calendar');
     }
   };
 
@@ -38,6 +43,8 @@ export default function PhoneVerificationScreen({ navigation }: { navigation: an
       >
         <Text style={styles.verifyButtonText}>Verify</Text>
       </TouchableOpacity>
+      {/* <TextInput
+        style={styles.textInput}> */}
       <CustomKeypad onNumberPress={handleNumberPress} onDelete={handleDelete} />
     </View>
   );
@@ -93,4 +100,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
