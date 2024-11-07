@@ -5,8 +5,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #000000;
   }
 }
 
@@ -40,4 +40,25 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  /* background-color: #ffffff; */
+}
+
+.firstSection {
+  display: flex;
+  justify-content: space-between;
+  height: 30%;
+}
+
+.userActions {
+  display: flex;
+  width: 50%;
+  justify-content: flex-end;
+  gap: 3%;
 }

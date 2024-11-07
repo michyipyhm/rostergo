@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Image from 'next/image';
-import styles from './page.module.scss'
 import { Button } from "react-bootstrap";
 
 
@@ -24,8 +23,8 @@ export default async function RootLayout(props: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <div className={styles.container}>
-          <div className={styles.firstSection}>
+        <div className="container">
+          <div className="firstSection">
             <div>
               <Image
                 src="/rostergo10.webp"
@@ -34,7 +33,7 @@ export default async function RootLayout(props: RootLayoutProps) {
                 height={250}
               />
             </div>
-            <div className={styles.userActions}>
+            <div className="userActions">
               <div>{dateFormat}</div>
               <div><Button>Change Password</Button></div>
               <div><Button>Logout</Button></div>

@@ -5,3 +5,5 @@
 ``npm install react-bootstrap``
 
 ``npm install @fullcalendar/icalendar``
+
+``npm install react-bootstrap bootstrap``
