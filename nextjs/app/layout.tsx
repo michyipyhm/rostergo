@@ -27,7 +27,7 @@ export default async function RootLayout(props: RootLayoutProps) {
           <div className="firstSection">
             <div>
               <Image
-                src="/rostergo10.webp"
+                src="/rostergo10_final_transparent.png"
                 alt="RosterGo"
                 width={250}
                 height={250}
