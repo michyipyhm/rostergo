@@ -9,9 +9,12 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/cli": "^0.18.30",
+    "@marceloterreiro/flash-calendar": "^1.2.0",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
-    "@expo/cli": "^0.18.30",
+    "@shopify/flash-list": "1.6.4",
+    "date-fns": "^4.1.0",
     "expo": "~51.0.28",
     "expo-constants": "~16.0.2",
     "expo-linking": "~6.3.1",
