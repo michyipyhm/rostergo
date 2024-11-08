@@ -1,8 +1,10 @@
 import Table from 'react-bootstrap/Table';
 import styles from './ManpowerTable.module.scss';
+// import { getDailyManpower } from "@/services/manpowerService";
+
 
 function ManpowerTable() {
-
+  // console.log(getDailyManpower)
   const manpowerEachHour = () => {
     const rows = [];
     for (let hour = 6; hour < 30; hour++) {
