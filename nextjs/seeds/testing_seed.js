@@ -81,4 +81,10 @@ exports.seed = async function (knex) {
             duration: "Full day", leave_type_id: 1, status: "pending"
         },
     ]);
+
+    await knex("shifts").insert([
+        {id: 1, date:"2024-11-07", shift_slot_id: 1, user_id: 2, checkin_time: "08:52:33", checkout_time: "12:01:15", over_time_approve: false, status: "check out"},
+        {id: 2, date:"2024-11-07", shift_slot_id: 2, user_id: 3, checkin_time: "11:55:48", checkout_time: "16:02:41", over_time_approve: true, status: "check out"
+        },
+    ]);
 };
