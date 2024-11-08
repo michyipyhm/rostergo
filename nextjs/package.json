@@ -1,5 +1,5 @@
 {
-  "name": "next.js",
+  "name": "next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -29,7 +29,16 @@
     "@types/pg": "^8.11.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv": "^16.4.5",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
+  "main": "knexfile.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
