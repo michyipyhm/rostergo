@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Image from 'next/image';
 import { Button } from "react-bootstrap";
+import Link from "next/link"
+import styles from './page.module.scss'
 
 
 export const metadata: Metadata = {
@@ -26,12 +28,13 @@ export default async function RootLayout(props: RootLayoutProps) {
         <div className="container">
           <div className="firstSection">
             <div>
+              <Link href="/">
               <Image
                 src="/rostergo10_final_transparent.png"
                 alt="RosterGo"
-                width={250}
-                height={250}
-              />
+                width={100}
+                height={100}
+              /> </Link>
             </div>
             <div className="userActions">
               <div>{dateFormat}</div>
@@ -41,9 +44,25 @@ export default async function RootLayout(props: RootLayoutProps) {
 
           </div>
 
-          <div>
-            <h1>Daily Status</h1>
-          </div>
+          <nav className={styles.navbar}>
+              <Link href="/">
+                Daily Status
+                </Link>
+                <Link href="/roster" className="px-3 py-2 rounded-md hover:bg-gray-100">
+                  Roster
+                </Link>
+                <Link href="/employee" className="px-3 py-2 rounded-md hover:bg-gray-100">
+                  Employee
+                </Link>
+                <Link href="/branch" className="px-3 py-2 rounded-md hover:bg-gray-100">
+                  Branch
+                </Link>
+                <Link href="/shift" className="px-3 py-2 rounded-md hover:bg-gray-100">
+                 Shift Slot
+                </Link>
+          
+            {/* <h1>Daily Status</h1> */}
+          </nav>
 
           <div>
             {props.children}
