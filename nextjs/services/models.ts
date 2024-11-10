@@ -10,3 +10,12 @@ export interface Shift {
   export interface Params {
     date: string;
   }
+
+  export interface Employee {
+    id: number;
+    nickname: string;
+    gender: string;
+    phone: string;
+    position: string;
+    joining_date: string;
+  }

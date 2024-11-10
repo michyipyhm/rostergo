@@ -1,7 +1,7 @@
-import React from 'react';
+
 import EmployeeList from '@/component/EmployeeList'
 
-const Employee = async () => {
+const Employee = () => {
 
   return (
     <div>
