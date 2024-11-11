@@ -20,9 +20,9 @@ exports.seed = async function (knex) {
 
     await knex("positions").insert([
         { id: 1, name: "Manager", grade_id: 1, type: "full_time", full_time_wage: 30000, weekend_restDay: true },
-        { id: 2, name: "Salesperson", grade_id: 3, type: "full_time", full_time_wage: 18000, weekend_restDay: false, restDay_countBy: "Sunday" },
-        { id: 3, name: "Salesperson", grade_id: 4, type: "full_time", full_time_wage: 16000, weekend_restDay: false, restDay_countBy: "Sunday" },
-        { id: 4, name: "Salesperson", grade_id: 5, type: "part_time", part_time_hour_wage: 65 },
+        { id: 2, name: "Salesperson1", grade_id: 3, type: "full_time", full_time_wage: 18000, weekend_restDay: false, restDay_countBy: "Sunday" },
+        { id: 3, name: "Salesperson2", grade_id: 4, type: "full_time", full_time_wage: 16000, weekend_restDay: false, restDay_countBy: "Sunday" },
+        { id: 4, name: "Salesperson(PT)", grade_id: 5, type: "part_time", part_time_hour_wage: 65 },
     ]);
 
     await knex("branches").insert([
@@ -98,5 +98,6 @@ exports.seed = async function (knex) {
         {id: 3, date:"2024-11-04", shift_slot_id: 1, user_id: 4, checkin_time: "08:59:53", checkout_time: "12:07:43", over_time_approve: true, status: "check out"},
         {id: 4, date:"2024-11-03", shift_slot_id: 2, user_id: 5, checkin_time: "11:54:18", checkout_time: "15:03:13", over_time_approve: true, status: "check out"},
         {id: 5, date:"2024-11-02", shift_slot_id: 1, user_id: 2, checkin_time: "08:57:16", checkout_time: "12:30:49", over_time_approve: true, status: "check out"},
+        {id: 6, date:"2024-11-29", shift_slot_id: 1, user_id: 1}
     ]);
 };
