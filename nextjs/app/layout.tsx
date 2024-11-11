@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Image from 'next/image';
 import { Button } from "react-bootstrap";
+// import "bootstrap/dist/css/bootstrap.min.css"; 
 import Link from "next/link"
 import styles from './page.module.scss'
 

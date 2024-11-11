@@ -2,109 +2,115 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Employee } from '@/services/models';
+import { Form, Button,  Container, Row, Col } from 'react-bootstrap'
 import styles from './EditEmployee.module.scss';
-import { EditEmployee } from '@/services/models'
 
-function EditEmployee({ params }: { params: { id: number } }) {
-  const router = useRouter();
-  const [employee, setEmployee] = useState<EditEmployee | null>(null);
+
+function EditEmployee({ id }: { id: string }) {
+  const [employee, setEmployee] = useState<Employee | null>(null)
+  const router = useRouter()
+
 
   useEffect(() => {
-    fetch(`/api/employee/${params.id}`)
-      .then(res => res.json())
+    fetch(`/api/employee/${id}`)
+      .then(response => response.json())
       .then(data => setEmployee(data))
-      .catch(error => console.error('Error:', error));
-  }, [params.id]);
+      .catch(error => console.error('Error fetching employee:', error))
+  }, [id])
 
-  if (!employee) return <div>Loading...</div>;
+  if (!employee) return <div>Loading...</div>
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-gray-100">
-      <div className="space-y-4">
-        <div className="flex flex-col">
-          <label>Nickname:</label>
-          <div>{employee.nickname}</div>
-        </div>
+    <Container className={styles.editContainer}>
+      <Form>
+        <Row className="mb-3">
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <Form.Label>Nickname</Form.Label>
+              <Form.Control
+                type="text"
+                value={employee!.nickname}
+                disabled
+              />
+            </Form.Group>
 
-        <div className="flex flex-col">
-          <label>Gender:</label>
-          <div>{employee.gender}</div>
-        </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Gender</Form.Label>
+              <Form.Control
+                type="text"
+                value={employee!.gender}
+                disabled
+              />
+            </Form.Group>
 
-        <div className="flex flex-col">
-          <label>Position:</label>
-          <select 
-            className="p-2 border rounded"
-            value={employee.position}
-            disabled
-          >
-            <option value={employee.position}>{employee.position}</option>
-          </select>
-        </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Position</Form.Label>
+              <Form.Select
+                value={employee!.position}
+                onChange={(e) => setEmployee(prev => prev ? { ...prev, position: e.target.value } : null)}
+              >
+                <option value="Manager">Manager</option>
+                <option value="Salesperson">Salesperson</option>
+              </Form.Select>
+            </Form.Group>
 
-        <div className="flex flex-col">
-          <label>Grade:</label>
-          <select 
-            className="p-2 border rounded"
-            value={employee.grade}
-            disabled
-          >
-            <option value={employee.grade}>{employee.grade}</option>
-          </select>
-        </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Grade</Form.Label>
+              <Form.Select
+                value={employee!.grade}
+                onChange={(e) => setEmployee(prev => prev ? { ...prev, grade: e.target.value } : null)}
+              >
+                <option value="Senior">Senior</option>
+                <option value="Junior">Junior</option>
+              </Form.Select>
+            </Form.Group>
 
-        <div className="flex flex-col">
-          <label>Employee Type:</label>
-          <select 
-            className="p-2 border rounded"
-            value={employee.employee_type}
-            disabled
-          >
-            <option value={employee.employee_type}>
-              {employee.employee_type === 'full_time' ? 'Full Time' : 'Part Time'}
-            </option>
-          </select>
-        </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Employee Type</Form.Label>
+              <Form.Select
+                value={employee!.employee_type}
+                onChange={(e) => setEmployee(prev => prev ? { ...prev, employee_type: e.target.value } : null)}
+              >
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+              </Form.Select>
+            </Form.Group>
 
-        <div className="flex flex-col">
-          <label>Annual Leave:</label>
-          <div>{employee.annual_leave} days</div>
-        </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Annual Leave</Form.Label>
+              <Form.Control
+                type="number"
+                value={employee!.annual_leave}
+                disabled
+              />
+            </Form.Group>
 
-        <div className="flex flex-col">
-          <label>Joining date:</label>
-          <div>{new Date(employee.joining_date).toLocaleDateString()}</div>
-        </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Joining Date</Form.Label>
+              <Form.Control
+                type="text"
+                value={employee!.joining_date ? new Date(employee!.joining_date).toLocaleDateString() : ''}
+                disabled
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
-        <div className="flex justify-end space-x-4 mt-6">
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-            onClick={() => {
-              if (confirm('Are you sure you want to resign this employee?')) {
-                // Implement resign logic here
-              }
-            }}
-          >
+        <div className={styles.buttonGroup}>
+          <Button variant="danger" className="me-2">
             Resign
-          </button>
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={() => {
-              // Implement save logic here
-            }}
-          >
+          </Button>
+          <Button variant="primary" className="me-2">
             Save
-          </button>
-          <button
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-            onClick={() => router.back()}
-          >
+          </Button>
+          <Button variant="secondary" onClick={() => router.back()}>
             Back
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
-  );
+      </Form>
+    </Container>
+  )
 }
 
 export default EditEmployee
