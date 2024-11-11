@@ -5,9 +5,14 @@ import DayShiftRecord from '@/component/DayShiftRecord'
 import styles from '@/app/page.module.scss'
 import { manpowerService } from "@/services/manpowerService"
 import { Params } from "@/services/models";
+import { notFound } from "next/navigation"
 
 const DatePage = async ({ params }: { params: Params }) => {
   const { date } = params
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/
+  if (!datePattern.test(date)) {
+    notFound()
+  }
   const result = await manpowerService.getDailyManpower(date)
 
   return (
