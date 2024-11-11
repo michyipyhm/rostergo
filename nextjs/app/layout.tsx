@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Image from 'next/image';
 import { Button } from "react-bootstrap";
-// import "bootstrap/dist/css/bootstrap.min.css"; 
+import "bootstrap/dist/css/bootstrap.min.css"; 
 import Link from "next/link"
 import styles from './page.module.scss'
 
@@ -25,7 +25,7 @@ export default async function RootLayout(props: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <div className="container">
+        <div className="layoutContainer">
           <div className="firstSection">
             <div>
               <Link href="/">
@@ -45,10 +45,10 @@ export default async function RootLayout(props: RootLayoutProps) {
           </div>
 
           <div>
-            <nav className="navbar">
+            <nav className="layoutNavbar">
               <ul className="nav-links">
                 <li><a href="/">Daily Status</a></li>
-                <li><a href="/roster">Roster</a></li>
+                <li><a href="/roster">Monthly Roster</a></li>
                 <li><a href="/employee">Employee</a></li>
                 <li><a href="/branch">Branch</a></li>
                 <li><a href="/shift-slot">Shift Slot</a></li>

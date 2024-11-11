@@ -1,0 +1,25 @@
+.chooseMonthMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 36px;
+    color: #333;
+}
+
+.tableContainer {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.rosterTable {
+    border-collapse:collapse;
+    border-spacing: 4px;
+    text-align: center;
+}
+
+.rosterCell {
+    border: 1px solid #000;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
