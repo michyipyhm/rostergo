@@ -13,13 +13,12 @@ export default function LoginScreen() {
           style={styles.logo}
           resizeMode="contain"
         />
-        <Text style={styles.logoText}>rostergo</Text>
       </View>
       <TouchableOpacity
         style={styles.loginButton}
         onPress={() => router.push('verify')}
       >
-        <Text style={styles.loginButtonText}>LOGIN</Text>
+        <Text style={styles.loginButtonText}>Verify</Text>
       </TouchableOpacity>
     </View>
   );
@@ -28,10 +27,10 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#0a1321',
     justifyContent: 'space-between',
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 120,
   },
   logoContainer: {
     flex: 1,
@@ -39,14 +38,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-  },
-  logoText: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: '500',
+    width: 300,
+    height: 300,
+    marginBottom: 5,
   },
   loginButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',

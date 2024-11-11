@@ -5,11 +5,20 @@ interface AuthState {
   isVerified: boolean
   setPhoneNumber: (phone: string) => void
   setVerified: (verified: boolean) => void
+  login: () => void
+  logout: () => void
 }
-
 export const useAuthStore = create<AuthState>((set) => ({
   phoneNumber: '',
   isVerified: false,
   setPhoneNumber: (phone) => set({ phoneNumber: phone }),
-  setVerified: (verified) => set({ isVerified: verified })
+  setVerified: (verified) => set({ isVerified: verified }),
+
+  login: () => {
+    set({ isVerified: true })
+  },
+  logout: () => {
+    set({ isVerified: false })
+  }
 }))
+
