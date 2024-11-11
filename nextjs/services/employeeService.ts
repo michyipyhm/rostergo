@@ -44,6 +44,7 @@ class EmployeeService {
         WHERE users.id = $1
       `;
       const result = await pgClient.query(sql, [id]);
+       console.log('result:', result.rows[0])
       return result.rows[0];
     } catch (error) {
       console.log("cannot get employeeById:", error);

@@ -1,26 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { employeeService } from "@/services/EmployeeService";
-
-// export async function GET(request: NextRequest) {
-//   const { id } = request.query;
-
-//   export async function GET(
-//     request: NextRequest,
-//     { params }: { params: { id: string } }
-//   ) {
-//   try {
-//     const employee = await employeeService.getEmployeeById(Number(id));
-//     return NextResponse.json(employee);
-//   } catch (error) {
-//     return NextResponse.json({ error: "Failed to fetch employee" }, { status: 500 });
-//   }
-// }
+import { employeeService } from "@/services/employeeService";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!params?.id) {
+  const { id } = params;
+
+  if (!id) {
     return NextResponse.json(
       { error: "Employee ID is required" },
       { status: 400 }
@@ -28,7 +15,7 @@ export async function GET(
   }
 
   try {
-    const employee = await employeeService.getEmployeeById(params.id);
+    const employee = await employeeService.getEmployeeById(id);
     if (!employee) {
       return NextResponse.json(
         { error: "Employee not found" },

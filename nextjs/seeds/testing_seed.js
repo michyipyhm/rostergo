@@ -31,12 +31,12 @@ exports.seed = async function (knex) {
     ]);
 
     await knex("shift_slots").insert([
-        { id: 1, branch_id: 1, title: "Shift A", start_time: '09:00:00', end_time: '12:00:00' },
-        { id: 2, branch_id: 1, title: "Shift B", start_time: '12:00:00', end_time: '15:00:00' },
-        { id: 3, branch_id: 1, title: "Shift C", start_time: '09:00:00', end_time: '11:00:00' },
-        { id: 4, branch_id: 1, title: "Shift D", start_time: '11:00:00', end_time: '13:00:00' },
-        { id: 5, branch_id: 1, title: "Shift E", start_time: '13:00:00', end_time: '15:00:00' },
-        { id: 6, branch_id: 2, title: "Shift E", start_time: '13:00:00', end_time: '15:00:00' },
+        { id: 1, branch_id: 1, title: "Shift A", short_title: "A", start_time: '09:00:00', end_time: '12:00:00' },
+        { id: 2, branch_id: 1, title: "Shift B", short_title: "B", start_time: '12:00:00', end_time: '15:00:00' },
+        { id: 3, branch_id: 1, title: "Shift C", short_title: "C", start_time: '09:00:00', end_time: '11:00:00' },
+        { id: 4, branch_id: 1, title: "Shift D", short_title: "D", start_time: '11:00:00', end_time: '13:00:00' },
+        { id: 5, branch_id: 1, title: "Shift E", short_title: "E", start_time: '13:00:00', end_time: '15:00:00' },
+        { id: 6, branch_id: 2, title: "Shift E", short_title: "E", start_time: '13:00:00', end_time: '15:00:00' },
     ]);
 
     await knex("users").insert([
