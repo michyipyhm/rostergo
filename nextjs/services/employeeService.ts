@@ -24,9 +24,18 @@ class EmployeeService {
       FROM users
       JOIN positions ON users.position_id = positions.id
       JOIN grades ON positions.grade_id = grades.id
-      `
+      ORDER BY
+        CASE
+          WHEN users.status = 'otp_pending' THEN 1
+          WHEN users.status = 'otp_verified' THEN 2
+          WHEN users.status = 'active' THEN 3
+          WHEN users.status = 'resigned' THEN 4
+          ELSE 5
+        END,
+        users.id DESC
+        `
       const result = await pgClient.query(sql)
-      // console.log('result:', result)
+      console.log('result:', result.rows)
 
       return result.rows
     } catch (error) {
@@ -39,14 +48,21 @@ class EmployeeService {
     try {
       const sql = `
         SELECT 
-          users.id,
-          users.nickname,
-          users.gender,
+          users.*,
+          positions.*,
+          grades.*,
+          users.id as id,
+          users.nickname as nickname,
+          users.gender as gender,
+          users.phone as phone,
           positions.name as position,
-          positions.type as employee_type,
           grades.name as grade,
+          positions.type as employee_type,
           grades.annual_leave_quota as annual_leave,
-          users.created_at as joining_date
+          users.status as status,
+          users.employment_end_date as end_date,
+          users.created_at as joining_date,
+          users.updated_at as updated_at
         FROM users
         JOIN positions ON users.position_id = positions.id
         JOIN grades ON positions.grade_id = grades.id

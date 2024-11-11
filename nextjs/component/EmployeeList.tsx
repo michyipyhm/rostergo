@@ -5,6 +5,7 @@ import styles from './EmployeeList.module.scss';
 import { Employee } from '@/services/models'
 import { Button } from "react-bootstrap";
 import Link from "next/link"
+import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
 
 
 function EmployeeList() {
@@ -62,8 +63,8 @@ function EmployeeList() {
             <td>{employee.employee_type}</td>
             <td>{employee.annual_leave}</td>
             <td>{employee.status}</td>
-            <td>{new Date(employee.joining_date).toLocaleDateString()}</td>
-            <td>{new Date(employee.joining_date).toLocaleDateString()}</td>
+            <td>{formatYYYYMMDD(employee.joining_date)}</td>
+            <td>{formatYYYYMMDDHHMM(employee.updated_at)}</td>
             <td><Link 
                   href={`/employee/edit?id=${employee.id}`}
                 > edit

@@ -58,11 +58,11 @@ exports.seed = async function (knex) {
         },
         {
             id: 5, nickname: "pt2", password: "123123", phone: "12312355", admin: false,
-            gender: "female", branch_id: 1, position_id: 4, status: "active"
+            gender: "female", branch_id: 1, position_id: 4, status: "otp_verified"
         },
         {
             id: 6, nickname: "pt3", password: "123123", phone: "12312366", admin: false,
-            gender: "male", branch_id: null, position_id: 4, status: "active"
+            gender: "male", branch_id: null, position_id: 4, status: "otp_pending"
         }, 
         {
             id: 7, nickname: "admin2", password: "123123", phone: "12312377", admin: true,
