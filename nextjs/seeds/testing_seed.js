@@ -27,6 +27,7 @@ exports.seed = async function (knex) {
 
     await knex("branches").insert([
         { id: 1, address: "Hong Kong" },
+        { id: 2, address: "Kowloon" },
     ]);
 
     await knex("shift_slots").insert([
@@ -35,6 +36,7 @@ exports.seed = async function (knex) {
         { id: 3, branch_id: 1, title: "Shift C", start_time: '09:00:00', end_time: '11:00:00' },
         { id: 4, branch_id: 1, title: "Shift D", start_time: '11:00:00', end_time: '13:00:00' },
         { id: 5, branch_id: 1, title: "Shift E", start_time: '13:00:00', end_time: '15:00:00' },
+        { id: 6, branch_id: 2, title: "Shift E", start_time: '13:00:00', end_time: '15:00:00' },
     ]);
 
     await knex("users").insert([
@@ -52,11 +54,19 @@ exports.seed = async function (knex) {
         },
         {
             id: 4, nickname: "pt1", password: "123123", phone: "12312344", admin: false,
-            branch_id: 1, position_id: 4, status: "active"
+            branch_id: null, position_id: 4, status: "active"
         },
         {
             id: 5, nickname: "pt2", password: "123123", phone: "12312355", admin: false,
             branch_id: 1, position_id: 4, status: "active"
+        },
+        {
+            id: 6, nickname: "ft3", password: "123123", phone: "12312366", admin: false,
+            branch_id: null, position_id: 4, status: "active"
+        }, 
+        {
+            id: 7, nickname: "admin2", password: "123123", phone: "12312377", admin: true,
+            branch_id: 2, position_id: 1, status: "active"
         },
     ]);
 
