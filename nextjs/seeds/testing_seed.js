@@ -42,31 +42,31 @@ exports.seed = async function (knex) {
     await knex("users").insert([
         {
             id: 1, nickname: "admin", password: "123123", phone: "12312311", admin: true,
-            branch_id: 1, position_id: 1, status: "active"
+            gender: "male", branch_id: 1, position_id: 1, status: "active"
         },
         {
             id: 2, nickname: "ft1", password: "123123", phone: "12312322", admin: false,
-            branch_id: 1, position_id: 2, status: "active"
+            gender: "male", branch_id: 1, position_id: 2, status: "active"
         },
         {
             id: 3, nickname: "ft2", password: "123123", phone: "12312333", admin: false,
-            branch_id: 1, position_id: 3, status: "active"
+            gender: "female", branch_id: 1, position_id: 3, status: "active"
         },
         {
             id: 4, nickname: "pt1", password: "123123", phone: "12312344", admin: false,
-            branch_id: null, position_id: 4, status: "active"
+            gender: "female", branch_id: null, position_id: 4, status: "active"
         },
         {
             id: 5, nickname: "pt2", password: "123123", phone: "12312355", admin: false,
-            branch_id: 1, position_id: 4, status: "active"
+            gender: "female", branch_id: 1, position_id: 4, status: "active"
         },
         {
             id: 6, nickname: "ft3", password: "123123", phone: "12312366", admin: false,
-            branch_id: null, position_id: 4, status: "active"
+            gender: "male", branch_id: null, position_id: 4, status: "active"
         }, 
         {
             id: 7, nickname: "admin2", password: "123123", phone: "12312377", admin: true,
-            branch_id: 2, position_id: 1, status: "active"
+            gender: "male", branch_id: 2, position_id: 1, status: "active"
         },
     ]);
 
