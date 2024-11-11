@@ -3,23 +3,55 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Employee } from '@/services/models';
-import { Form, Button,  Container, Row, Col } from 'react-bootstrap'
+import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 import styles from './EditEmployee.module.scss';
 
 
-function EditEmployee({ id }: { id: string }) {
+export default function EditEmployee({ id }: { id: string }) {
   const [employee, setEmployee] = useState<Employee | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
-
   useEffect(() => {
-    fetch(`/api/employee/${id}`)
-      .then(response => response.json())
-      .then(data => setEmployee(data))
-      .catch(error => console.error('Error fetching employee:', error))
+    async function fetchEmployee() {
+      try {
+        setIsLoading(true)
+        setError(null)
+        console.log('Fetching employee with ID:', id)
+        
+        const response = await fetch(`/api/employee/${id}`)
+        console.log('Response status:', response.status)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        console.log('Received employee data:', data)
+        
+        if (!data) {
+          throw new Error('No data received')
+        }
+        
+        setEmployee(data)
+      } catch (err) {
+        console.error('Error fetching employee:', err)
+        setError(err instanceof Error ? err.message : 'Failed to fetch employee data')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (id) {
+      fetchEmployee()
+    }
   }, [id])
 
-  if (!employee) return <div>Loading...</div>
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+  if (!employee) return <div>No employee data found</div>
+
 
   return (
     <Container className={styles.editContainer}>
@@ -61,8 +93,11 @@ function EditEmployee({ id }: { id: string }) {
                 value={employee!.grade}
                 onChange={(e) => setEmployee(prev => prev ? { ...prev, grade: e.target.value } : null)}
               >
+                <option value="Manager">Manager</option>
+                <option value="Assistant Manager">Assistant Manager</option>
                 <option value="Senior">Senior</option>
                 <option value="Junior">Junior</option>
+                <option value="Part-time">Part Time</option>
               </Form.Select>
             </Form.Group>
 
@@ -113,4 +148,3 @@ function EditEmployee({ id }: { id: string }) {
   )
 }
 
-export default EditEmployee

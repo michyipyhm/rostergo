@@ -28,6 +28,7 @@ function EmployeeList() {
       <Table striped bordered hover className={styles.table}>
         <thead>
          <tr>
+          <th>ID</th>
           <th>Nickname</th>
           <th>Gender</th>
           <th>Phone Number</th>
@@ -38,13 +39,14 @@ function EmployeeList() {
       <tbody>
         {employees.map((employee) => (
           <tr key={employee.id}>
+            <td>{employee.id}</td>
             <td>{employee.nickname}</td>
             <td>{employee.gender}</td>
             <td>{employee.phone}</td>
             <td>{employee.position}</td>
             <td>{new Date(employee.joining_date).toLocaleDateString()}</td>
             <td><Link 
-                  href={`/employee/${employee.id}`}
+                  href={`/employee/edit?id=${employee.id}`}
                 > edit
               </Link>
             </td>
