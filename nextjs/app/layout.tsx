@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Image from 'next/image';
 import { Button } from "react-bootstrap";
+import Link from "next/link"
+import styles from './page.module.scss'
 
 
 export const metadata: Metadata = {
@@ -25,12 +27,13 @@ export default async function RootLayout(props: RootLayoutProps) {
         <div className="container">
           <div className="firstSection">
             <div>
+              <Link href="/">
               <Image
                 src="/rostergo10_final_transparent.png"
                 alt="RosterGo"
-                width={250}
-                height={250}
-              />
+                width={100}
+                height={100}
+              /> </Link>
             </div>
             <div className="userActions">
               <div>{dateFormat}</div>
