@@ -1,14 +1,8 @@
 
 import EmployeeList from '@/component/EmployeeList'
 
-const Employee = async () => {
 
-  return (
-    <div>
-        <EmployeeList />
-                  
-    </div>
-  );
+export default function EmployeeListPage() {
+  return <EmployeeList />
 }
 
-export default Employee;
