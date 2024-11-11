@@ -44,11 +44,45 @@ class EmployeeService {
         WHERE users.id = $1
       `;
       const result = await pgClient.query(sql, [id]);
-       console.log('result:', result.rows[0])
+      //  console.log('result:', result.rows[0])
       return result.rows[0];
     } catch (error) {
       console.log("cannot get employeeById:", error);
       throw new Error("EmployeeById not found");
+    }
+  }
+
+  async updateEmployee(id: string, updateData: { position?: string, grade?: string, employee_type?: string }) {
+    try {
+      const { position, grade, employee_type } = updateData;
+      
+      // First, update the position
+      if (position) {
+        const updatePositionSql = `
+          UPDATE users
+          SET position_id = (SELECT id FROM positions WHERE name = $1)
+          WHERE id = $2
+        `;
+        await pgClient.query(updatePositionSql, [position, id]);
+      }
+
+      // Then, update the grade and employee type (which are in the positions table)
+      if (grade || employee_type) {
+        const updateGradeAndTypeSql = `
+          UPDATE positions
+          SET 
+            grade_id = COALESCE((SELECT id FROM grades WHERE name = $1), grade_id),
+            type = COALESCE($2, type)
+          WHERE id = (SELECT position_id FROM users WHERE id = $3)
+        `;
+        await pgClient.query(updateGradeAndTypeSql, [grade, employee_type, id]);
+      }
+
+      // Finally, fetch and return the updated employee data
+      return this.getEmployeeById(id);
+    } catch (error) {
+      console.log("cannot update employee:", error);
+      throw new Error("Failed to update employee");
     }
   }
 }

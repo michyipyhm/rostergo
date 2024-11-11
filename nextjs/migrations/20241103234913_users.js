@@ -9,7 +9,7 @@ exports.up = async function (knex) {
         table.string('password', 255)
         table.string('phone', 255).notNullable()
         table.boolean('admin').defaultTo(false)
-        table.string('gender')
+        table.enu('gender', ['male', 'female']).notNullable()
         table.string('otp').unsigned()
         table.integer('branch_id').unsigned()
         table.foreign('branch_id').references('branches.id')
