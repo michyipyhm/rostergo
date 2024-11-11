@@ -8,13 +8,22 @@ class EmployeeService {
       const sql = `
       SELECT 
         users.*,
+        positions.*,
+        grades.*,
+        users.id as id,
         users.nickname as nickname,
         users.gender as gender,
         users.phone as phone,
         positions.name as position,
-        users.created_at as joining_date
+        grades.name as grade,
+        positions.type as employee_type,
+        grades.annual_leave_quota as annual_leave,
+        users.status as status,
+        users.created_at as joining_date,
+        users.updated_at as updated_at
       FROM users
       JOIN positions ON users.position_id = positions.id
+      JOIN grades ON positions.grade_id = grades.id
       `
       const result = await pgClient.query(sql)
       // console.log('result:', result)
