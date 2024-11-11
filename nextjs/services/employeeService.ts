@@ -26,7 +26,7 @@ class EmployeeService {
     }
   }
 
-  async getEmployeesById(id: string) {
+  async getEmployeeById(id: string) {
     try {
       const sql = `
         SELECT 
@@ -40,13 +40,13 @@ class EmployeeService {
           users.created_at as joining_date
         FROM users
         JOIN positions ON users.position_id = positions.id
-        JOIN grades g ON positions.grade_id = grades.id
+        JOIN grades ON positions.grade_id = grades.id
         WHERE users.id = $1
       `;
       const result = await pgClient.query(sql, [id]);
       return result.rows[0];
     } catch (error) {
-      console.log("cannot get employeesById:", error);
+      console.log("cannot get employeeById:", error);
       throw new Error("EmployeeById not found");
     }
   }

@@ -17,14 +17,6 @@ export interface Shift {
     gender: string;
     phone: string;
     position: string;
-    joining_date: string;
-  }
-
-  export interface EditEmployee {
-    id: number;
-    nickname: string;
-    gender: string;
-    position: string;
     grade: string;
     employee_type: string;
     annual_leave: number;
