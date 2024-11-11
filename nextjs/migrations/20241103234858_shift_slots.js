@@ -8,9 +8,11 @@ exports.up = async function (knex) {
         table.integer('branch_id').unsigned()
         table.foreign('branch_id').references('branches.id')
         table.string('title', 255).notNullable()
+        table.string('short_title', 255).notNullable()
         table.time('start_time').notNullable()
         table.time('end_time').notNullable()
         table.integer('work_hour').unsigned()
+        
         table.timestamps(false,true)
     })
 };

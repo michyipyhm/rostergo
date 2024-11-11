@@ -14,6 +14,8 @@ export async function handleUpdateOtp(req: NextRequest): Promise<NextResponse> {
 
     const updatedUser = await updateOtp(phone, otp)
 
+    console.log('Updated user:', updatedUser)
+    
     if (!updatedUser) {
       return NextResponse.json(
         { error: 'User not found' },
