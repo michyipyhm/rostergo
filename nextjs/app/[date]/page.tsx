@@ -14,11 +14,12 @@ const DatePage = async ({ params }: { params: Params }) => {
     <div className={styles.secondSection}>
       <div className={styles.calendar}>
       <h1>Date Selected: {date}</h1>
+
         <CalendarAdmin />
       </div>
       <div className={styles.manpower}>
         <h1>ManPower</h1>
-        <ManpowerTable />
+        <ManpowerTable shifts={result} />
       </div>
       <div className={styles.record}>
         <h1>Record</h1>
