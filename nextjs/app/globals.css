@@ -62,3 +62,38 @@ a {
   justify-content: flex-end;
   gap: 3%;
 }
+
+.navbar {
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.nav-links li {
+  flex: 1;
+  text-align: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #0070f3;
+  font-weight: bold;
+  display: block;
+  padding: 10px;
+  font-size: 1.5rem;
+}
+
+.nav-links a:hover {
+  color: #005bb5;
+  border-bottom: 2px solid #005bb5;
+}
