@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Employee } from '@/services/models';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 import styles from './EditEmployee.module.scss';
+import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
 
 
 export default function EditEmployee({ id }: { id: string }) {
@@ -112,28 +113,34 @@ export default function EditEmployee({ id }: { id: string }) {
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type="tel"
+                value={employee.phone}
+                onChange={(e) => setEmployee({ ...employee, phone: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label>Position</Form.Label>
               <Form.Select
                 value={employee.position}
                 onChange={(e) => setEmployee({ ...employee, position: e.target.value })}
               >
                 <option value="Manager">Manager</option>
-                <option value="Salesperson">Salesperson</option>
+                <option value="Salesperson1">Salesperson1</option>
+                <option value="Salesperson2">Salesperson2</option>
+                <option value="Salesperson(PT)">Salesperson(PT)</option>
               </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Grade</Form.Label>
-              <Form.Select
+              <Form.Control
+                type="text"
                 value={employee.grade}
-                onChange={(e) => setEmployee({...employee, grade: e.target.value })}
-              >
-                <option value="Manager">Manager</option>
-                <option value="Assistant Manager">Assistant Manager</option>
-                <option value="Senior">Senior</option>
-                <option value="Junior">Junior</option>
-                <option value="Part-time">Part Time</option>
-              </Form.Select>
+                disabled
+              />
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -142,8 +149,8 @@ export default function EditEmployee({ id }: { id: string }) {
                 value={employee.employee_type}
                 onChange={(e) => setEmployee({ ...employee, employee_type: e.target.value })}
               >
-                <option value="Full-time">Full-time</option>
-                <option value="Part-time">Part-time</option>
+                <option value="full-time">Full Time</option>
+                <option value="part-time">Part Time</option>
               </Form.Select>
             </Form.Group>
 
@@ -157,10 +164,23 @@ export default function EditEmployee({ id }: { id: string }) {
             </Form.Group>
 
             <Form.Group className="mb-3">
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={employee.status}
+                onChange={(e) => setEmployee({ ...employee, status: e.target.value })}
+              >
+                <option value="active">Active</option>
+                <option value="resigned">Resigned</option>
+                <option value="otp_pending">Otp Pending</option>
+                <option value="otp_verified">Otp Verified</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
               <Form.Label>Joining Date</Form.Label>
               <Form.Control
                 type="text"
-                value={new Date(employee.joining_date).toLocaleDateString()}
+                value={formatYYYYMMDD(employee.joining_date)}
                 disabled
               />
             </Form.Group>
@@ -169,7 +189,7 @@ export default function EditEmployee({ id }: { id: string }) {
 
         <div className={styles.buttonGroup}>
           <Button variant="danger" className="me-2">
-            Resign
+            Delete
           </Button>
           <Button variant="primary" className="me-2" onClick={handleSave} disabled={isSaving}>
             {isSaving ? 'Saving...' : 'Save'}

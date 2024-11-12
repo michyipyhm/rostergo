@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleUpdateOtp, handleVerifyOtp } from './otpController'
+import { handleVerifyNumber, handleVerifyOtp } from './otpController'
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  return handleUpdateOtp(req)
+  return handleVerifyNumber(req)
 }
 
 export async function PUT(req: NextRequest): Promise<NextResponse> {

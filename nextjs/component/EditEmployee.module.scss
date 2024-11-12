@@ -75,6 +75,16 @@
           background-color: #0056b3;
         }
       }
+
+      &:global(.btn-secondary) {
+        background-color: rgb(128, 128, 128);
+        border-color: rgb(128, 128, 128);
+        color: white;
+
+        &:hover {
+          background-color: rgba(128, 128, 128, 0.558);
+        }
+      }
     }
   }
 }

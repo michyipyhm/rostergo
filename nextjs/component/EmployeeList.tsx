@@ -5,16 +5,26 @@ import styles from './EmployeeList.module.scss';
 import { Employee } from '@/services/models'
 import { Button } from "react-bootstrap";
 import Link from "next/link"
+import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
 
 
 function EmployeeList() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   
   useEffect(() => {
-    fetch('/api/employee')
-      .then(response => response.json())
-      .then(data => setEmployees(data))
-      .catch(error => console.error('Error fetching employees:', error));
+    async function fetchEmployees() {
+      try {
+        const response = await fetch('/api/employee')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setEmployees(data)
+      } catch (err) {
+        console.error('Error fetching employees:', error)
+      } 
+    }
+      fetchEmployees()
    }, []);
 
   
@@ -31,9 +41,14 @@ function EmployeeList() {
           <th>ID</th>
           <th>Nickname</th>
           <th>Gender</th>
-          <th>Phone Number</th>
+          <th>Phone</th>
           <th>Position</th>
-          <th>Joining date</th>
+          <th>Grade</th>
+          <th>Employee Type</th>
+          <th>AL</th>
+          <th>Status</th>
+          <th>Joining Date</th>
+          <th>Updated At</th>
         </tr>
        </thead>
       <tbody>
@@ -44,7 +59,12 @@ function EmployeeList() {
             <td>{employee.gender}</td>
             <td>{employee.phone}</td>
             <td>{employee.position}</td>
-            <td>{new Date(employee.joining_date).toLocaleDateString()}</td>
+            <td>{employee.grade}</td>
+            <td>{employee.employee_type}</td>
+            <td>{employee.annual_leave}</td>
+            <td>{employee.status}</td>
+            <td>{formatYYYYMMDD(employee.joining_date)}</td>
+            <td>{formatYYYYMMDDHHMM(employee.updated_at)}</td>
             <td><Link 
                   href={`/employee/edit?id=${employee.id}`}
                 > edit
