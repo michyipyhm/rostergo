@@ -3,7 +3,15 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../store/auth';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
+const API_URL = 'http://localhost:3000/api/otpverify'; // Replace with your actual API URL
+
+const sendPhoneNumber = async (phoneNumber: string) => {
+  const response = await axios.post(`${API_URL}`, { phoneNumber });
+  return response.data;
+};
 
 export default function VerifyScreen() {
   const router = useRouter();
@@ -12,16 +20,16 @@ export default function VerifyScreen() {
   const [generatedOtp, setGeneratedOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
 
-  const generateOtp = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  };
+  // const generateOtp = () => {
+  //   return Math.floor(100000 + Math.random() * 900000).toString();
+  // };
 
   const handleSendOtp = () => {
     if (phoneNumber.length === 8) {
-      const newOtp = generateOtp();
-      setGeneratedOtp(newOtp);
+      // const newOtp = generateOtp();
+      // setGeneratedOtp(newOtp);
       setOtpSent(true);
-      Alert.alert('OTP Sent', `Your OTP is: ${newOtp}`);
+      Alert.alert('OTP Sent');
     } else {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 8-digit phone number.');
     }
@@ -40,7 +48,7 @@ export default function VerifyScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Verify Your Phone Number</Text>
+      <Text style={styles.title}>Enter Your Phone Number</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Phone Number:</Text>
         <TextInput
@@ -52,15 +60,15 @@ export default function VerifyScreen() {
           maxLength={8}
         />
       </View>
-      <Text style={styles.description}>
+      {/* <Text style={styles.description}>
         We will send you a code to verify your number
-       </Text>
+       </Text> */}
        <TouchableOpacity
         style={[styles.button, phoneNumber.length !== 8 && styles.buttonDisabled]}
         onPress={handleSendOtp}
         disabled={phoneNumber.length !== 8}
       >
-        <Text style={styles.buttonText}>Send OTP</Text>
+        <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
       
       {otpSent && (
