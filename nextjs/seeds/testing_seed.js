@@ -71,7 +71,7 @@ exports.seed = async function (knex) {
     ]);
 
     await knex("leave_types").insert([
-        { id: 1, name: "Sick Leave", quota: 2 },
+        { id: 1, name: "Sick Leave", short_name: "SL", quota: 2 },
     ]);
 
     await knex("shift_requests").insert([

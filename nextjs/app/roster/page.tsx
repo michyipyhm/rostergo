@@ -1,30 +1,22 @@
-import MonthlyRosterForm from '@/component/MonthlyRoster';
-import MonthlyRosterSelector from '@/component/MonthlyRosterSelector';
-import React from 'react'
+"use client";
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function MonthlyRoster() {
+export default function Home() {
+  const router = useRouter()
 
-    return (
-        <div>
+  useEffect(() => {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const todayDate = `${year}-${month}`
 
-            <div>
-            <MonthlyRosterSelector />
-            <MonthlyRosterForm />
-            </div>
+    router.push(`roster/${todayDate}`)
+  }, [router]);
 
-            <div>
-                <div>
-                    [Shift List]
-                </div>
-
-                <div>
-                    [Save]
-                </div>
-
-                <div>
-                    Last updated at:[]
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div>
+      Loading...
+    </div>
+  );
 }
