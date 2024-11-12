@@ -20,7 +20,10 @@ export interface Employee {
   grade: string;
   employee_type: string;
   annual_leave: number;
+  status: string;
+  end_date: string;
   joining_date: string;
+  updated_at: string;
 }
 
 export interface LoginUser {
