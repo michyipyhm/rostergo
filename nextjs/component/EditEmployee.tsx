@@ -147,7 +147,7 @@ export default function EditEmployee({ id }: { id: string }) {
               <Form.Label>Employee Type</Form.Label>
               <Form.Select
                 value={employee.employee_type}
-                onChange={(e) => setEmployee({ ...employee, employment_type: e.target.value })}
+                onChange={(e) => setEmployee({ ...employee, employee_type: e.target.value })}
               >
                 <option value="full-time">Full Time</option>
                 <option value="part-time">Part Time</option>
