@@ -8,16 +8,16 @@ import { FlatList } from 'react-native-gesture-handler';
 export default function LeaveRequestList (leaveRequests: any) {
   return (
     <View>
-      12312312
+      
       {/* <Tabs.Screen
         options={{
           title: "Leave Request List",
         }}
       />  */}
-      <Text style={styles.title}>Leave Request List</Text>
+      <Text style={styles.title}>Shift List Page</Text>
       <View style={styles.headerRow}>
         <Text style={styles.headerItem}>Date:</Text>
-        <Text style={styles.headerItem}>Leave Type:</Text>
+        <Text style={styles.headerItem}>Shift Slot:</Text>
         <Text style={styles.headerItem}>Status:</Text>
       </View>
 
