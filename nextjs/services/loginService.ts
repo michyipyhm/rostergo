@@ -1,5 +1,5 @@
 import { pgClient } from '@/services/pgClient'
-import { checkPassword } from '../lib/bcrypt'
+import { checkPassword, hashPassword } from '../lib/bcrypt'
 import { sessionStore } from '@/lib/sessionStore'
 
 class LoginService {
@@ -26,7 +26,6 @@ class LoginService {
           id: admin.id,
           nickname: admin.nickname,
           admin: admin.admin
-          // Add any other user details you want to return, but NOT the password
         }
       }
     } catch (error) {
@@ -46,7 +45,7 @@ class LoginService {
       const result = await pgClient.query(sql, [session.id])
 
       if (result.rows.length === 0) {
-        await sessionStore.clear() // Clear invalid session
+        await sessionStore.clear() 
         return { success: false, message: 'Invalid session' }
       }
 
@@ -54,6 +53,39 @@ class LoginService {
     } catch (error) {
       console.error('Error verifying session:', error)
       return { success: false, message: 'An error occurred while verifying the session' }
+    }
+  }
+
+  async changePassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean> {
+    try {
+      const sql = 'SELECT * FROM users where id = $1'
+      const result = await pgClient.query(sql, [userId])
+
+      if (result.rows.length === 0) {
+        console.log('user not found')
+        return false
+      }
+      
+      const user = (result.rows[0])
+      const isCurrentPasswordValid = await checkPassword(currentPassword, user.password)
+
+      if(!isCurrentPasswordValid) {
+        return false;
+      }
+
+      const hashedNewPassword = await hashPassword(newPassword)
+
+      // Update the password in the database
+      const updateSql = 'UPDATE users SET password = $1 WHERE id = $2'
+      await pgClient.query(updateSql, [hashedNewPassword, userId])
+
+      // Optionally, you might want to invalidate all existing sessions for this user
+      await sessionStore.deleteAllUserSessions(userId)
+
+      return true
+    } catch (error) {
+      console.error('Error changing password:', error)
+      return false
     }
   }
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { Alert } from 'react-bootstrap'
 import Image from 'next/image'
 
 
@@ -22,12 +22,12 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nickname, password }),
       })
-
-      if (response.ok) {
-        router.push('/employee')
+      
+      const data = await response.json()
+      if (!response.ok) {
+          setError('Login failed')
       } else {
-        const data = await response.json()
-        setError(data.message || 'Login failed')
+          router.push('/')    
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
@@ -49,7 +49,8 @@ export default function LoginPage() {
         <div className="col-md-7 d-flex align-items-center">
           <div className="w-100 px-4">
             <h2 className="text-center mb-4">Admin Login</h2>
-
+            
+            {error && <Alert variant="danger">{error}</Alert>}
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               <input type="hidden" name="remember" defaultValue="true" />
               <div className="mb-3">
