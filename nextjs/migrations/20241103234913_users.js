@@ -5,16 +5,18 @@
 exports.up = async function (knex) {
     await knex.schema.createTable('users', table => {
         table.increments('id').primary()
-        table.string('nickname', 255).unique().notNullable()
-        table.string('password', 255).notNullable()
-        table.string('phone', 255).notNullable()
+        table.string('nickname', 255).unique()
+        table.string('password', 255)
+        table.string('phone', 255).unique().notNullable()
         table.boolean('admin').defaultTo(false)
-        table.string('gender')
+        table.enu('gender', ['male', 'female']).notNullable()
+        table.string('otp', 255).unsigned()
         table.integer('branch_id').unsigned()
         table.foreign('branch_id').references('branches.id')
         table.integer('position_id').unsigned()
         table.foreign('position_id').references('positions.id')
-        table.enu('status', ['active', 'resigned']).notNullable()
+        table.enu('status', ['active', 'resigned', 'otp_pending', 'otp_verified']).notNullable()
+        table.date('employment_end_date')
         table.timestamps(false,true)
     })
 };

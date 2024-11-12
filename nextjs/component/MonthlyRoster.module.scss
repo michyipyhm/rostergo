@@ -1,0 +1,46 @@
+.chooseMonthMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 36px;
+    color: #333;
+}
+
+.selectedMonth{
+    display: flex;
+    flex-direction: row;
+    gap: 10px
+}
+
+.tableContainer {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.rosterTable {
+    border-collapse: collapse;
+    border-spacing: 4px;
+    text-align: center;
+    
+    th, td {
+        border: 1px solid #000;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+}
+
+.clickableCell {
+    cursor: pointer;
+    background-color: #f0f8ff;
+    transition: background-color 0.3s;
+    width: 50px;
+    height: 50px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.clickableCell:hover {
+    background-color: #e0e7ff;
+}
