@@ -26,10 +26,8 @@ class EmployeeService {
       JOIN grades ON positions.grade_id = grades.id
       ORDER BY
         CASE
-          WHEN users.status = 'otp_pending' THEN 1
-          WHEN users.status = 'otp_verified' THEN 2
-          WHEN users.status = 'active' THEN 3
-          WHEN users.status = 'resigned' THEN 4
+          WHEN users.status = 'active' THEN 1
+          WHEN users.status = 'resigned' THEN 2
           ELSE 5
         END,
         users.id DESC
