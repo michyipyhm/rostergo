@@ -26,16 +26,29 @@ export interface Employee {
   updated_at: string;
 }
 
-export interface User {
+export interface LoginUser {
   id: number;
-  nickname: string;
+  nickname: string | null;
   phone: string;
   admin: boolean;
-  gender: string;
+  gender: string | null;
   otp: string | null;
   branch_id: number | null;
   position_id: number | null;
-  status: 'active' | 'resigned' | 'otp_pending' | 'otp_verified';
+  status: 'active' | 'resigned' | 'otp_verify_pending';
   created_at: Date;
   updated_at: Date;
+}
+
+export interface OtpUpdateResult {
+  user: LoginUser | null;
+  redirectToLogin: boolean;
+  redirectToRegister: boolean;
+  redirectToVerifyOtp: boolean;
+}
+
+export interface verifyNumberResult {
+  user: LoginUser | null;
+  message: string;
+  otp: string | null;
 }

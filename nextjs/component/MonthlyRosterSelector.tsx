@@ -23,7 +23,7 @@ function MonthlyRosterSelector() {
 
     const handleSubmit = () => {
         const formattedDate = `${year}-${String(month).padStart(2, '0')}`
-        router.push(`/roster?date=${formattedDate}`)
+        router.push(`/roster/${formattedDate}`)
     }
 
     return (
@@ -73,8 +73,7 @@ function MonthlyRosterSelector() {
                 </div><span className={styles.explainBoxFont}>:Edited not save</span>
             </div>
         </div>
-
-    );
+    )
 }
 
 export default MonthlyRosterSelector;
