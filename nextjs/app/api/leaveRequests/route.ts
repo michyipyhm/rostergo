@@ -1,4 +1,4 @@
-import { getLeaveRequestlistByUserId } from "@/services/leave_requests";
+import { getLeaveRequestlistByUserId } from "@/services/leaveRequests";
 import { error } from "console";
 
 export async function GET() {
@@ -9,7 +9,4 @@ export async function GET() {
 // console.log(users)
     return Response.json({ "data": data, "error": 10001 });
     // return Response.json({ "abc": "123" });
-
-
-
 }

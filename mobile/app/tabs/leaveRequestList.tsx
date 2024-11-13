@@ -8,7 +8,7 @@ import { FlatList } from 'react-native-gesture-handler';
 export default function LeaveRequestList (leaveRequests: any) {
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/leave_requests", { method: "GET" })
+    fetch("http://localhost:3000/api/leaveRequests", { method: "GET" })
       .then((Response) => Response.json())
       .then((responseJson) => {
         console.log(responseJson);
@@ -30,20 +30,22 @@ export default function LeaveRequestList (leaveRequests: any) {
 
       <FlatList
         data={leaveRequests}
+        
         keyExtractor={(item) => item.id.toString()} // 假设每个请假请求有唯一的 id
       
         renderItem={({ item }) => {
-          const startDate = item.dates[0];
-          const endDate = item.dates[item.dates.length - 1];
+          const startDate = item.date[0];
+          const endDate = item.date[item.date.length - 1];
           return(
           <View style={styles.row}>
             <Text style={styles.item}>{startDate}-{endDate}</Text>
-            <Text style={styles.item}>{item.leaveType}</Text>
+            <Text style={styles.item}>{item.leave_type}</Text>
             <Text style={styles.item}>{item.status}</Text>
           </View>
         )}
         }
       /> 
+    
       <TouchableOpacity 
           style={styles.roundButton} 
           onPress={() => {
