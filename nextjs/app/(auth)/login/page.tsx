@@ -1,38 +1,38 @@
-"use client"
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Alert } from 'react-bootstrap'
-import Image from 'next/image'
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Alert } from "react-bootstrap";
+import Image from "next/image";
 
 export default function LoginPage() {
-  const [nickname, setNickname] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const router = useRouter()
+  const [nickname, setNickname] = useState("admin");
+  const [password, setPassword] = useState("123123");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError("");
 
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nickname, password }),
-      })
-      
-      const data = await response.json()
+      });
+
+      const data = await response.json();
       if (!response.ok) {
-          setError('Login failed')
+        setError("Login failed");
       } else {
-          router.push('/')    
+        localStorage.setItem("token", data.token);
+        router.push("/");
       }
     } catch (err) {
-      setError('An error occurred. Please try again.')
+      setError("An error occurred. Please try again.");
     }
-  }
+  };
   return (
     <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
       <div className="row w-75 bg-white rounded-4 shadow-sm p-4">
@@ -45,11 +45,11 @@ export default function LoginPage() {
             className="img-fluid"
           />
         </div>
-        
+
         <div className="col-md-7 d-flex align-items-center">
           <div className="w-100 px-4">
             <h2 className="text-center mb-4">Admin Login</h2>
-            
+
             {error && <Alert variant="danger">{error}</Alert>}
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               <input type="hidden" name="remember" defaultValue="true" />
@@ -65,7 +65,7 @@ export default function LoginPage() {
                   onChange={(e) => setNickname(e.target.value)}
                 />
               </div>
-              
+
               <div className="mb-4">
                 <input
                   id="password"
@@ -78,11 +78,8 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              
-              <button
-                type="submit"
-                className="btn btn-primary w-100 py-2"
-              >
+
+              <button type="submit" className="btn btn-primary w-100 py-2">
                 Login
               </button>
             </form>
@@ -90,5 +87,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

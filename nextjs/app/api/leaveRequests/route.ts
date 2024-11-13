@@ -1,36 +1,27 @@
-import { getLeaveRequestlistByUserId } from "@/services/leaveRequests";
-import { error } from "console";
-import app from "next/app";
-import { NextResponse } from "next/server";
+import { getLeaveRequestlistByUserId } from '@/services/leaveRequests';
+import { NextResponse, NextRequest } from 'next/server';
 
+export async function GET(req: NextRequest) {
+  // Retrieve the user payload from the query parameters
+  const userPayload = req.nextUrl.searchParams.get("user");
+  console.log(req.nextUrl.searchParams.get("user"))
+  const userId = 2
 
-export async function GET() {
-    const userId = 2; // Example user ID
+  const data = await getLeaveRequestlistByUserId(userId);
 
-    try {
-        // Fetch the leave request list for the specified user
-        const data = await getLeaveRequestlistByUserId(userId);
+//   // Parse the user payload from JSON string to object
+//   let parsedUserPayload = null;
+//   if (userPayload) {
+//     try {
+//       parsedUserPayload = JSON.parse(userPayload);
+//     } catch (error) {
+//       console.error('Error parsing user payload:', error);
+//       return NextResponse.json({ error: 'Invalid user payload' }, { status: 400 });
+//     }
+//   }
 
-        // Return a JSON response with the data
-        return NextResponse.json({ data, error: null });
-    } catch (err) {
-        console.error(err); // Log the error for debugging
-
-        // Return a JSON response with an error message
-        return NextResponse.json({ data: null, error: "Failed to fetch leave requests" });
-    }
+//   console.log(parsedUserPayload);
+  
+  // Return the response with the user payload
+  return NextResponse.json({ data, userPayload });
 }
-
-// export async function GET(req: Request) {
-//     const headers = new Headers();
-//     headers.append('Access-Control-Allow-Origin', '*');
-//     headers.append('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-//     headers.append('Access-Control-Allow-Headers', 'Content-Type');
-
-//     const userId = 2;
-//     let data = await getLeaveRequestlistByUserId(userId);
-
-//     return new Response(JSON.stringify({ data, error: 10001 }), {
-//         headers: headers,
-//     });
-// }
