@@ -1,14 +1,17 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, notFound } from "next/navigation";
 import styles from './MonthlyRoster.module.scss';
 import { MonthlyRosterData } from "@/services/models";
+import holidaysData from "@/HKPH-en.json"
 
 function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
-    const { shifts, shiftRequests, leaveRequests } = data
+    const { users, shifts, shiftRequests, leaveRequests } = data
 
     const params = useParams()
     const date = params?.date
+
+    const [publicHolidays, setPublicHolidays] = useState<Set<number>>(new Set())
 
     // check the date(string) parameter should be YYYY-MM
     if (!date || Array.isArray(date) || !/^\d{4}-\d{2}$/.test(date)) {
@@ -33,66 +36,75 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
     // calculate how many day on the month
     const daysInMonth = new Date(yearNum, monthNum, 0).getDate()
 
+    // get the month then take the holiday as a number
+    const getPublicHolidaysForMonth = (year: number, month: number) => {
+        const events = holidaysData.vcalendar[0].vevent;
+        return events
+            .map(event => {
+                const dateValue = event.dtstart[0];
+                return typeof dateValue === "string" ? dateValue : "";
+            })
+            .filter(dateStr => dateStr !== "")
+            .filter(dateStr => {
+                const date = new Date(`${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`);
+                return date.getFullYear() === year && date.getMonth() + 1 === month;
+            })
+            .map(dateStr => Number(dateStr.slice(6, 8)))
+    };
+
+    useEffect(() => {
+        const holidays = getPublicHolidaysForMonth(yearNum, monthNum);
+        setPublicHolidays(new Set(holidays));
+    }, [yearNum, monthNum]);
+
+    // convert Weekday(string) to number
+    const weekdayMap: { [key: string]: number } = {
+        Sunday: 0,
+        Monday: 1,
+        Tuesday: 2,
+        Wednesday: 3,
+        Thursday: 4,
+        Friday: 5,
+        Saturday: 6,
+    };
+
+    // calculate rest days in a month based on weekday and rest days per week
+    const calculateRestDays = (weekdayStr: string, perWeek: number) => {
+        const weekday = weekdayMap[weekdayStr];
+        if (weekday === undefined) return 0;
+
+        let weekdayRestDays = 0
+        let holidayRestDays = 0
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(yearNum, monthNum - 1, day);
+
+            if (publicHolidays.has(day)) {
+                holidayRestDays += 1;
+            } else if (date.getDay() === weekday) {
+                weekdayRestDays += perWeek;
+            }
+        }
+        return weekdayRestDays + holidayRestDays
+    };
+
     //loop data 所有結果並集成 staffResult
-    const staffResult = [
-        ...shifts.map((shift) => ({
-            id: shift.user_id,
-            name: shift.user_nickname,
-            position: shift.position_name,
-            positionType: shift.position_type,
-        })),
-        ...shiftRequests.map((shiftRequest) => ({
-            id: shiftRequest.user_id,
-            name: shiftRequest.user_nickname,
-            position: shiftRequest.position_name,
-            positionType: shiftRequest.position_type,
-        })),
-        ...leaveRequests.map((leaveRequest) => ({
-            id: leaveRequest.user_id,
-            name: leaveRequest.user_nickname,
-            position: leaveRequest.position_name,
-            positionType: leaveRequest.position_type,
+    const staff = [
+        ...users.map((user) => ({
+            id: user.id,
+            name: user.nickname,
+            gender: user.gender,
+            branch_id: user.branch_id,
+            status: user.status,
+            position: user.positions_name,
+            grade: user.grade_name,
+            position_type: user.position_type,
+            isWeekend_Restday: user.weekend_restday,
+            rest_day: calculateRestDays(user.restday_countby, user.restday_per_week),
         })),
     ]
 
-    // staffResult中，假如user_id 重覆則合并成一
-    const staff = Array.from(
-        new Map(staffResult.map((member) => [member.id, member])).values()
-    )
-
-    //loop data 所有結果並集成 dayResult
-    const dayResult = [
-        ...shifts.map((shift) => ({
-            dayType: "Shift",
-            userId: shift.user_id,
-            date: new Date(shift.date).getDate(),
-            slot_title: shift.slot_title,
-            slot_short_title: shift.slot_short_title,
-            status: shift.status,
-        })),
-        ...shiftRequests.map((shiftRequest) => ({
-            dayType: "Shift Request",
-            userId: shiftRequest.user_id,
-            date: new Date(shiftRequest.date).getDate(),
-            slot_title: shiftRequest.slot_title,
-            short_title: shiftRequest.slot_short_title,
-            status: shiftRequest.status,
-        })),
-        ...leaveRequests.map((leaveRequest) => ({
-            dayType: "Leave Request",
-            userId: leaveRequest.user_id,
-            startDate: new Date(leaveRequest.start_date).getDate(),
-            endDate: new Date(leaveRequest.end_date).getDate(),
-            duration: leaveRequest.duration,
-            short_title: leaveRequest.slot_title,
-            slot_short_title: leaveRequest.slot_short_title,
-            leave_name: leaveRequest.leave_type_name,
-            leave_short_name: leaveRequest.leave_type_short_name,
-            sick_photo_prove: leaveRequest.sick_photo_prove,
-            status: leaveRequest.status,
-        })),
-    ]
-
+    //loop data shifts所有結果
     const shiftsStatus = staff.reduce((acc, member) => {
         acc[member.id] = Array(daysInMonth).fill("")
         shifts.forEach((shift) => {
@@ -104,6 +116,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         return acc;
     }, {} as Record<number, string[]>);
 
+    //loop data shift requests所有結果
     const shiftRequestsStatus = staff.reduce((acc, member) => {
         acc[member.id] = Array(daysInMonth).fill("");
         shiftRequests.forEach((shiftRequest) => {
@@ -115,6 +128,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         return acc;
     }, {} as Record<number, string[]>);
 
+    //loop data leave requests所有結果
     const leaveRequestsStatus = staff.reduce((acc, member) => {
         acc[member.id] = Array(daysInMonth).fill("");
         leaveRequests.forEach((leaveRequest) => {
@@ -133,6 +147,12 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         alert(`Clicked on day ${day} for ${memberName}`)
     }
 
+    // Generate weekday labels for each day of the month
+    const weekdays = Array.from({ length: daysInMonth }, (_, i) => {
+        const date = new Date(yearNum, monthNum - 1, i + 1);
+        return date.toLocaleString("en-US", { weekday: "short" });
+    });
+
     return (
         <div>
             <div className={styles.selectedMonth}>
@@ -143,13 +163,30 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                 <table className={styles.rosterTable}>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Type</th>
-                            {Array.from({ length: daysInMonth }, (_, i) => (
-                                <th key={i + 1}>{i + 1}</th>
+                            <th rowSpan={2}>ID</th>
+                            <th rowSpan={2}>Name</th>
+                            <th rowSpan={2}>Position</th>
+                            <th rowSpan={2}>Rest Day Count</th>
+                            {weekdays.map((weekday, i) => (
+                                <th
+                                    key={`weekday-${i}`}
+                                    className={`${weekday === "Sat" || weekday === "Sun" ? styles.weekend : ""} ${publicHolidays.has(i + 1) ? styles.holiday : ""}`}
+                                >
+                                    {weekday}
+                                </th>
                             ))}
+                        </tr>
+                        <tr>
+                            {Array.from({ length: daysInMonth }, (_, i) => {
+                                const date = new Date(yearNum, monthNum - 1, i + 1);
+                                const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                                const isHoliday = publicHolidays.has(i + 1);
+                                return (
+                                    <th key={i + 1} className={`${isWeekend ? styles.weekend : ""} ${isHoliday ? styles.holiday : ""}`}>
+                                        {i + 1}
+                                    </th>
+                                );
+                            })}
                         </tr>
                     </thead>
                     <tbody>
@@ -158,22 +195,37 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                 <td>{member.id}</td>
                                 <td>{member.name}</td>
                                 <td>{member.position}</td>
-                                <td>{member.positionType}</td>
+                                <td>
+                                    {member.position_type === "Part Time" ? (
+                                        "N/A"
+                                    ) : member.isWeekend_Restday === true ? (
+                                        "Weekends & Holidays"
+                                    ) : (
+                                        `${member.rest_day} days`
+                                    )}
+                                </td>
                                 {Array.from({ length: daysInMonth }, (_, i) => {
-                                    const shift = shiftsStatus[member.id]?.[i] || ""
-                                    const shiftRequest = shiftRequestsStatus[member.id]?.[i] || ""
-                                    const leaveRequest = leaveRequestsStatus[member.id]?.[i] || ""
-                                    const showTheDay = leaveRequest || shiftRequest || shift
-                                    const cellClassName = leaveRequest ? styles.request
-                                    : shiftRequest ? styles.request
-                                    : shift ? styles.confirmed
-                                    : ""
+                                    const date = new Date(yearNum, monthNum - 1, i + 1);
+                                    const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                                    const isHoliday = publicHolidays.has(i + 1);
+                                    const shift = shiftsStatus[member.id]?.[i] || "";
+                                    const shiftRequest = shiftRequestsStatus[member.id]?.[i] || "";
+                                    const leaveRequest = leaveRequestsStatus[member.id]?.[i] || "";
+                                    const showTheDay = leaveRequest || shiftRequest || shift;
+                                    const cellClassName = `${styles.clickableCell} ${leaveRequest
+                                        ? styles.request
+                                        : shiftRequest
+                                            ? styles.request
+                                            : shift
+                                                ? styles.confirmed
+                                                : ""
+                                        } ${isWeekend ? styles.weekend : ""} ${isHoliday ? styles.holiday : ""}`;
 
                                     return (
                                         <td
                                             key={i + 1}
                                             onClick={() => handleCellClick(i + 1, member.name)}
-                                            className={`${styles.clickableCell} ${cellClassName}`}
+                                            className={cellClassName}
                                         >
                                             {showTheDay}
                                         </td>
@@ -185,7 +237,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                 </table>
             </div>
         </div>
-    )
+    );
 }
 
 export default MonthlyRosterForm

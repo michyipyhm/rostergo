@@ -54,6 +54,22 @@ export interface verifyNumberResult {
   otp: string | null;
 }
 
+
+export interface User {
+  id: number,
+  nickname: string,
+  gender: string,
+  branch_id: number,
+  status: string,
+  positions_name: string,
+  grade_name: string,
+  position_type: string,
+  weekend_restday: boolean,
+  restday_per_week: number,
+  restday_countby: string,
+  annual_leave_quota: number,
+}
+
 export interface MonthlyShift {
   id: number,
   date: string,
@@ -111,6 +127,7 @@ export interface LeaveRequest {
 }
 
 export interface MonthlyRosterData {
+  users: User[],
   shifts: MonthlyShift[],
   shiftRequests: ShiftRequest[]
   leaveRequests: LeaveRequest[]

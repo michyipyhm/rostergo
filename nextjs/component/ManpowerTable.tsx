@@ -10,26 +10,30 @@ interface ManpowerTableProps {
 function ManpowerTable({ shifts }: ManpowerTableProps) {
 
   const calculateStaffEachHour = () => {
-    const hourStaffCount: Record<string, number> = {};
+    const hourStaffCount: Record<string, number> = {}
 
     // table for each hour
     for (let hour = 6; hour < 30; hour++) {
-      const time = (hour % 24).toString().padStart(2, '0') + ':00';
-      hourStaffCount[time] = 0;
+      const time = (hour % 24).toString().padStart(2, '0') + ':00'
+      hourStaffCount[time] = 0
     }
 
     // manpower calculate for each hour
     shifts.forEach((shift) => {
-      const startHour = parseInt(shift.checkin_time.split(':')[0]);
-      const endHour = parseInt(shift.checkout_time.split(':')[0]);
+      if (shift.checkin_time && shift.checkout_time) {  // 檢查是否有值
+        const startHour = parseInt(shift.checkin_time.split(':')[0])
+        const endHour = parseInt(shift.checkout_time.split(':')[0])
 
-      for (let hour = startHour; hour < endHour; hour++) {
-        const time = hour.toString().padStart(2, '0') + ':00';
-        if (hourStaffCount[time] !== undefined) {
-          hourStaffCount[time] += 1;
+        for (let hour = startHour; hour < endHour; hour++) {
+          const time = hour.toString().padStart(2, '0') + ':00'
+          if (hourStaffCount[time] !== undefined) {
+            hourStaffCount[time] += 1
+          }
         }
+      } else {
+        console.warn("Missing checkin or checkout time for shift:", shift)
       }
-    });
+    })
 
     // if manpower is 0, show ""
     return Object.entries(hourStaffCount).map(([time, count]) => (
