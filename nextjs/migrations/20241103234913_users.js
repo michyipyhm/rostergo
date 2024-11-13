@@ -15,7 +15,7 @@ exports.up = async function (knex) {
         table.foreign('branch_id').references('branches.id')
         table.integer('position_id').unsigned()
         table.foreign('position_id').references('positions.id')
-        table.enu('status', ['active', 'resigned', 'otp_pending', 'otp_verified']).notNullable()
+        table.enu('status', ['active', 'resigned'])
         table.date('employment_end_date')
         table.timestamps(false,true)
     })

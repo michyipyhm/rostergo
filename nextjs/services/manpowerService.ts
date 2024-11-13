@@ -12,7 +12,8 @@ class ManpowerService {
         users.nickname AS user_nickname, 
         shift_slots.title AS slot_title, 
         shift_slots.start_time AS slot_start_time, 
-        shift_slots.end_time AS slot_end_time
+        shift_slots.end_time AS slot_end_time,
+		    shift_slots.short_title AS slot_short_title
       FROM shifts
       JOIN users ON shifts.user_id = users.id
       JOIN shift_slots ON shifts.shift_slot_id = shift_slots.id

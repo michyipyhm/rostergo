@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import styles from './EmployeeList.module.scss';
 import { Employee } from '@/services/models'
-import { Button } from "react-bootstrap";
 import Link from "next/link"
+import { Button } from "react-bootstrap";
 import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
 
 
@@ -21,7 +21,7 @@ function EmployeeList() {
         const data = await response.json()
         setEmployees(data)
       } catch (err) {
-        console.error('Error fetching employees:', error)
+        console.error('Error fetching employees:', err)
       } 
     }
       fetchEmployees()
@@ -30,9 +30,7 @@ function EmployeeList() {
   
   return (
     <div className='mainContainer'> 
-     <div className='button'>
-      <Button>Add</Button>
-      </div>
+   
     
     <div className={styles.manpowerTable}>
       <Table striped bordered hover className={styles.table}>

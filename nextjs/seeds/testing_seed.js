@@ -1,3 +1,12 @@
+var bcrypt = require("bcryptjs");
+
+const SALT_ROUNDS = 10;
+
+async function hashPassword(password) {
+  const hash = await bcrypt.hash(password, SALT_ROUNDS);
+  return hash;
+}
+
 exports.seed = async function (knex) {
     await knex("shifts").del();
     await knex("payslips").del();
@@ -41,37 +50,37 @@ exports.seed = async function (knex) {
 
     await knex("users").insert([
         {
-            id: 1, nickname: "admin", password: "123123", phone: "12312311", admin: true,
+            id: 1, nickname: "admin", password: await hashPassword("123123"), phone: "12312311", admin: true,
             gender: "male", branch_id: 1, position_id: 1, status: "active"
         },
         {
-            id: 2, nickname: "ft1", password: "123123", phone: "12312322", admin: false,
+            id: 2, nickname: "ft1", password: await hashPassword("123123"), phone: "12312322", admin: false,
             gender: "male", branch_id: 1, position_id: 2, status: "active"
         },
         {
-            id: 3, nickname: "ft2", password: "123123", phone: "12312333", admin: false,
+            id: 3, nickname: "ft2", password: await hashPassword("123123"), phone: "12312333", admin: false,
             gender: "female", branch_id: 1, position_id: 3, status: "active"
         },
         {
-            id: 4, nickname: "pt1", password: "123123", phone: "12312344", admin: false,
+            id: 4, nickname: "pt1", password: await hashPassword("123123"), phone: "12312344", admin: false,
             gender: "female", branch_id: null, position_id: 4, status: "active"
         },
         {
-            id: 5, nickname: "pt2", password: "123123", phone: "12312355", admin: false,
-            gender: "female", branch_id: 1, position_id: 4, status: "otp_verified"
+            id: 5, nickname: "pt2", password: await hashPassword("123123"), phone: "12312355", admin: false,
+            gender: "female", branch_id: 1, position_id: 4, status: "active"
         },
         {
-            id: 6, nickname: "pt3", password: "123123", phone: "12312366", admin: false,
-            gender: "male", branch_id: null, position_id: 4, status: "otp_pending"
+            id: 6, nickname: "pt3", password: await hashPassword("123123"), phone: "12312366", admin: false,
+            gender: "male", branch_id: null, position_id: 4, status: "active"
         }, 
         {
-            id: 7, nickname: "admin2", password: "123123", phone: "12312377", admin: true,
+            id: 7, nickname: "admin2", password: await hashPassword("123123"), phone: "12312377", admin: true,
             gender: "male", branch_id: 2, position_id: 1, status: "active"
         },
     ]);
 
     await knex("leave_types").insert([
-        { id: 1, name: "Sick Leave", quota: 2 },
+        { id: 1, name: "Sick Leave", short_name: "SL", quota: 2 },
     ]);
 
     await knex("shift_requests").insert([
