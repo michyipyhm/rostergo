@@ -14,8 +14,16 @@
     "@fullcalendar/icalendar": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
+<<<<<<< HEAD
+    "@types/cors": "^2.8.17",
+=======
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^2.4.3",
+>>>>>>> 24ce421106c2af094d0514ad923f9a7c6ec904f6
     "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "iron-session": "^8.0.3",
     "knex": "^3.1.0",
     "next": "15.0.2",
     "pg": "^8.13.1",
@@ -25,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-table": "^7.8.0",
     "sass": "^1.80.6",
+    "shadcn": "^2.1.6",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {

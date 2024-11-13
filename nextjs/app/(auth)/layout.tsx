@@ -1,3 +1,5 @@
+import "bootstrap/dist/css/bootstrap.min.css"; 
+
 export default function AuthLayout({
   children,
 }: {
@@ -5,9 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div>
-      <main>
         {children}
-      </main>
     </div>
   )
 }

@@ -24,6 +24,7 @@ export interface Employee {
   end_date: string;
   joining_date: string;
   updated_at: string;
+  branch_id: number;
 }
 
 export interface LoginUser {
