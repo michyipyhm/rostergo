@@ -83,7 +83,7 @@ const LeaveRequestDetail = () => {
   const [leaveRequestDetail, setLeaveRequestDetail] = useState<any>(null); // 添加状态以存储请求数据
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/leaveRequestsDetail", { method: "GET" })
+    fetch("/api/leaveRequestsDetail", { method: "GET" })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
