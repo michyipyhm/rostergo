@@ -145,13 +145,11 @@ export default function EditEmployee({ id }: { id: string }) {
 
             <Form.Group className="mb-3">
               <Form.Label>Employee Type</Form.Label>
-              <Form.Select
+              <Form.Control
                 value={employee.employee_type}
-                onChange={(e) => setEmployee({ ...employee, employee_type: e.target.value })}
+                disabled
               >
-                <option value="full-time">Full Time</option>
-                <option value="part-time">Part Time</option>
-              </Form.Select>
+              </Form.Control>
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -171,16 +169,14 @@ export default function EditEmployee({ id }: { id: string }) {
               >
                 <option value="active">Active</option>
                 <option value="resigned">Resigned</option>
-                <option value="otp_pending">Otp Pending</option>
-                <option value="otp_verified">Otp Verified</option>
               </Form.Select>
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Joining Date</Form.Label>
+              <Form.Label>Join Date</Form.Label>
               <Form.Control
                 type="text"
-                value={formatYYYYMMDD(employee.joining_date)}
+                value={employee.join_date.substring(0,10)}
                 disabled
               />
             </Form.Group>

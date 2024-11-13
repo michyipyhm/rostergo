@@ -1,13 +1,10 @@
 import { pgClient } from "./pgClient";
 import { LoginUser, verifyNumberResult } from "./models";
 
-export async function verifyNumber(phone: string): Promise<verifyNumberResult> {
+export async function verifyPhoneNumber(
+  phone: string
+): Promise<verifyNumberResult> {
   try {
-    // const generateOtp = () => {
-    //   return Math.floor(100000 + Math.random() * 900000).toString();
-    // };
-    // const otp = generateOtp();
-
     const checkQuery = `
     SELECT id, status, phone FROM users
     WHERE phone = $1
@@ -18,9 +15,12 @@ export async function verifyNumber(phone: string): Promise<verifyNumberResult> {
     if (checkResult.rows.length > 0) {
       const existingUser = checkResult.rows[0] as LoginUser;
       if (existingUser.status === "active") {
-        return { user: existingUser, message: "active user", redirectToLogin: true, redirectToVerifyOtp: false
+        return {
+          user: existingUser,
+          message: "active user",
+          redirectToLogin: true,
+          redirectToVerifyOtp: false,
         };
-
       } else if (existingUser.status === "resigned") {
         return {
           user: null,
@@ -29,18 +29,16 @@ export async function verifyNumber(phone: string): Promise<verifyNumberResult> {
           redirectToLogin: false,
           redirectToVerifyOtp: false,
         };
-
-      } else  {
+      } else {
         return {
           user: existingUser,
-          message: "phone numver already exists, pending verification",
+          message:
+            "phone numver already exists, pending whatsapp otp verification",
           redirectToLogin: false,
           redirectToVerifyOtp: true,
         };
       }
-
-      }
-     else {
+    } else {
       const insertQuery = `
   INSERT INTO users (phone, status)
   VALUES ($1, 'null')
@@ -49,10 +47,9 @@ export async function verifyNumber(phone: string): Promise<verifyNumberResult> {
       const insertResult = await pgClient.query(insertQuery, [phone]);
       return {
         user: insertResult.rows[0] as LoginUser,
-        message: "new user",
+        message: "new user updated",
         redirectToLogin: false,
         redirectToVerifyOtp: true,
-
       };
     }
   } catch (error) {
@@ -66,89 +63,68 @@ export async function verifyNumber(phone: string): Promise<verifyNumberResult> {
   }
 }
 
-// export async function updateOtp(phone: string, otp: string): Promise<OtpUpdateResult> {
-//   try {
-//     await pgClient.query('BEGIN')
+export async function saveOtpToDB(
+  phone: string,
+  generatedOtp: string
+): Promise<LoginUser | null> {
+  try {
+    const checkQuery = `
+    SELECT id, status, phone FROM users
+    WHERE phone = $1
+  `;
 
-//     // Check if the phone number already exists
-//     const checkQuery = `
-//       SELECT id, status, phone FROM users
-//       WHERE phone = $1
-//     `
-//     const checkResult = await pgClient.query(checkQuery, [phone])
+    const checkResult = await pgClient.query(checkQuery, [phone]);
+    if (checkResult.rows.length > 0) {
+      const updateQuery = `
+      UPDATE users
+      SET otp = $2
+      WHERE phone = $1
+      RETURNING id, phone, otp`;
+      const updateResult = await pgClient.query(updateQuery, [
+        phone,
+        generatedOtp,
+      ]);
+      return updateResult.rows[0] as LoginUser;
+    } else {
+      const insertQuery = `
+      INSERT INTO users (phone, otp)
+      VALUES ($1, $2)
+      RETURNING id, phone, otp, status
+    `;
+      const insertResult = await pgClient.query(insertQuery, [
+        phone,
+        generatedOtp,
+      ]);
+      return insertResult.rows[0] as LoginUser;
+    }
+  } catch (error) {
+    console.error("Error saving otp to db:", error);
+    return null;
+  }
+}
 
-//     if (checkResult.rows.length > 0) {
-//       // Phone number exists, check the status
-//       const existingUser = checkResult.rows[0] as LoginUser
-//       if (existingUser.status === 'active') {
-//         // User is already active, don't update OTP and redirect to login
-//         await pgClient.query('COMMIT')
-//         return { user: existingUser, redirectToLogin: true, redirectToRegister: false, redirectToVerifyOtp: false }
-//       } else if (existingUser.status === 'otp_verified') {
-//         // User is verified but not active, don't update OTP
-//         await pgClient.query('COMMIT')
-//         return { user: existingUser, redirectToLogin: false, redirectToRegister: true, redirectToVerifyOtp: false }
-//       } else {
-//         // Update OTP for existing user with other status (e.g., 'otp_pending')
-//         const updateQuery = `
-//           UPDATE users
-//           SET otp = $1, status = 'otp_verify_pending', updated_at = NOW()
-//           WHERE id = $2
-//           RETURNING id, phone, status, otp
-//         `
-//         const updateResult = await pgClient.query(updateQuery, [otp, existingUser.id])
-//         await pgClient.query('COMMIT')
-//         return { user: updateResult.rows[0] as LoginUser, redirectToLogin: false, redirectToRegister: false, redirectToVerifyOtp: true }
-//       }
-//     } else {
-//       // Phone number doesn't exist, insert new user
-//       const insertQuery = `
-//         INSERT INTO users (phone, otp, status, created_at, updated_at)
-//         VALUES ($1, $2, 'otp_verify_pending', NOW(), NOW())
-//         RETURNING id, phone, status, otp
-//       `
-//       const insertResult = await pgClient.query(insertQuery, [phone, otp])
-//       await pgClient.query('COMMIT')
-//       return { user: insertResult.rows[0] as LoginUser, redirectToLogin: false, redirectToRegister: false, redirectToVerifyOtp: true }
-//     }
-//   } catch (error) {
-//     await pgClient.query('ROLLBACK')
-//     console.error('Error updating OTP:', error)
-//     throw error
-//   }
-// }
+export async function verifyOtp(
+  phone: string,
+  otp: string
+): Promise<LoginUser | null> {
+  try {
+    const verifyQuery = `
+      SELECT id FROM users
+      WHERE phone = $1 AND otp = $2
+    `;
+    const verifyResult = await pgClient.query(verifyQuery, [phone, otp]);
 
-// export async function verifyOtp(phone: string, otp: string): Promise<LoginUser | null> {
-//   try {
-//     // await pgClient.query('BEGIN')
-//     const verifyQuery = `
-//       SELECT id FROM users
-//       WHERE phone = $1 AND otp = $2
-//     `
-//     const verifyResult = await pgClient.query(verifyQuery, [phone, otp])
+    if (verifyResult.rows.length === 0) {
+      await pgClient.query("COMMIT");
+      console.error("OTP verification failed");
+      return null;
+    }
 
-//     if (verifyResult.rows.length === 0) {
-//       await pgClient.query('COMMIT')
-//       return null
-//     }
-
-//     const userId = verifyResult.rows[0].id
-//     const updateQuery = `
-//       UPDATE users
-//       SET status = 'otp_verified', updated_at = NOW()
-//       WHERE id = $1
-//       RETURNING id, phone, status
-//     `
-//     const updateResult = await pgClient.query(updateQuery, [userId])
-//     // await pgClient.query('COMMIT')
-
-//     if (updateResult.rows.length > 0) {
-//       return updateResult.rows[0] as LoginUser
-//     }
-//     return null
-//   } catch (error) {
-//     // await pgClient.query('ROLLBACK')
-//     console.error('Error verifying OTP:', error)
-//     throw error
-//   }
-// }
+    if (verifyResult.rows.length > 0) {
+      return verifyResult.rows[0] as LoginUser;
+    }
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    throw error;
+  }
+}
