@@ -83,11 +83,20 @@ class EmployeeService {
     }
   }
 
-  async updateEmployee(id: string, updateData: { position?: string, grade?: string, employee_type?: string }) {
+  async updateEmployee(id: string, updateData: {phone?: number, position?: string, status?: string}) {
     try {
-      const { position, grade, employee_type } = updateData;
+      const { phone, position, status } = updateData;
+
+      if (phone) {
+        const updatePositionSql = `
+          UPDATE users
+          SET phone = (SELECT id FROM users WHERE phone = $1)
+          WHERE phone = $2
+        `;
+        await pgClient.query(updatePositionSql, [phone, id]);
+      }
       
-      // First, update the position
+      
       if (position) {
         const updatePositionSql = `
           UPDATE users
@@ -97,16 +106,13 @@ class EmployeeService {
         await pgClient.query(updatePositionSql, [position, id]);
       }
 
-      // Then, update the grade and employee type (which are in the positions table)
-      if (grade || employee_type) {
-        const updateGradeAndTypeSql = `
-          UPDATE positions
-          SET 
-            grade_id = COALESCE((SELECT id FROM grades WHERE name = $1), grade_id),
-            type = COALESCE($2, type)
-          WHERE id = (SELECT position_id FROM users WHERE id = $3)
+      if (status) {
+        const updatePositionSql = `
+          UPDATE users
+          SET status = (SELECT id FROM users WHERE status = $1)
+          WHERE phone = $2
         `;
-        await pgClient.query(updateGradeAndTypeSql, [grade, employee_type, id]);
+        await pgClient.query(updatePositionSql, [status, id]);
       }
 
       // Finally, fetch and return the updated employee data

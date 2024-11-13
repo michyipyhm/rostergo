@@ -5,7 +5,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!params?.id) {
+  const {id} = params
+  if (!id) {
     return NextResponse.json(
       { error: "Employee ID is required" },
       { status: 400 }
@@ -13,16 +14,16 @@ export async function GET(
   }
 
   try {
-    const employee = await employeeService.getEmployeeById(params.id);
-    console.log('Found employee:', employee);
-    
+    const employee = await employeeService.getEmployeeById(id);
+    console.log("Found employee:", employee);
+
     if (!employee) {
       return NextResponse.json(
         { error: "Employee not found" },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json(employee);
   } catch (error) {
     console.error("Error fetching employee:", error);
@@ -37,7 +38,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!params?.id) {
+  const { id } = await params;
+
+  if (!id) {
     return NextResponse.json(
       { error: "Employee ID is required" },
       { status: 400 }
@@ -46,7 +49,10 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    const updatedEmployee = await employeeService.updateEmployee(params.id, body);
+    const updatedEmployee = await employeeService.updateEmployee(
+      id,
+      body
+    );
     if (!updatedEmployee) {
       return NextResponse.json(
         { error: "Employee not found" },
