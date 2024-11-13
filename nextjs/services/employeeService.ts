@@ -1,10 +1,17 @@
 import { pgClient } from "@/services/pgClient";
+import { sessionStore } from "@/lib/sessionStore";
 
 class EmployeeService {
   constructor() {}
 
   async getEmployees() {
     try {
+      const session = await sessionStore.get();
+
+      if (!session.branch_id) {
+        throw new Error("Unauthorized: No branch associated with the current session");
+      }
+      
       const sql = `
       SELECT 
         users.*,
@@ -24,6 +31,7 @@ class EmployeeService {
       FROM users
       JOIN positions ON users.position_id = positions.id
       JOIN grades ON positions.grade_id = grades.id
+      WHERE users.branch_id = $1
       ORDER BY
         CASE
           WHEN users.status = 'active' THEN 1
@@ -32,13 +40,13 @@ class EmployeeService {
         END,
         users.id DESC
         `
-      const result = await pgClient.query(sql)
+      const result = await pgClient.query(sql, [session.branch_id])
       console.log('result:', result.rows)
 
       return result.rows
     } catch (error) {
       console.log("cannot get employees:", error)
-      throw new Error("Users error")
+      throw new Error("Failed to retrieve employees");
     }
   }
 

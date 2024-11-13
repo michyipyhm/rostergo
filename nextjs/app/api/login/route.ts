@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
       await sessionStore.save({
         id: result.admin.id,
         nickname: result.admin.nickname,
-        admin: result.admin.admin
+        admin: result.admin.admin,
+        branch_id: result.admin.branch_id
       })
       return NextResponse.json({ message: 'Login successful' }, { status: 200 })
     } else {

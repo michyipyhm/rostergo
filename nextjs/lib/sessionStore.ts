@@ -7,6 +7,7 @@ type Session = {
     id?: number
     nickname?: string
     admin?: boolean
+    branch_id?: number
 }
 
  class SessionStore{

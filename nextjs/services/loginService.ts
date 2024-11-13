@@ -25,7 +25,8 @@ class LoginService {
         admin: {
           id: admin.id,
           nickname: admin.nickname,
-          admin: admin.admin
+          admin: admin.admin,
+          branch_id: admin.branch_id,
         }
       }
     } catch (error) {
