@@ -45,7 +45,7 @@ function EmployeeList() {
           <th>Employee Type</th>
           <th>AL</th>
           <th>Status</th>
-          <th>Joining Date</th>
+          <th>Join Date</th>
           <th>Updated At</th>
         </tr>
        </thead>
@@ -61,7 +61,7 @@ function EmployeeList() {
             <td>{employee.employee_type}</td>
             <td>{employee.annual_leave}</td>
             <td>{employee.status}</td>
-            <td>{formatYYYYMMDD(employee.joining_date)}</td>
+            <td>{employee.join_date.substring(0,10)}</td>
             <td>{formatYYYYMMDDHHMM(employee.updated_at)}</td>
             <td><Link 
                   href={`/employee/edit?id=${employee.id}`}
