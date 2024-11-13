@@ -28,10 +28,10 @@ exports.seed = async function (knex) {
     ]);
 
     await knex("positions").insert([
-        { id: 1, name: "Manager", grade_id: 1, type: "full_time", full_time_wage: 30000, weekend_restDay: true },
-        { id: 2, name: "Salesperson1", grade_id: 3, type: "full_time", full_time_wage: 18000, weekend_restDay: false, restDay_countBy: "Sunday" },
-        { id: 3, name: "Salesperson2", grade_id: 4, type: "full_time", full_time_wage: 16000, weekend_restDay: false, restDay_countBy: "Sunday" },
-        { id: 4, name: "Salesperson(PT)", grade_id: 5, type: "part_time", part_time_hour_wage: 65 },
+        { id: 1, name: "Manager", grade_id: 1, type: "Full Time", full_time_wage: 30000, weekend_restDay: true },
+        { id: 2, name: "Salesperson1", grade_id: 3, type: "Full Time", full_time_wage: 18000, weekend_restDay: false, restDay_per_week: 2, restDay_countBy: "Sunday" },
+        { id: 3, name: "Salesperson2", grade_id: 4, type: "Full Time", full_time_wage: 16000, weekend_restDay: false, restDay_per_week: 1.5, restDay_countBy:  "Sunday" },
+        { id: 4, name: "Salesperson(PT)", grade_id: 5, type: "Part Time", part_time_hour_wage: 65 },
     ]);
 
     await knex("branches").insert([
@@ -51,31 +51,35 @@ exports.seed = async function (knex) {
     await knex("users").insert([
         {
             id: 1, nickname: "admin", password: await hashPassword("123123"), phone: "12312311", admin: true,
-            gender: "male", branch_id: 1, position_id: 1, status: "active"
+            gender: "male", branch_id: 1, position_id: 1, status: "active", join_date: "2024-01-01"
         },
         {
             id: 2, nickname: "ft1", password: await hashPassword("123123"), phone: "12312322", admin: false,
-            gender: "male", branch_id: 1, position_id: 2, status: "active"
+            gender: "male", branch_id: 1, position_id: 2, status: "active", join_date: "2024-02-14"
         },
         {
             id: 3, nickname: "ft2", password: await hashPassword("123123"), phone: "12312333", admin: false,
-            gender: "female", branch_id: 1, position_id: 3, status: "active"
+            gender: "female", branch_id: 1, position_id: 3, status: "active", join_date: "2024-03-09"
         },
         {
             id: 4, nickname: "pt1", password: await hashPassword("123123"), phone: "12312344", admin: false,
-            gender: "female", branch_id: null, position_id: 4, status: "active"
+            gender: "female", branch_id: null, position_id: 4, status: "active", join_date: "2024-07-01"
         },
         {
             id: 5, nickname: "pt2", password: await hashPassword("123123"), phone: "12312355", admin: false,
-            gender: "female", branch_id: 1, position_id: 4, status: "active"
+            gender: "female", branch_id: 1, position_id: 4, status: "active", join_date: "2024-07-01"
         },
         {
             id: 6, nickname: "pt3", password: await hashPassword("123123"), phone: "12312366", admin: false,
-            gender: "male", branch_id: null, position_id: 4, status: "active"
+            gender: "male", branch_id: null, position_id: 4, status: "active", join_date: "2024-08-01"
         }, 
         {
             id: 7, nickname: "admin2", password: await hashPassword("123123"), phone: "12312377", admin: true,
-            gender: "male", branch_id: 2, position_id: 1, status: "active"
+            gender: "male", branch_id: 2, position_id: 1, status: "active", join_date: "2024-01-01"
+        },
+        {
+            id: 8, nickname: "resign1", password: await hashPassword("123123"), phone: "92312377", admin: false,
+            gender: "male", branch_id: 1, position_id: 2, status: "resigned", join_date: "2024-09-01", resign_date: "2024-10-31"
         },
     ]);
 
@@ -107,6 +111,8 @@ exports.seed = async function (knex) {
         {id: 3, date:"2024-11-04", shift_slot_id: 1, user_id: 4, checkin_time: "08:59:53", checkout_time: "12:07:43", over_time_approve: true, status: "check out"},
         {id: 4, date:"2024-11-03", shift_slot_id: 2, user_id: 5, checkin_time: "11:54:18", checkout_time: "15:03:13", over_time_approve: true, status: "check out"},
         {id: 5, date:"2024-11-02", shift_slot_id: 1, user_id: 2, checkin_time: "08:57:16", checkout_time: "12:30:49", over_time_approve: true, status: "check out"},
-        {id: 6, date:"2024-11-29", shift_slot_id: 1, user_id: 1}
+        {id: 6, date:"2024-11-29", shift_slot_id: 1, user_id: 1},
+        {id: 7, date:"2024-10-25", shift_slot_id: 1, user_id: 8, checkin_time: "08:59:53", checkout_time: "12:07:43", over_time_approve: true, status: "check out"},
+        {id: 8, date:"2024-11-02", shift_slot_id: 1, user_id: 8, checkin_time: "08:59:53", checkout_time: "12:07:43", over_time_approve: true, status: "check out"},
     ]);
 };

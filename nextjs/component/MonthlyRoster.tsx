@@ -159,17 +159,26 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                 <td>{member.name}</td>
                                 <td>{member.position}</td>
                                 <td>{member.positionType}</td>
-                                {Array.from({ length: daysInMonth }, (_, i) => (
-                                    <td
-                                        key={i + 1}
-                                        onClick={() => handleCellClick(i + 1, member.name)}
-                                        className={styles.clickableCell}
-                                    >
-                                        {shiftsStatus[member.id]?.[i] || ""}
-                                        {shiftRequestsStatus[member.id]?.[i] || ""}
-                                        {leaveRequestsStatus[member.id]?.[i] || ""}
-                                    </td>
-                                ))}
+                                {Array.from({ length: daysInMonth }, (_, i) => {
+                                    const shift = shiftsStatus[member.id]?.[i] || ""
+                                    const shiftRequest = shiftRequestsStatus[member.id]?.[i] || ""
+                                    const leaveRequest = leaveRequestsStatus[member.id]?.[i] || ""
+                                    const showTheDay = leaveRequest || shiftRequest || shift
+                                    const cellClassName = leaveRequest ? styles.request
+                                    : shiftRequest ? styles.request
+                                    : shift ? styles.confirmed
+                                    : ""
+
+                                    return (
+                                        <td
+                                            key={i + 1}
+                                            onClick={() => handleCellClick(i + 1, member.name)}
+                                            className={`${styles.clickableCell} ${cellClassName}`}
+                                        >
+                                            {showTheDay}
+                                        </td>
+                                    );
+                                })}
                             </tr>
                         ))}
                     </tbody>

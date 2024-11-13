@@ -8,7 +8,7 @@ exports.up = async function (knex) {
         table.string('name', 255).notNullable()
         table.integer('grade_id').unsigned()
         table.foreign('grade_id').references('grades.id')
-        table.enu('type', ['full_time', 'part_time']).notNullable()
+        table.enu('type', ['Full Time', 'Part Time']).notNullable()
         table.integer('part_time_hour_wage').unsigned()
         table.integer('full_time_wage').unsigned()
         table.boolean('weekend_restDay')
