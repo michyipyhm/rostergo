@@ -20,10 +20,7 @@ export interface Employee {
   grade: string;
   employee_type: string;
   annual_leave: number;
-  status: string;
-  end_date: string;
   joining_date: string;
-  updated_at: string;
 }
 
 export interface LoginUser {
@@ -35,20 +32,21 @@ export interface LoginUser {
   otp: string | null;
   branch_id: number | null;
   position_id: number | null;
-  status: 'active' | 'resigned' | 'otp_verify_pending';
+  status: 'active' | 'resigned' | null;
   created_at: Date;
   updated_at: Date;
 }
 
-export interface OtpUpdateResult {
-  user: LoginUser | null;
-  redirectToLogin: boolean;
-  redirectToRegister: boolean;
-  redirectToVerifyOtp: boolean;
-}
+// export interface OtpUpdateResult {
+//   user: LoginUser | null;
+//   redirectToLogin: boolean;
+//   redirectToRegister: boolean;
+//   redirectToVerifyOtp: boolean;
+// }
 
 export interface verifyNumberResult {
   user: LoginUser | null;
   message: string;
-  otp: string | null;
+  redirectToLogin: boolean;
+  redirectToVerifyOtp: boolean;
 }
