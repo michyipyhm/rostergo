@@ -16,7 +16,8 @@ exports.up = async function (knex) {
         table.integer('position_id').unsigned()
         table.foreign('position_id').references('positions.id')
         table.enu('status', ['active', 'resigned'])
-        table.date('employment_end_date')
+        table.date('join_date')
+        table.date('resign_date')
         table.timestamps(false,true)
     })
 };
