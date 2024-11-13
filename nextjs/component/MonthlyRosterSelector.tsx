@@ -58,16 +58,13 @@ function MonthlyRosterSelector() {
             <div className={styles.explainCard}>
                 <div className={`${styles.explainBox} ${styles.confirmed}`}>
                     A
-                </div><span className={styles.explainBoxFont}>:Shift Confirmed</span>
+                </div><span className={styles.explainBoxFont}>:Confirmed</span>
                 <div className={`${styles.explainBox} ${styles.request}`}><span style={{ color: 'rgba(0, 0, 0, 0.3)' }}>
                     A
-                </span></div><span className={styles.explainBoxFont}>:Request</span>
+                </span></div><span className={styles.explainBoxFont}>:Request Not Confirm</span>
                 <div className={`${styles.explainBox} ${styles.requestConfirmed}`}>
                     A
                 </div><span className={styles.explainBoxFont}>:Request Confirmed</span>
-                <div className={`${styles.explainBox} ${styles.dayOff}`}>
-                    A
-                </div><span className={styles.explainBoxFont}>:Day off Confirmed</span>
                 <div className={`${styles.explainBox} ${styles.edited}`}>
                     A
                 </div><span className={styles.explainBoxFont}>:Edited not save</span>
