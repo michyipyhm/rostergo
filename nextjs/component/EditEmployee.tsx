@@ -173,10 +173,10 @@ export default function EditEmployee({ id }: { id: string }) {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Joining Date</Form.Label>
+              <Form.Label>Join Date</Form.Label>
               <Form.Control
                 type="text"
-                value={formatYYYYMMDD(employee.joining_date)}
+                value={employee.join_date.substring(0,10)}
                 disabled
               />
             </Form.Group>

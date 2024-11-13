@@ -38,9 +38,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
-
-  if (!id) {
+  const {id} = await params;
+  if(!id){
     return NextResponse.json(
       { error: "Employee ID is required" },
       { status: 400 }
@@ -50,9 +49,7 @@ export async function PUT(
   try {
     const body = await request.json();
     const updatedEmployee = await employeeService.updateEmployee(
-      id,
-      body
-    );
+      id, body );
     if (!updatedEmployee) {
       return NextResponse.json(
         { error: "Employee not found" },

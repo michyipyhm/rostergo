@@ -20,7 +20,9 @@ export interface Employee {
   grade: string;
   employee_type: string;
   annual_leave: number;
-  joining_date: string;
+  status: string;
+  resign_date: string;
+  join_date: string;
   updated_at: string;
   branch_id: number;
 }

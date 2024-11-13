@@ -26,7 +26,7 @@ class EmployeeService {
         positions.type as employee_type,
         grades.annual_leave_quota as annual_leave,
         users.status as status,
-        users.created_at as joining_date,
+        users.join_date as join_date,
         users.updated_at as updated_at
       FROM users
       JOIN positions ON users.position_id = positions.id
@@ -66,8 +66,8 @@ class EmployeeService {
           positions.type as employee_type,
           grades.annual_leave_quota as annual_leave,
           users.status as status,
-          users.employment_end_date as end_date,
-          users.created_at as joining_date,
+          users.resign_date as resign_date,
+          users.join_date as join_date,
           users.updated_at as updated_at
         FROM users
         JOIN positions ON users.position_id = positions.id
