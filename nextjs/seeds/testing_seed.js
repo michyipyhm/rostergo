@@ -83,11 +83,11 @@ exports.seed = async function (knex) {
 
     await knex("leave_requests").insert([
         {
-            id: 1, user_id: 2, shift_slot_id: 1, start_date: "2024-11-28", end_date: "2024-11-01",
+            id: 1, user_id: 2, shift_slot_id: 1, start_date: "2024-11-26", end_date: "2024-11-27",
             duration: "Full day", leave_type_id: 1, status: "pending"
         },
         {
-            id: 2, user_id: 3, shift_slot_id: 2, start_date: "2024-11-29", end_date: "2024-11-02",
+            id: 2, user_id: 3, shift_slot_id: 2, start_date: "2024-11-27", end_date: "2024-11-28",
             duration: "Full day", leave_type_id: 1, status: "pending"
         },
     ]);
