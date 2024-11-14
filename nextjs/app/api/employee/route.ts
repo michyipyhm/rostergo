@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { employeeService } from "@/services/employeeService";
+import { adminEmployeeService } from "@/services/adminEmployeeService";
 
 export async function GET(request: NextRequest) {
   try {
-    const employees = await employeeService.getEmployees();
+    const token = request.headers.get('Authorization')?.split(' ')[1];
+    
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const employees = await adminEmployeeService.getEmployees(token);
     return NextResponse.json(employees);
   } catch (error) {
     console.error("Error fetching employees:", error);
