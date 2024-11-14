@@ -31,6 +31,7 @@ class AdminEmployeeService {
         grades.annual_leave_quota as annual_leave,
         users.status as status,
         users.join_date as join_date,
+        users.resign_date as resign_date,
         users.updated_at as updated_at
       FROM users
       JOIN positions ON users.position_id = positions.id
@@ -45,7 +46,7 @@ class AdminEmployeeService {
         users.id DESC
         `
       const result = await pgClient.query(sql, [payload.branch_id])
-      console.log('result:', result.rows)
+      // console.log('result:', result.rows)
 
       return result.rows
     } catch (error) {
@@ -72,6 +73,7 @@ class AdminEmployeeService {
           users.status as status,
           users.resign_date as resign_date,
           users.join_date as join_date,
+          users.resign_date as resign_date,
           users.updated_at as updated_at
         FROM users
         JOIN positions ON users.position_id = positions.id
@@ -86,17 +88,17 @@ class AdminEmployeeService {
     }
   }
 
-  async updateEmployee(id: string, updateData: {phone?: number, position?: string, status?: string}) {
+  async updateEmployee(id: string, updateData: {phone?: number, position?: string, status?: string, resign_date?:string}) {
     try {
-      const { phone, position, status } = updateData;
+      const { phone, position, status, resign_date } = updateData;
 
       if (phone) {
-        const updatePositionSql = `
+        const updatePhoneSql = `
           UPDATE users
-          SET phone = (SELECT id FROM users WHERE phone = $1)
-          WHERE phone = $2
+          SET phone = $1
+          WHERE id = $2
         `;
-        await pgClient.query(updatePositionSql, [phone, id]);
+        await pgClient.query(updatePhoneSql, [phone, id]);
       }
       
       if (position) {
@@ -109,12 +111,20 @@ class AdminEmployeeService {
       }
 
       if (status) {
-        const updatePositionSql = `
+        const updateStatusSql = `
           UPDATE users
-          SET status = (SELECT id FROM users WHERE status = $1)
-          WHERE phone = $2
+          SET status = $1
+          WHERE id = $2
         `;
-        await pgClient.query(updatePositionSql, [status, id]);
+        await pgClient.query(updateStatusSql, [status, id]);
+      }
+      if (resign_date) {
+        const updateResignSql = `
+          UPDATE users
+          SET resign_date = $1
+          WHERE id = $2
+        `;
+        await pgClient.query(updateResignSql, [resign_date, id]);
       }
 
       // Finally, fetch and return the updated employee data
