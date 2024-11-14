@@ -41,18 +41,42 @@ export interface LoginUser {
   updated_at: Date;
 }
 
-// export interface OtpUpdateResult {
-//   user: LoginUser | null;
-//   redirectToLogin: boolean;
-//   redirectToRegister: boolean;
-//   redirectToVerifyOtp: boolean;
-// }
+export interface mobileRegisterResult {
+  success: boolean;
+  message: string;
+  userId?: number;
+}
+
+export interface mobileRegisterUser {
+  id: number;
+  nickname: string;
+  password: string;
+  phone: string;
+  gender: 'male' | 'female';
+}
+
 
 export interface verifyNumberResult {
   user: LoginUser | null;
   message: string;
   redirectToLogin: boolean;
   redirectToVerifyOtp: boolean;
+}
+
+
+export interface User {
+  id: number,
+  nickname: string,
+  gender: string,
+  branch_id: number,
+  status: string,
+  positions_name: string,
+  grade_name: string,
+  position_type: string,
+  weekend_restday: boolean,
+  restday_per_week: number,
+  restday_countby: string,
+  annual_leave_quota: number,
 }
 
 export interface MonthlyShift {
@@ -112,6 +136,7 @@ export interface LeaveRequest {
 }
 
 export interface MonthlyRosterData {
+  users: User[],
   shifts: MonthlyShift[],
   shiftRequests: ShiftRequest[]
   leaveRequests: LeaveRequest[]
