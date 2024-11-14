@@ -1,15 +1,19 @@
 import { pgClient } from "@/services/pgClient";
-import { sessionStore } from "@/lib/sessionStore";
+import * as jose from 'jose';
 
-class EmployeeService {
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
+
+
+class AdminEmployeeService {
   constructor() {}
 
-  async getEmployees() {
+  async getEmployees(token: string) {
     try {
-      const session = await sessionStore.get();
-
-      if (!session.branch_id) {
-        throw new Error("Unauthorized: No branch associated with the current session");
+      // Verify and decode the JWT token
+      const { payload } = await jose.jwtVerify(token, SECRET_KEY);
+      
+      if (!payload.branch_id) {
+        throw new Error("Unauthorized: No branch associated with the current user");
       }
       
       const sql = `
@@ -40,7 +44,7 @@ class EmployeeService {
         END,
         users.id DESC
         `
-      const result = await pgClient.query(sql, [session.branch_id])
+      const result = await pgClient.query(sql, [payload.branch_id])
       console.log('result:', result.rows)
 
       return result.rows
@@ -75,7 +79,6 @@ class EmployeeService {
         WHERE users.id = $1
       `;
       const result = await pgClient.query(sql, [id]);
-      //  console.log('result:', result.rows[0])
       return result.rows[0];
     } catch (error) {
       console.log("cannot get employeeById:", error);
@@ -95,7 +98,6 @@ class EmployeeService {
         `;
         await pgClient.query(updatePositionSql, [phone, id]);
       }
-      
       
       if (position) {
         const updatePositionSql = `
@@ -123,4 +125,4 @@ class EmployeeService {
     }
   }
 }
-export const employeeService = new EmployeeService();
+export const adminEmployeeService = new AdminEmployeeService();

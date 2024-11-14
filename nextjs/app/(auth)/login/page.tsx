@@ -6,8 +6,8 @@ import { Alert } from "react-bootstrap";
 import Image from "next/image";
 
 export default function LoginPage() {
-  const [nickname, setNickname] = useState("admin");
-  const [password, setPassword] = useState("123123");
+  const [nickname, setNickname] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 

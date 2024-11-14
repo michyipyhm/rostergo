@@ -1,8 +1,8 @@
 import { pgClient } from '@/services/pgClient'
 import { checkPassword, hashPassword } from '../lib/bcrypt'
-import { sessionStore } from '@/lib/sessionStore'
 
-class LoginService {
+
+class AdminLoginService {
   constructor() {}
 
   async authenticateAdmin(nickname: string, password: string) {
@@ -35,27 +35,27 @@ class LoginService {
     }
   }
 
-  async verifySession() {
-    try {
-      const session = await sessionStore.get()
-      if (!session.id) {
-        return { success: false, message: 'No active session' }
-      }
+  // async verifySession() {
+  //   try {
+  //     const session = await sessionStore.get()
+  //     if (!session.id) {
+  //       return { success: false, message: 'No active session' }
+  //     }
 
-      const sql = 'SELECT * FROM users WHERE id = $1 AND admin = true'
-      const result = await pgClient.query(sql, [session.id])
+  //     const sql = 'SELECT * FROM users WHERE id = $1 AND admin = true'
+  //     const result = await pgClient.query(sql, [session.id])
 
-      if (result.rows.length === 0) {
-        await sessionStore.clear() 
-        return { success: false, message: 'Invalid session' }
-      }
+  //     if (result.rows.length === 0) {
+  //       await sessionStore.clear() 
+  //       return { success: false, message: 'Invalid session' }
+  //     }
 
-      return { success: true, user: result.rows[0] }
-    } catch (error) {
-      console.error('Error verifying session:', error)
-      return { success: false, message: 'An error occurred while verifying the session' }
-    }
-  }
+  //     return { success: true, user: result.rows[0] }
+  //   } catch (error) {
+  //     console.error('Error verifying session:', error)
+  //     return { success: false, message: 'An error occurred while verifying the session' }
+  //   }
+  // }
 
   async changePassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean> {
     try {
@@ -80,9 +80,6 @@ class LoginService {
       const updateSql = 'UPDATE users SET password = $1 WHERE id = $2'
       await pgClient.query(updateSql, [hashedNewPassword, userId])
 
-      // Optionally, you might want to invalidate all existing sessions for this user
-      await sessionStore.deleteAllUserSessions(userId)
-
       return true
     } catch (error) {
       console.error('Error changing password:', error)
@@ -91,5 +88,5 @@ class LoginService {
   }
 }
 
-export const loginService = new LoginService();
+export const adminLoginService = new AdminLoginService();
    

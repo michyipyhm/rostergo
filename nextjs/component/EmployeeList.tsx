@@ -4,7 +4,6 @@ import Table from 'react-bootstrap/Table';
 import styles from './EmployeeList.module.scss';
 import { Employee } from '@/services/models'
 import Link from "next/link"
-import { Button } from "react-bootstrap";
 import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
 
 
@@ -14,7 +13,17 @@ function EmployeeList() {
   useEffect(() => {
     async function fetchEmployees() {
       try {
-        const response = await fetch('/api/employee')
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No token found');
+        }
+
+        const response = await fetch('/api/employee', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -30,8 +39,7 @@ function EmployeeList() {
   
   return (
     <div className='mainContainer'> 
-   
-    
+  
     <div className={styles.manpowerTable}>
       <Table striped bordered hover className={styles.table}>
         <thead>
