@@ -6,22 +6,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
 export interface OtpResponse {
-  message: string
-  redirectToLogin: boolean
-  redirectToVerifyOtp: boolean
-  user?: any 
+  message: string;
+  redirectToLogin: boolean;
+  redirectToVerifyOtp: boolean;
+  user?: any;
 }
 
 export interface VerifyOtpResponse {
-  message: string
-  redirectToLogin: boolean
-  user?: any ;
+  message: string;
+  redirectToLogin: boolean;
+  redirectToRegister: boolean;
+  user?: any;
 }
 
 export interface RegisterResponse {
   success: boolean;
   message: string;
-  user?: any; 
+  user?: any;
 }
 
 export const storageUtil = {
@@ -47,48 +48,51 @@ export const storageUtil = {
 export async function sendOtp(phoneNumber: string): Promise<OtpResponse> {
   try {
     const response = await fetch(`${apiUrl}/api/phoneverify`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         phone: phoneNumber,
-      })
-    })
-    
+      }),
+    });
+
     if (!response.ok) {
-      throw new Error('Network response was not ok')
+      throw new Error("Network response was not ok");
     }
-    
-    return response.json()
+
+    return response.json();
   } catch (error) {
-    console.error('Error sending OTP:', error)
-    throw error
+    console.error("Error sending OTP:", error);
+    throw error;
   }
 }
 
 // Verify OTP
-export async function verifyOtp(phoneNumber: string, enteredOtp: string): Promise<VerifyOtpResponse> {
+export async function verifyOtp(
+  phoneNumber: string,
+  enteredOtp: string
+): Promise<VerifyOtpResponse> {
   try {
     const response = await fetch(`${apiUrl}/api/phoneverify`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         phone: phoneNumber,
-        otp: enteredOtp
-      })
-    })
-    
+        otp: enteredOtp,
+      }),
+    });
+
     if (!response.ok) {
-      throw new Error('Network response was not ok')
+      throw new Error("Network response was not ok");
     }
-    
-    return response.json()
+
+    return response.json();
   } catch (error) {
-    console.error('Error verifying OTP:', error)
-    throw error
+    console.error("Error verifying OTP:", error);
+    throw error;
   }
 }
 
@@ -96,25 +100,25 @@ export async function verifyOtp(phoneNumber: string, enteredOtp: string): Promis
 export async function register(userData: {
   nickname: string;
   password: string;
-  gender: 'male' | 'female';
+  gender: "male" | "female";
   phone: string;
 }): Promise<RegisterResponse> {
   try {
     const response = await fetch(`${apiUrl}/api/mobileregister`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(userData)
+      body: JSON.stringify(userData),
     });
-    
+
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error("Network response was not ok");
     }
-    
+
     return response.json();
   } catch (error) {
-    console.error('Error during registration:', error);
+    console.error("Error during registration:", error);
     throw error;
   }
 }
@@ -155,7 +159,7 @@ export async function login(nickname: string, password: string): Promise<any> {
     const res = await fetch(apiUrl + '/api/userLogin', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         nickname: nickname,
@@ -184,7 +188,3 @@ export async function login(nickname: string, password: string): Promise<any> {
     throw error;
   }
 }
-
-
-
-

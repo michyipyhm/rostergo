@@ -135,7 +135,7 @@ export async function handleVerifyOtp(req: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
       message: "OTP verified successfully",
-      redirectToLogin: true,
+      redirectToRegister: true,
       user: verifiedUser,
     });
   } catch (error) {
