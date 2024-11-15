@@ -31,7 +31,7 @@ export default function LeaveRequestList() {
       </View>
     );
   }
-  // console.log(data)
+  console.log(data)
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Leave Request List</Text>
@@ -42,25 +42,31 @@ export default function LeaveRequestList() {
       </View>
 
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id.toString()} // Assuming each leave request has a unique id
-        renderItem={({ item }) => {
-          console.log(item);
-          const startDate = item.start_date;
-          const endDate = item.end_date;
-          const leaveType = item.leave_type;
-          const status = item.status;
+  data={data}
+  keyExtractor={(item) => item.id.toString()} // Assuming each leave request has a unique id
+  renderItem={({ item }) => {
+    console.log(item);
+    // 假设 start_date 和 end_date 是字符串格式的日期
+    const startDate = new Date(item.start_date);
+    const endDate = new Date(item.end_date);
+    
+    // 格式化为 YYYY-MM-DD
+    const formattedStartDate = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`;
+    const formattedEndDate = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
 
-          return (
-            <View style={styles.row}>
-              123
-              <Text style={styles.item}>{`${startDate} - ${endDate}`}</Text>
-              <Text style={styles.item}>{leaveType}</Text>
-              <Text style={styles.item}>{status}</Text>
-            </View>
-          );
-        }}
-      />
+    const leaveType = item.leave_type_name;
+    const status = item.status;
+
+    return (
+      <View style={styles.row}>
+        <Text style={styles.item}>{`${formattedStartDate} - ${formattedEndDate}`}</Text>
+        <Text style={styles.item}>{leaveType}</Text>
+        <Text style={styles.item}>{status}</Text>
+      </View>
+    );
+  }}
+/>
+
 
       <TouchableOpacity
         style={styles.roundButton}

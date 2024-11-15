@@ -1,22 +1,26 @@
 
 import { pgClient } from '@/services/pgClient'
 import { checkPassword, hashPassword } from '../lib/bcrypt'
-import { sessionStore } from '@/lib/sessionStore'
 
 class LoginService {
   constructor() {}
 
   async authenticateUser(nickname: string, password: string) {
     try {
-      const sql = `SELECT * from users where nickname = $1`
+      const sql = `SELECT *, from users where nickname = $1
+      
+      JOIN positions ON users.position_id = positions.id
+      WHERE users.nickname = $1
+
+        `
       const result = await pgClient.query(sql, [nickname])
 
       if (result.rows.length === 0) {
-        return { success: false, message: 'No such admin'}
+        return { success: false, message: 'No such user'}
       }
 
-      const admin = result.rows[0]
-      const isPasswordValid =  await checkPassword(password, admin.password)
+      const user = result.rows[0]
+      const isPasswordValid =  await checkPassword(password, user.password)
 
       if (!isPasswordValid)
         return {success: false, message: 'Invalid password'}
@@ -24,10 +28,11 @@ class LoginService {
       return {
         success: true,
         admin: {
-          id: admin.id,
-          nickname: admin.nickname,
-          admin: admin.admin,
-          branch_id: admin.branch_id,
+          id: user.id,
+          nickname: user.nickname,
+          admin: user.admin,
+          branch_id: user.branch_id,
+
         }
       }
     } catch (error) {

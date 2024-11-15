@@ -91,7 +91,7 @@ exports.seed = async function (knex) {
     await knex("shift_requests").insert([
         { id: 1, user_id: 4, date: "2024-11-28", shift_slot_id: 3, status: "pending" },
         { id: 2, user_id: 4, date: "2024-11-29", shift_slot_id: 2, status: "pending" },
-        { id: 3, user_id: 5, date: "2024-11 ,. -28", shift_slot_id: 1, status: "pending" },
+        { id: 3, user_id: 5, date: "2024-11-28", shift_slot_id: 1, status: "pending" },
         { id: 4, user_id: 5, date: "2024-11-29", shift_slot_id: 4, status: "pending" },
     ]);
 

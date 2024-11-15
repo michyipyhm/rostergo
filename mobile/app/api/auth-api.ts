@@ -40,6 +40,32 @@ export async function login(): Promise<any> {
   }
 }
 
+export async function userlogin(): Promise<any> {
+  try {
+    const res = await fetch(apiUrl + '/api/userLogin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "nickname": "admin",
+        "password": "123123"
+      })
+    })
+    
+    if (!res.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await res.json()
+    localStorage.setItem('token', data.token)
+    console.log(data)
+    return data
+  } catch (error) {
+    console.error('Error sending OTP:', error)
+    throw error
+  }
+}
+
 // Send OTP (Verify Phone Number)
 export async function sendOtp(phoneNumber: string): Promise<OtpResponse> {
   try {

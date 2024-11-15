@@ -1,27 +1,33 @@
 import { getLeaveRequestlistByUserId } from '@/services/leaveRequests';
 import { NextResponse, NextRequest } from 'next/server';
+import { verifyToken } from 'path/to/jwt/utility';
+
 
 export async function GET(req: NextRequest) {
-  // Retrieve the user payload from the query parameters
-  const userPayload = req.nextUrl.searchParams.get("user");
-  console.log(req.nextUrl.searchParams.get("user"))
-  const userId = 2
-
-  const data = await getLeaveRequestlistByUserId(userId);
-
-//   // Parse the user payload from JSON string to object
-//   let parsedUserPayload = null;
-//   if (userPayload) {
-//     try {
-//       parsedUserPayload = JSON.parse(userPayload);
-//     } catch (error) {
-//       console.error('Error parsing user payload:', error);
-//       return NextResponse.json({ error: 'Invalid user payload' }, { status: 400 });
-//     }
-//   }
-
-//   console.log(parsedUserPayload);
+    const authHeader = req.headers.get('Authorization');
+    let userId;
   
-  // Return the response with the user payload
-  return NextResponse.json({ data, userPayload });
-}
+    if (authHeader) {
+   
+      const token = authHeader.split(' ')[1]; 
+      try {
+        
+        const decoded = verifyToken(token);
+        userId = decoded.userId; 
+      } catch (error) {
+        return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      }
+    }
+  
+    if (!userId) {
+      
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  
+    const userPayload = req.nextUrl.searchParams.get("user");
+    console.log(userPayload);
+  
+    const data = await getLeaveRequestlistByUserId(userId);
+  
+    return NextResponse.json({ data, userPayload });
+  }
