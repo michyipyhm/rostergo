@@ -30,7 +30,8 @@ export default function RegisterScreen() {
       phone: phoneNumber,
     }),
     onSuccess: (data) => {
-      if (data.success) {
+      console.log("register result*****", data);
+      if (data) {
         Alert.alert('Success', data.message, [
           { text: 'OK', onPress: () => router.push('/login') }
         ]);

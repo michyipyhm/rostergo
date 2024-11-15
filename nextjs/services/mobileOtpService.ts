@@ -109,8 +109,8 @@ export async function verifyOtp(
 ): Promise<LoginUser | null> {
   try {
     const verifyQuery = `
-      SELECT id FROM users
-      WHERE phone = $1 AND otp = $2
+     SELECT id, phone FROM users
+WHERE phone = $1 AND otp = $2
     `;
     const verifyResult = await pgClient.query(verifyQuery, [phone, otp]);
 

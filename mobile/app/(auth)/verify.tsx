@@ -48,10 +48,11 @@ export default function VerifyScreen() {
   const verifyOtpMutation = useMutation<VerifyOtpResponse, Error, { phoneNumber: string; otp: string }>({
     mutationFn: ({ phoneNumber, otp }) => verifyOtp(phoneNumber, otp),
     onSuccess: (data) => {
-        if (data.redirectToLogin) {
+      console.log("after verifyOtpMutation", data);
+        if (data.redirectToRegister) {
           setVerified(true);
           Alert.alert('Success', 'OTP verified successfully!', [
-            { text: 'OK', onPress: () => router.push('/login') }
+            { text: 'OK', onPress: () => router.push('/register') }
           ]);
         }
       },
