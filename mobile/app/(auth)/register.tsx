@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../store/auth';
 import { useMutation } from '@tanstack/react-query';
+import { register } from '../api/auth-api';
 
 interface RegisterData {
   nickname: string;
@@ -15,10 +16,31 @@ export default function RegisterScreen() {
   const router = useRouter();
   const { phoneNumber } = useAuthStore();
   const [formData, setFormData] = useState<RegisterData>({
-    nickname: '',
-    password: '',
-    confirmPassword: '',
+    nickname: 'michaelyip',
+    password: '123456',
+    confirmPassword: '123456',
     gender: 'male',
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: (data: RegisterData) => register({
+      nickname: data.nickname,
+      password: data.password,
+      gender: data.gender,
+      phone: phoneNumber,
+    }),
+    onSuccess: (data) => {
+      if (data.success) {
+        Alert.alert('Success', data.message, [
+          { text: 'OK', onPress: () => router.push('/login') }
+        ]);
+      } else {
+        Alert.alert('Error', data.message);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Error', 'Registration failed. Please try again.');
+    },
   });
 
   const handleRegister = () => {
@@ -36,8 +58,7 @@ export default function RegisterScreen() {
       return;
     }
 
-    // Navigate to login after successful registration
-    router.push('/login');
+    registerMutation.mutate(formData);
   };
 
   return (

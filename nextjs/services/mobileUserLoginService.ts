@@ -19,24 +19,22 @@ class LoginService {
         return { success: false, message: 'No such user'}
       }
 
-      const user = result.rows[0]
-      const isPasswordValid =  await checkPassword(password, user.password)
+      const userData = result.rows[0]
+      const isPasswordValid =  await checkPassword(password, userData.password)
 
       if (!isPasswordValid)
         return {success: false, message: 'Invalid password'}
 
       return {
         success: true,
-        admin: {
-          id: user.id,
-          nickname: user.nickname,
-          admin: user.admin,
-          branch_id: user.branch_id,
-
+        user: {
+          id: userData.id,
+          nickname: userData.nickname,
+         
         }
       }
     } catch (error) {
-      console.error('Error during admin authentication:', error)
+      console.error('Error during user authentication:', error)
       return { success: false, message: 'An error occurred during authentication' }
     }
   }
