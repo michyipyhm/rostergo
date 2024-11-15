@@ -1,7 +1,6 @@
 
 import { pgClient } from '@/services/pgClient'
 import { checkPassword, hashPassword } from '../lib/bcrypt'
-import { sessionStore } from '@/lib/sessionStore'
 
 class LoginService {
   constructor() {}
@@ -12,26 +11,25 @@ class LoginService {
       const result = await pgClient.query(sql, [nickname])
 
       if (result.rows.length === 0) {
-        return { success: false, message: 'No such admin'}
+        return { success: false, message: 'No such user'}
       }
 
-      const admin = result.rows[0]
-      const isPasswordValid =  await checkPassword(password, admin.password)
+      const userData = result.rows[0]
+      const isPasswordValid =  await checkPassword(password, userData.password)
 
       if (!isPasswordValid)
         return {success: false, message: 'Invalid password'}
 
       return {
         success: true,
-        admin: {
-          id: admin.id,
-          nickname: admin.nickname,
-          admin: admin.admin,
-          branch_id: admin.branch_id,
+        user: {
+          id: userData.id,
+          nickname: userData.nickname,
+         
         }
       }
     } catch (error) {
-      console.error('Error during admin authentication:', error)
+      console.error('Error during user authentication:', error)
       return { success: false, message: 'An error occurred during authentication' }
     }
   }

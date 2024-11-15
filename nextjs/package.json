@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "data":"knex migrate:rollback && knex migrate:latest && knex seed:run"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",

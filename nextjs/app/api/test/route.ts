@@ -1,11 +1,7 @@
 import { getAllUsers } from "@/services/testService";
 
 export async function GET() {
+  let users = await getAllUsers();
 
-
-    let users = await getAllUsers();
-
-
-    return Response.json({ users })
-
+  return Response.json({ users });
 }
