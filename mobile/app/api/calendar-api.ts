@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { storageUtil } from './auth-api';
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
@@ -11,20 +12,10 @@ export interface Shift {
   nickname: string;
 }
 
-// Helper function to get the token
-async function getToken(): Promise<string | null> {
-  try {
-    return await SecureStore.getItemAsync('token');
-  } catch (error) {
-    console.error('Error retrieving token:', error);
-    return null;
-  }
-}
-
 // Get User Shifts
 export async function getUserShifts(): Promise<Shift[]> {
   try {
-    const token = await getToken();
+    const token = await storageUtil.getItem('token');
     if (!token) {
       throw new Error('No token found');
     }

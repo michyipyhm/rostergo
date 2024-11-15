@@ -19,7 +19,7 @@ const isRouteWithoutMiddleware = (path: string) => {
 // Middleware function
 export async function middleware(request: NextRequest) {
   const res = NextResponse.next();
-  
+  console.log(request.method)
   // Set CORS headers
   res.headers.append("Access-Control-Allow-Credentials", "true");
   res.headers.append("Access-Control-Allow-Origin", "*"); // Replace with your actual origin
