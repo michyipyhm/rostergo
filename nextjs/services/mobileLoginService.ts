@@ -2,40 +2,54 @@
 import { pgClient } from '@/services/pgClient'
 import { checkPassword, hashPassword } from '../lib/bcrypt'
 
-class LoginService {
+class MobileLoginService {
   constructor() {}
 
   async authenticateUser(nickname: string, password: string) {
     try {
-      const sql = `SELECT *, from users where nickname = $1
-      
-      JOIN positions ON users.position_id = positions.id
-      WHERE users.nickname = $1
-
-        `
-      const result = await pgClient.query(sql, [nickname])
-
+      // SQL query to fetch user data based on nickname
+      const sql = `
+        SELECT 
+          users.id,
+          users.nickname, 
+          users.admin, 
+          positions.type,
+          users.password  -- Ensure to select the password hash for validation
+        FROM users
+        JOIN positions ON users.position_id = positions.id
+        WHERE users.nickname = $1 AND admin = false
+      `;
+  
+      // Execute the query
+      const result = await pgClient.query(sql, [nickname]);
+  
+      // Check if the user exists
       if (result.rows.length === 0) {
-        return { success: false, message: 'No such user'}
+        return { success: false, message: 'No such user' };
       }
-
-      const userData = result.rows[0]
-      const isPasswordValid =  await checkPassword(password, userData.password)
-
-      if (!isPasswordValid)
-        return {success: false, message: 'Invalid password'}
-
+  
+      const userData = result.rows[0];
+  
+      // Validate the password
+      const isPasswordValid = await checkPassword(password, userData.password);
+  
+      if (!isPasswordValid) {
+        return { success: false, message: 'Invalid password' };
+      }
+  
+      // Return user data upon successful authentication
       return {
         success: true,
         user: {
           id: userData.id,
           nickname: userData.nickname,
-         
-        }
-      }
+          admin: userData.admin,
+          type: userData.type,
+        },
+      };
     } catch (error) {
-      console.error('Error during user authentication:', error)
-      return { success: false, message: 'An error occurred during authentication' }
+      console.error('Error during user authentication:', error);
+      return { success: false, message: 'An error occurred during authentication' };
     }
   }
 
@@ -73,5 +87,5 @@ class LoginService {
 //   }
 }
 
-export const loginService = new LoginService();
+export const mobileLoginService = new MobileLoginService();
    

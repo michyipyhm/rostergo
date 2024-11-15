@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminLoginService } from "@/services/adminLoginService";
-// import jwt from "jsonwebtoken";
 import * as jose from 'jose'
 
 const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
