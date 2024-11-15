@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
@@ -14,9 +14,9 @@ export interface Shift {
 // Helper function to get the token
 async function getToken(): Promise<string | null> {
   try {
-    return await SecureStore.getItemAsync('token');
+    return await SecureStore.getItemAsync("token");
   } catch (error) {
-    console.error('Error retrieving token:', error);
+    console.error("Error retrieving token:", error);
     return null;
   }
 }
@@ -26,24 +26,24 @@ export async function getUserShifts(): Promise<Shift[]> {
   try {
     const token = await getToken();
     if (!token) {
-      throw new Error('No token found');
+      throw new Error("No token found");
     }
 
     const response = await fetch(`${apiUrl}/api/mobilecalendarpage`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
 
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error("Network response was not ok");
     }
 
     return response.json();
   } catch (error) {
-    console.error('Error fetching user shifts:', error);
+    console.error("Error fetching user shifts:", error);
     throw error;
   }
 }
