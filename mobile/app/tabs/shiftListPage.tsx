@@ -5,7 +5,7 @@ import { FlatList } from 'react-native-gesture-handler';
 
 
 
-export default function LeaveRequestList (leaveRequests: any) {
+export default function ShiftListPage () {
   return (
     <View>
       
@@ -18,7 +18,6 @@ export default function LeaveRequestList (leaveRequests: any) {
       <View style={styles.headerRow}>
         <Text style={styles.headerItem}>Date:</Text>
         <Text style={styles.headerItem}>Shift Slot:</Text>
-        <Text style={styles.headerItem}>Status:</Text>
       </View>
 
       <FlatList
