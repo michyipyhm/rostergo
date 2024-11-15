@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, Button, TextInput } from 'react-native';
-import { useRouter } from 'expo-router';
-import { login } from '../api/auth-api';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Button,
+  TextInput,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { login } from "../api/auth-api";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -10,19 +19,18 @@ export default function LoginScreen() {
   const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
   const handleLogin = async () => {
-    console.log(apiUrl)
+    console.log(apiUrl);
     // Here you would typically handle the login logic
-
 
     if (nickname && password) {
       const data = await login(nickname, password);
-      console.log(data)
+      console.log(data);
       // router.push('calendar');
-      router.push('calendar');
+      router.push("calendar");
 
-      Alert.alert('Login Successful', `Welcome, ${data}!`);
+      Alert.alert("Login Successful", `Welcome, ${data}!`);
     } else {
-      Alert.alert('Error', 'Please enter both username and password.');
+      Alert.alert("Error", "Please enter both username and password.");
     }
   };
 
@@ -50,15 +58,15 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a1321',
-    justifyContent: 'space-between',
+    backgroundColor: "#0a1321",
+    justifyContent: "space-between",
     padding: 20,
     paddingBottom: 120,
   },
   logoContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   logo: {
     width: 300,
@@ -66,28 +74,28 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   loginButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     paddingVertical: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   loginButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   title: {
     fontSize: 24,
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     marginBottom: 16,
     paddingHorizontal: 8,
-    color: '#fff',
+    color: "#fff",
   },
 });
 
@@ -150,5 +158,3 @@ const styles = StyleSheet.create({
 //     fontWeight: '600',
 //   },
 // });
-
-

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as jose from 'jose';
+import * as jose from "jose";
 
 const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY); // Ensure your secret key is set in environment variables
 
@@ -11,7 +11,6 @@ const isRouteWithoutMiddleware = (path: string) => {
     "/api/userLogin",
     "/_next/static",
     "/favicon.ico",
-
   ];
   return excludedPrefixes.some((prefix) => path.startsWith(prefix));
 };
@@ -19,12 +18,18 @@ const isRouteWithoutMiddleware = (path: string) => {
 // Middleware function
 export async function middleware(request: NextRequest) {
   const res = NextResponse.next();
-  
+  console.log(request.method);
   // Set CORS headers
   res.headers.append("Access-Control-Allow-Credentials", "true");
   res.headers.append("Access-Control-Allow-Origin", "*"); // Replace with your actual origin
-  res.headers.append("Access-Control-Allow-Methods", "GET, DELETE, PATCH, POST, PUT");
-  res.headers.append("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Content-Type");
+  res.headers.append(
+    "Access-Control-Allow-Methods",
+    "GET, DELETE, PATCH, POST, PUT"
+  );
+  res.headers.append(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Content-Type, Authorization"
+  );
 
   // Handle preflight requests
   if (request.method === "OPTIONS") {
@@ -54,7 +59,7 @@ export async function middleware(request: NextRequest) {
   try {
     // Verify the token
     const { payload } = await jose.jwtVerify(token, SECRET_KEY);
-    
+
     // Log the decoded payload for debugging
     // console.log({ payload });
     const userId = payload.id.toString();
@@ -68,7 +73,10 @@ export async function middleware(request: NextRequest) {
     });
   } catch (err) {
     console.error("Token verification failed:", err);
-    return NextResponse.json({ message: "Invalid token", error: err.message }, { status: 401 });
+    return NextResponse.json(
+      { message: "Invalid token", error: err.message },
+      { status: 401 }
+    );
   }
 }
 

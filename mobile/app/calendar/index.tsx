@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated, TouchableOpacity, ActivityIndicator }
 import { Calendar, DateData } from 'react-native-calendars';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getUserShifts, Shift } from '../api/calendar-api';
+import { useQuery } from '@tanstack/react-query';
 
 const useSlideAnimation = (initialValue: number) => {
   const slideAnim = useRef(new Animated.Value(initialValue)).current;
@@ -28,25 +29,25 @@ const useSlideAnimation = (initialValue: number) => {
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState("");
-  const [shifts, setShifts] = useState<Shift[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [shifts, setShifts] = useState<Shift[]>([]);
+  // const [loading, setLoading] = useState(true);
   const { slideAnim, slideIn, slideOut } = useSlideAnimation(400);
+  const { data:shifts, isLoading, error } = useQuery({
+    queryKey: ["getUserShifts"],
+    queryFn: getUserShifts,
+  });
 
-  useEffect(() => {
-    fetchShifts();
-  }, []);
-
-  const fetchShifts = async () => {
-    try {
-      const fetchedShifts = await getUserShifts();
-      setShifts(fetchedShifts);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching shifts:', error);
-      setLoading(false);
-      // You might want to add some error handling UI here
-    }
-  };
+  // const fetchShifts = async () => {
+  //   try {
+  //     const fetchedShifts = await getUserShifts();
+  //     setShifts(fetchedShifts);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error('Error fetching shifts:', error);
+  //     setLoading(false);
+  //     // You might want to add some error handling UI here
+  //   }
+  // };
 
   const handleDayPress = useCallback((day: DateData) => {
     setSelectedDate(day.dateString);
@@ -68,7 +69,7 @@ export default function HomeScreen() {
     return shifts.filter((shift) => shift.date === selectedDate);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />

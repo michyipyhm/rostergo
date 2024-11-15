@@ -35,7 +35,7 @@ export async function getLeaveRequestDetailByUserId(
   const query = `
     SELECT 
       lr.*, 
-      u.id AS user_id, u.name AS user_name,
+      u.id AS user_id, u.nickname AS user_name,
       lt.id AS leave_type_id, lt.name AS leave_type_name
     FROM leave_requests lr
     JOIN users u ON lr.user_id = u.id
