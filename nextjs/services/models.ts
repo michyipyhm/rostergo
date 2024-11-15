@@ -21,8 +21,8 @@ export interface Employee {
   employee_type: string;
   annual_leave: number;
   status: string;
-  resign_date: string;
   join_date: string;
+  resign_date: string;
   updated_at: string;
   branch_id: number;
 }

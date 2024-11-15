@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Employee } from '@/services/models';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 import styles from './EditEmployee.module.scss';
-import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
+import { formatYYYYMMDD } from '@/lib/dateFormatters'
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 
 export default function EditEmployee({ id }: { id: string }) {
@@ -20,21 +22,14 @@ export default function EditEmployee({ id }: { id: string }) {
       try {
         setIsLoading(true)
         setError(null)
-        // console.log('Fetching employee with ID:', id)
-        
+ 
         const response = await fetch(`/api/employee/${id}`)
-        // console.log('Response status:', response.status)
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         
         const data = await response.json()
-        // console.log('Received employee data:', data)
-        
-        // if (!data) {
-        //   throw new Error('No data received')
-        // }
         
         setEmployee(data)
       } catch (err) {
@@ -57,15 +52,18 @@ export default function EditEmployee({ id }: { id: string }) {
     setError(null)
 
     try {
+      // const token = localStorage.getItem('token')
       const response = await fetch(`/api/employee/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
+          phone: employee.phone,
           position: employee.position,
-          grade: employee.grade,
-          employee_type: employee.employee_type,
+          status: employee.status,
+          resign_date: employee.resign_date
         }),
       })
 
@@ -83,6 +81,20 @@ export default function EditEmployee({ id }: { id: string }) {
       setIsSaving(false)
     }
   }
+
+  const handleResignDateChange = (date: Date | null) => {
+    if (employee) {
+      setEmployee({
+        ...employee,
+        resign_date: date ? formatYYYYMMDD(date.toISOString()) : null
+      });
+    }
+  };
+
+  const isResignDateEditable = () => {
+    return !employee?.resign_date || employee.resign_date === '1970-01-01';
+  };
+
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>
@@ -176,12 +188,32 @@ export default function EditEmployee({ id }: { id: string }) {
               <Form.Label>Join Date</Form.Label>
               <Form.Control
                 type="text"
-                value={employee.join_date.substring(0,10)}
+                value={formatYYYYMMDD(employee.join_date)}
                 disabled
               />
             </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Resign Date</Form.Label>
+              {isResignDateEditable() ? (
+            <DatePicker
+              selected={employee.resign_date && employee.resign_date !== '1970-01-01' ? new Date(employee.resign_date) : null}
+              onChange={handleResignDateChange}
+              dateFormat="yyyy-MM-dd"
+              className="form-control"
+            />
+          ) : (
+              <Form.Control
+                type="text"
+                value={formatYYYYMMDD(employee.resign_date)}
+                disabled
+              />
+          )}
+            </Form.Group>
           </Col>
         </Row>
+
+        
 
         <div className={styles.buttonGroup}>
           <Button variant="danger" className="me-2">

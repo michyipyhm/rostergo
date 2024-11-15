@@ -36,6 +36,11 @@ function EmployeeList() {
       fetchEmployees()
    }, []);
 
+   const formatResignDate = (date: string | null) => {
+    if (!date || date === '1970-01-01') return '-';
+    return formatYYYYMMDD(date);
+  };
+
   
   return (
     <div className='mainContainer'> 
@@ -54,6 +59,7 @@ function EmployeeList() {
           <th>AL</th>
           <th>Status</th>
           <th>Join Date</th>
+          <th>Resign Date</th>
           <th>Updated At</th>
         </tr>
        </thead>
@@ -69,7 +75,8 @@ function EmployeeList() {
             <td>{employee.employee_type}</td>
             <td>{employee.annual_leave}</td>
             <td>{employee.status}</td>
-            <td>{employee.join_date.substring(0,10)}</td>
+            <td>{formatYYYYMMDD(employee.join_date)}</td>
+            <td>{formatResignDate(employee.resign_date)}</td>
             <td>{formatYYYYMMDDHHMM(employee.updated_at)}</td>
             <td><Link 
                   href={`/employee/edit?id=${employee.id}`}
