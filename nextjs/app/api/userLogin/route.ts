@@ -1,69 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loginService } from "@/services/loginService";
-import jwt from "jsonwebtoken";
+import { mobileLoginService } from "@/services/mobileLoginService";
+import * as jose from 'jose'
 
-const KEY = process.env.JWT_KEY;
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
 
 async function generateJWT(payload: any) {
-  return new Promise((resolve, reject) => {
-    jwt.sign(
-      payload,
-      KEY,
-      {
-        expiresIn: 31556926, // 1 year in seconds
-      },
-      (err, token) => {
-        console.log("err: ", err);
-        console.log("token: ", token);
-        if (err) {
-          reject(err);
-        }
-        resolve(token);
-      }
-    );
-  });
-}
-export async function POST(request: NextRequest) {
-  const { nickname, password } = await request.json();
-  console.log("KEY: ", KEY);
-  try {
-    if (!nickname || !password) {
-      return NextResponse.json(
-        { message: "nickname and password are required" },
-        { status: 400 }
-      );
-    }
-
-    /////need to change service to return user object
-    const result = await loginService.authenticateUser(nickname, password);
-    if (result.success && result.admin) {
-      /* Sign token */
-      const payload = {
-        id: result.admin.id,
-        nickname: result.admin.nickname,
-        admin: result.admin.admin,
-        branch_id: result.admin.branch_id,
-      };
-
-      const token = await generateJWT(payload);
-      console.log("TOKEN: ", token);
-      return NextResponse.json(
-        { message: "Login successful", token },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json({ message: result.message }, { status: 401 });
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { message: "An error occurred during login" },
-      { status: 500 }
-    );
+  return await new jose.SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('6h')
+    .sign(SECRET_KEY);
   }
-}
 
-// export async function DELETE() {
-//   await sessionStore.clear()
-//   return NextResponse.json({ success: true })
-// }
+  export async function POST(request: NextRequest) {
+    try {
+      // Parse the request body
+      const { nickname, password } = await request.json();
+  
+      // Validate input
+      if (!nickname || !password) {
+        return NextResponse.json(
+          { message: "Nickname and password are required" },
+          { status: 400 }
+        );
+      }
+  
+      // Authenticate user
+      const result = await mobileLoginService.authenticateUser(nickname, password);
+  
+      // Check for successful authentication
+      if (result.success && result.user) {
+        // Create JWT payload
+        const payload = {
+          id: result.user.id,
+          nickname: result.user.nickname,
+          admin: result.user.admin,
+          type: result.user.type,
+        };
+  
+        // Generate JWT token
+        const token = await generateJWT(payload);
+        console.log("TOKEN:", token);
+  
+        return NextResponse.json(
+          { message: "Login successful", token },
+          { status: 200 }
+        );
+      } else {
+        return NextResponse.json(
+          { message: result.message || "Invalid credentials" },
+          { status: 401 }
+        );
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      return NextResponse.json(
+        { message: "An error occurred during authentication" },
+        { status: 500 }
+      );
+    }
+  }

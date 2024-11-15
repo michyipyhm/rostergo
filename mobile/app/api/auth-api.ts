@@ -1,4 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // import { API_URL } from '@/config'
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
@@ -21,6 +23,25 @@ export interface RegisterResponse {
   message: string;
   user?: any; 
 }
+
+export const storageUtil = {
+  setItem: async (key: string, value: string) => {
+    if (Platform.OS === 'web') { // web
+      await AsyncStorage.setItem(key, value);
+    } else { // mobile
+      await SecureStore.setItemAsync(key, value.toString());
+    }
+  },
+  
+  getItem: async (key: string) => {
+    if (Platform.OS === 'web') { // web
+      return await AsyncStorage.getItem(key);
+    } else { // mobile
+      return await SecureStore.getItemAsync(key);
+    }
+  }
+};
+
 
 // Send OTP (Verify Phone Number)
 export async function sendOtp(phoneNumber: string): Promise<OtpResponse> {
@@ -129,16 +150,16 @@ export async function register(userData: {
 
 
 
-export async function login(): Promise<any> {
+export async function login(nickname: string, password: string): Promise<any> {
   try {
-    const res = await fetch(apiUrl + '/api/login', {
+    const res = await fetch(apiUrl + '/api/userLogin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        "nickname": "",
-        "password": ""
+        nickname: nickname,
+        password: password
       })
     });
     
@@ -147,16 +168,16 @@ export async function login(): Promise<any> {
     }
 
     const data = await res.json();
-
+    const token = data.token
+    // console.log(token)
     // Store the token using SecureStore instead of localStorage
     try {
-      await SecureStore.setItemAsync('token', data.token);
+      await storageUtil.setItem('token', token);
+      console.log('Token saved successfully.');
     } catch (secureStoreError) {
       console.error('Error storing token in SecureStore:', secureStoreError);
       // You might want to handle this error differently depending on your app's requirements
     }
-
-    console.log(data);
     return data;
   } catch (error) {
     console.error('Error during login:', error);

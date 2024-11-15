@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo/cli": "^0.18.30",
     "@marceloterreiro/flash-calendar": "^1.2.0",
+    "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-community/cli-server-api": "^15.1.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",

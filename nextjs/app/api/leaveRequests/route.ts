@@ -1,35 +1,35 @@
-import { getLeaveRequestlistByUserId } from '@/services/leaveRequests';
-import { NextResponse, NextRequest } from 'next/server';
+import { getLeaveRequestlistByUserId } from "@/services/leaveRequests";
+import { NextResponse, NextRequest } from "next/server";
 
-import { jwtVerify } from 'jose';
+export async function GET(req: NextRequest) {
+  // Retrieve userId from request headers and parse it
+  const userIdParam = req.headers.get("userId");
+  const userId = parseInt(userIdParam);
 
-const SECRET_KEY = new TextEncoder().encode('your-secret-key'); // 替换为你的密钥
+  // Validate userId
+  if (isNaN(userId)) {
+    return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
+  }
 
-export async function GET(req) {
-  const authHeader = req.headers.get('Authorization');
-  let userId;
+  try {
+    // Fetch leave request list by userId
+    const data = await getLeaveRequestlistByUserId(userId);
 
-  if (authHeader) {
-    const token = authHeader.split(' ')[1]; // 提取 Bearer token
-
-    try {
-      // 使用 jose 验证 token
-      const { payload } = await jwtVerify(token, SECRET_KEY);
-      userId = payload.userId; // 假设你在 token 的 payload 中存储了 userId
-    } catch (error) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    // Check if data was found
+    if (!data) {
+      return NextResponse.json(
+        { error: "No data found for the specified userId" },
+        { status: 404 }
+      );
     }
+
+    // Return the fetched data
+    return NextResponse.json({ data });
+  } catch (error) {
+    console.error("Error fetching leave requests:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
-
-  if (!userId) {
-    // 如果未找到用户 ID，返回未授权
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const userPayload = req.nextUrl.searchParams.get("user");
-  console.log(userPayload);
-
-  const data = await getLeaveRequestlistByUserId(userId);
-
-  return NextResponse.json({ data, userPayload });
 }

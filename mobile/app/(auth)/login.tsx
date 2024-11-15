@@ -5,8 +5,8 @@ import { login } from '../api/auth-api';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [username, setUsername] = useState('ft1');
-  const [password, setPassword] = useState('123123');
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
   const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
   const handleLogin = async () => {
@@ -14,11 +14,11 @@ export default function LoginScreen() {
     // Here you would typically handle the login logic
 
 
-    if (username && password) {
-      const data = await login();
+    if (nickname && password) {
+      const data = await login(nickname, password);
       console.log(data)
       // router.push('calendar');
-      router.push('tabs/leaveRequestList');
+      router.push('calendar');
 
       Alert.alert('Login Successful', `Welcome, ${data}!`);
     } else {
@@ -31,9 +31,9 @@ export default function LoginScreen() {
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Nickname"
+        value={nickname}
+        onChangeText={setNickname}
       />
       <TextInput
         style={styles.input}
