@@ -14,8 +14,8 @@ import { login } from "../api/auth-api";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [nickname, setNickname] = useState("ft1");
-  const [password, setPassword] = useState("123123");
+  const [nickname, setNickname] = useState('ft1');
+  const [password, setPassword] = useState('123123');
   const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
   const handleLogin = async () => {
