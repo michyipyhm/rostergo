@@ -1,31 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loginService } from "@/services/loginService";
-import jwt from "jsonwebtoken";
+import { adminLoginService } from "@/services/adminLoginService";
+// import jwt from "jsonwebtoken";
+import * as jose from 'jose'
 
-const KEY = process.env.JWT_KEY;
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
 
 async function generateJWT(payload: any) {
-  return new Promise((resolve, reject) => {
-    jwt.sign(
-      payload,
-      KEY,
-      {
-        expiresIn: 31556926, // 1 year in seconds
-      },
-      (err, token) => {
-        console.log("err: ", err);
-        console.log("token: ", token);
-        if (err) {
-          reject(err);
-        }
-        resolve(token);
-      }
-    );
-  });
-}
+  return await new jose.SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('6h')
+    .sign(SECRET_KEY);
+  }
+
+  // return new Promise((resolve, reject) => {
+  //   jwt.sign(
+  //     payload,
+  //     KEY,
+  //     {
+  //       expiresIn: 31556926, // 1 year in seconds
+  //     },
+  //     (err, token) => {
+  //       console.log("err: ", err);
+  //       console.log("token: ", token);
+  //       if (err) {
+  //         reject(err);
+  //       }
+  //       resolve(token);
+  //     }
+  //   );
+  // });
+
 export async function POST(request: NextRequest) {
   const { nickname, password } = await request.json();
-  console.log("KEY: ", KEY);
+  console.log("KEY: ", SECRET_KEY);
   try {
     if (!nickname || !password) {
       return NextResponse.json(
@@ -34,7 +42,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await loginService.authenticateAdmin(nickname, password);
+    const result = await adminLoginService.authenticateAdmin(nickname, password);
     if (result.success && result.admin) {
       /* Sign token */
       const payload = {
@@ -61,8 +69,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-// export async function DELETE() {
-//   await sessionStore.clear()
-//   return NextResponse.json({ success: true })
-// }

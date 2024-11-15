@@ -1,15 +1,19 @@
 import { pgClient } from "@/services/pgClient";
-import { sessionStore } from "@/lib/sessionStore";
+import * as jose from 'jose';
 
-class EmployeeService {
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
+
+
+class AdminEmployeeService {
   constructor() {}
 
-  async getEmployees() {
+  async getEmployees(token: string) {
     try {
-      const session = await sessionStore.get();
-
-      if (!session.branch_id) {
-        throw new Error("Unauthorized: No branch associated with the current session");
+      // Verify and decode the JWT token
+      const { payload } = await jose.jwtVerify(token, SECRET_KEY);
+      
+      if (!payload.branch_id) {
+        throw new Error("Unauthorized: No branch associated with the current user");
       }
       
       const sql = `
@@ -27,6 +31,7 @@ class EmployeeService {
         grades.annual_leave_quota as annual_leave,
         users.status as status,
         users.join_date as join_date,
+        users.resign_date as resign_date,
         users.updated_at as updated_at
       FROM users
       JOIN positions ON users.position_id = positions.id
@@ -40,8 +45,8 @@ class EmployeeService {
         END,
         users.id DESC
         `
-      const result = await pgClient.query(sql, [session.branch_id])
-      console.log('result:', result.rows)
+      const result = await pgClient.query(sql, [payload.branch_id])
+      // console.log('result:', result.rows)
 
       return result.rows
     } catch (error) {
@@ -68,6 +73,7 @@ class EmployeeService {
           users.status as status,
           users.resign_date as resign_date,
           users.join_date as join_date,
+          users.resign_date as resign_date,
           users.updated_at as updated_at
         FROM users
         JOIN positions ON users.position_id = positions.id
@@ -75,7 +81,6 @@ class EmployeeService {
         WHERE users.id = $1
       `;
       const result = await pgClient.query(sql, [id]);
-      //  console.log('result:', result.rows[0])
       return result.rows[0];
     } catch (error) {
       console.log("cannot get employeeById:", error);
@@ -83,19 +88,18 @@ class EmployeeService {
     }
   }
 
-  async updateEmployee(id: string, updateData: {phone?: number, position?: string, status?: string}) {
+  async updateEmployee(id: string, updateData: {phone?: number, position?: string, status?: string, resign_date?:string}) {
     try {
-      const { phone, position, status } = updateData;
+      const { phone, position, status, resign_date } = updateData;
 
       if (phone) {
-        const updatePositionSql = `
+        const updatePhoneSql = `
           UPDATE users
-          SET phone = (SELECT id FROM users WHERE phone = $1)
-          WHERE phone = $2
+          SET phone = $1
+          WHERE id = $2
         `;
-        await pgClient.query(updatePositionSql, [phone, id]);
+        await pgClient.query(updatePhoneSql, [phone, id]);
       }
-      
       
       if (position) {
         const updatePositionSql = `
@@ -107,12 +111,20 @@ class EmployeeService {
       }
 
       if (status) {
-        const updatePositionSql = `
+        const updateStatusSql = `
           UPDATE users
-          SET status = (SELECT id FROM users WHERE status = $1)
-          WHERE phone = $2
+          SET status = $1
+          WHERE id = $2
         `;
-        await pgClient.query(updatePositionSql, [status, id]);
+        await pgClient.query(updateStatusSql, [status, id]);
+      }
+      if (resign_date) {
+        const updateResignSql = `
+          UPDATE users
+          SET resign_date = $1
+          WHERE id = $2
+        `;
+        await pgClient.query(updateResignSql, [resign_date, id]);
       }
 
       // Finally, fetch and return the updated employee data
@@ -123,4 +135,4 @@ class EmployeeService {
     }
   }
 }
-export const employeeService = new EmployeeService();
+export const adminEmployeeService = new AdminEmployeeService();

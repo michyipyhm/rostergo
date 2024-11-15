@@ -2,15 +2,8 @@
 
 import { useState } from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
-import { sessionStore } from '@/lib/sessionStore'
 import { Employee } from '@/services/models'
 
-// interface Employee {
-//   id: number
-//   nickname: string
-//   phone: string
-//   branch_id: number
-// }
 
 interface AddEmployeeModalProps {
   show: boolean
@@ -46,6 +39,12 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ show, onHide, onEmp
   }
 
   const handleAdd = async () => {
+    const token = localStorage.getItem('token'); // Ensure this is how you're storing the token
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+    
     try {
       if (!searchResult) return
 
@@ -53,6 +52,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ show, onHide, onEmp
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ employeeId: searchResult.id }),
       })

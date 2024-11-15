@@ -1,11 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { pgClient } from '@/services/pgClient'
-import { sessionStore } from '@/lib/sessionStore'
+import * as jose from 'jose';
+
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await sessionStore.get()
-    if (!session.branch_id) {
+    // Extract the token from the Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    // Verify the JWT token
+    let payload;
+    try {
+      const { payload: verifiedPayload } = await jose.jwtVerify(token, SECRET_KEY);
+      payload = verifiedPayload;
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+    }
+
+    // const session = await sessionStore.get()
+    if (!payload.branch_id) {
       return NextResponse.json(
         { message: 'No branch associated with current session' },
         { status: 401 }
@@ -27,7 +47,7 @@ export async function POST(req: NextRequest) {
       WHERE id = $2 
       RETURNING *
     `
-    const result = await pgClient.query(sql, [session.branch_id, employeeId])
+    const result = await pgClient.query(sql, [payload.branch_id, employeeId])
 
     if (result.rows.length === 0) {
       return NextResponse.json(

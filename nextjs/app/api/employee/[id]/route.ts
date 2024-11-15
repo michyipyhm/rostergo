@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { employeeService } from "@/services/employeeService";
+import { adminEmployeeService } from "@/services/adminEmployeeService";
 
 export async function GET(
   request: NextRequest,
@@ -14,7 +14,7 @@ export async function GET(
   }
 
   try {
-    const employee = await employeeService.getEmployeeById(id);
+    const employee = await adminEmployeeService.getEmployeeById(id);
     console.log("Found employee:", employee);
 
     if (!employee) {
@@ -48,7 +48,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    const updatedEmployee = await employeeService.updateEmployee(
+    const updatedEmployee = await adminEmployeeService.updateEmployee(
       id, body );
     if (!updatedEmployee) {
       return NextResponse.json(

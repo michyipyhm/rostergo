@@ -4,7 +4,6 @@ import Table from 'react-bootstrap/Table';
 import styles from './EmployeeList.module.scss';
 import { Employee } from '@/services/models'
 import Link from "next/link"
-import { Button } from "react-bootstrap";
 import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
 
 
@@ -14,7 +13,17 @@ function EmployeeList() {
   useEffect(() => {
     async function fetchEmployees() {
       try {
-        const response = await fetch('/api/employee')
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No token found');
+        }
+
+        const response = await fetch('/api/employee', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -27,11 +36,15 @@ function EmployeeList() {
       fetchEmployees()
    }, []);
 
+   const formatResignDate = (date: string | null) => {
+    if (!date || date === '1970-01-01') return '-';
+    return formatYYYYMMDD(date);
+  };
+
   
   return (
     <div className='mainContainer'> 
-   
-    
+  
     <div className={styles.manpowerTable}>
       <Table striped bordered hover className={styles.table}>
         <thead>
@@ -46,6 +59,7 @@ function EmployeeList() {
           <th>AL</th>
           <th>Status</th>
           <th>Join Date</th>
+          <th>Resign Date</th>
           <th>Updated At</th>
         </tr>
        </thead>
@@ -61,7 +75,8 @@ function EmployeeList() {
             <td>{employee.employee_type}</td>
             <td>{employee.annual_leave}</td>
             <td>{employee.status}</td>
-            <td>{employee.join_date.substring(0,10)}</td>
+            <td>{formatYYYYMMDD(employee.join_date)}</td>
+            <td>{formatResignDate(employee.resign_date)}</td>
             <td>{formatYYYYMMDDHHMM(employee.updated_at)}</td>
             <td><Link 
                   href={`/employee/edit?id=${employee.id}`}

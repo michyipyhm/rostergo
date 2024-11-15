@@ -27,14 +27,19 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
     }
     
     try {
+      const token = localStorage.getItem('token')
       const response = await fetch ('/api/changePassword', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ currentPassword, newPassword }),
       })
 
       if (response.ok) {
         setSuccess('Password changed successfully');
+        localStorage.removeItem('token'); // Remove the token after password change
         setTimeout(() => {
           onHide();
         }, 2000);
