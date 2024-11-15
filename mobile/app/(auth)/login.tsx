@@ -1,27 +1,67 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, Button, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
+import { login } from '../api/auth-api';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const [username, setUsername] = useState('ft1');
+  const [password, setPassword] = useState('123123');
+  const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
+
+  const handleLogin = async () => {
+    console.log(apiUrl)
+    // Here you would typically handle the login logic
+    if (username && password) {
+      const data = await login();
+      console.log(data)
+      // router.push('calendar');
+      router.push('tabs/leaveRequestList');
+
+      // Alert.alert('Login Successful', `Welcome, ${data}!`);
+    } else {
+      // Alert.alert('Error', 'Please enter both username and password.');
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Image
-          source={require('../assets/rostergo10.webp')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={() => router.push('verify')}
-      >
-        <Text style={styles.loginButtonText}>Verify</Text>
-      </TouchableOpacity>
+      <Text style={styles.title}>Login</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <Button title="Submit" onPress={handleLogin} />
     </View>
   );
+
+  
+  // return (
+  //   <View style={styles.container}>
+  //     <View style={styles.logoContainer}>
+  //       <Image
+  //         source={require('../assets/rostergo10.webp')}
+  //         style={styles.logo}
+  //         resizeMode="contain"
+  //       />
+  //     </View>
+  //     <TouchableOpacity
+  //       style={styles.loginButton}
+  //       onPress={() => router.push('verify')}
+  //     >
+  //       <Text style={styles.loginButtonText}>Verify</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 }
 
 const styles = StyleSheet.create({
@@ -52,6 +92,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+    color: '#fff',
   },
 });
 
@@ -114,4 +167,5 @@ const styles = StyleSheet.create({
 //     fontWeight: '600',
 //   },
 // });
+
 

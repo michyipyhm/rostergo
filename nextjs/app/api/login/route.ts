@@ -1,35 +1,71 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { loginService } from '@/services/loginService'
-import { sessionStore } from '@/lib/sessionStore'
+import { NextRequest, NextResponse } from "next/server";
+import { adminLoginService } from "@/services/adminLoginService";
+// import jwt from "jsonwebtoken";
+import * as jose from 'jose'
 
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
+
+async function generateJWT(payload: any) {
+  return await new jose.SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('6h')
+    .sign(SECRET_KEY);
+  }
+
+  // return new Promise((resolve, reject) => {
+  //   jwt.sign(
+  //     payload,
+  //     KEY,
+  //     {
+  //       expiresIn: 31556926, // 1 year in seconds
+  //     },
+  //     (err, token) => {
+  //       console.log("err: ", err);
+  //       console.log("token: ", token);
+  //       if (err) {
+  //         reject(err);
+  //       }
+  //       resolve(token);
+  //     }
+  //   );
+  // });
 
 export async function POST(request: NextRequest) {
-  const { nickname, password } = await request.json()
-  
+  const { nickname, password } = await request.json();
+  console.log("KEY: ", SECRET_KEY);
   try {
     if (!nickname || !password) {
-      return NextResponse.json({ message: 'Nickname and password are required' }, { status: 400 })
+      return NextResponse.json(
+        { message: "nickname and password are required" },
+        { status: 400 }
+      );
     }
 
-    const result = await loginService.authenticateAdmin(nickname, password)
+    const result = await adminLoginService.authenticateAdmin(nickname, password);
     if (result.success && result.admin) {
-      await sessionStore.save({
+      /* Sign token */
+      const payload = {
         id: result.admin.id,
         nickname: result.admin.nickname,
         admin: result.admin.admin,
-        branch_id: result.admin.branch_id
-      })
-      return NextResponse.json({ message: 'Login successful' }, { status: 200 })
+        branch_id: result.admin.branch_id,
+      };
+
+      const token = await generateJWT(payload);
+      console.log("TOKEN: ", token);
+      return NextResponse.json(
+        { message: "Login successful", token },
+        { status: 200 }
+      );
     } else {
-      return NextResponse.json({ message: result.message }, { status: 401 })
+      return NextResponse.json({ message: result.message }, { status: 401 });
     }
   } catch (error) {
-    console.error('Login error:', error)
-    return NextResponse.json({ message: 'An error occurred during login' }, { status: 500 })
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { message: "An error occurred during login" },
+      { status: 500 }
+    );
   }
-}
-
-export async function DELETE() {
-  await sessionStore.clear()
-  return NextResponse.json({ success: true })
 }

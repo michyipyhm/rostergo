@@ -1,4 +1,5 @@
 // import { API_URL } from '@/config'
+const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
 export interface OtpResponse {
   message: string
@@ -11,6 +12,32 @@ export interface VerifyOtpResponse {
   message: string
   redirectToLogin: boolean
   user?: any // Replace with your user type
+}
+
+export async function login(): Promise<any> {
+  try {
+    const res = await fetch(apiUrl + '/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "nickname": "admin",
+        "password": "123123"
+      })
+    })
+    
+    if (!res.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await res.json()
+    localStorage.setItem('token', data.token)
+    console.log(data)
+    return data
+  } catch (error) {
+    console.error('Error sending OTP:', error)
+    throw error
+  }
 }
 
 // Send OTP (Verify Phone Number)
