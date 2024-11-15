@@ -12,15 +12,17 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     console.log(apiUrl)
     // Here you would typically handle the login logic
+
+
     if (username && password) {
       const data = await login();
       console.log(data)
       // router.push('calendar');
       router.push('tabs/leaveRequestList');
 
-      // Alert.alert('Login Successful', `Welcome, ${data}!`);
+      Alert.alert('Login Successful', `Welcome, ${data}!`);
     } else {
-      // Alert.alert('Error', 'Please enter both username and password.');
+      Alert.alert('Error', 'Please enter both username and password.');
     }
   };
 
@@ -43,25 +45,6 @@ export default function LoginScreen() {
       <Button title="Submit" onPress={handleLogin} />
     </View>
   );
-
-  
-  // return (
-  //   <View style={styles.container}>
-  //     <View style={styles.logoContainer}>
-  //       <Image
-  //         source={require('../assets/rostergo10.webp')}
-  //         style={styles.logo}
-  //         resizeMode="contain"
-  //       />
-  //     </View>
-  //     <TouchableOpacity
-  //       style={styles.loginButton}
-  //       onPress={() => router.push('verify')}
-  //     >
-  //       <Text style={styles.loginButtonText}>Verify</Text>
-  //     </TouchableOpacity>
-  //   </View>
-  // );
 }
 
 const styles = StyleSheet.create({

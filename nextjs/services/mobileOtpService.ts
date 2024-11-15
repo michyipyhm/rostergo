@@ -41,7 +41,7 @@ export async function verifyPhoneNumber(
     } else {
       const insertQuery = `
   INSERT INTO users (phone, status)
-  VALUES ($1, 'null')
+  VALUES ($1, 'inactive')
   RETURNING id, phone, status
 `;
       const insertResult = await pgClient.query(insertQuery, [phone]);
