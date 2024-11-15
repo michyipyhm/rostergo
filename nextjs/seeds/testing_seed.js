@@ -301,5 +301,41 @@ exports.seed = async function (knex) {
       over_time_approve: true,
       status: "check out",
     },
+    {
+      date: "2024-11-18",
+      shift_slot_id: 2,
+      user_id: 2,
+      over_time_approve: true,
+    },
+    {
+      date: "2024-11-19",
+      shift_slot_id: 3,
+      user_id: 2,
+      over_time_approve: true,
+    },
+    {
+      date: "2024-11-22",
+      shift_slot_id: 4,
+      user_id: 2,
+      over_time_approve: true,
+    },
+    {
+      date: "2024-11-23",
+      shift_slot_id: 1,
+      user_id: 2,
+      over_time_approve: true,
+    },
+    {
+      date: "2024-11-26",
+      shift_slot_id: 5,
+      user_id: 2,
+      over_time_approve: true,
+    },
+    {
+      date: "2024-11-28",
+      shift_slot_id: 6,
+      user_id: 2,
+      over_time_approve: true,
+    },
   ]);
 };

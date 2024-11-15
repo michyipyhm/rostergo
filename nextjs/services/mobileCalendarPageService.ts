@@ -2,13 +2,11 @@ import { pgClient } from "./pgClient";
 
 export async function getUserShifts(userId: number) {
   const query = `
-    SELECT 
+   SELECT 
       shifts.id as shift_id,
       shifts.date,
       shift_slots.start_time,
       shift_slots.end_time,
-      shift_slots.work_hour,
-      shift_requests.status as approve_status,
       users.id as user_id,
       users.nickname
     FROM 

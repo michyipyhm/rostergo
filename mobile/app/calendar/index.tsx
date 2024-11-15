@@ -1,332 +1,452 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Calendar, toDateId } from "@marceloterreiro/flash-calendar";
-import { useCalendarStore } from '../store/calendar';
-import { CalendarTheme } from "@marceloterreiro/flash-calendar";
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Calendar, DateData } from 'react-native-calendars';
+import { ScrollView } from 'react-native-gesture-handler';
+import { getUserShifts, Shift } from '../api/calendar-api';
 
-const linearAccent = "#4788ff";
+const useSlideAnimation = (initialValue: number) => {
+  const slideAnim = useRef(new Animated.Value(initialValue)).current;
 
-const linearTheme: CalendarTheme = {
-  rowMonth: {
-    content: {
-      textAlign: "center",
-      color: "#000000",
-      fontWeight: "700",
-    },
-  },
-  rowWeek: {
-    container: {
-      borderBottomWidth: 2,
-      borderBottomColor: "#000000",
-      borderStyle: "solid",
-    },
-  },
-  itemWeekName: { content: { color: "#000000" } },
-  itemDayContainer: {
-    activeDayFiller: {
-      backgroundColor: linearAccent,
-    },
-  },
-  itemDay: {
-    idle: ({ isPressed, isWeekend }) => ({
-      container: {
-        backgroundColor: isPressed ? linearAccent : "transparent",
-        borderRadius: 15,
-      },
-      content: {
-        color: isWeekend && !isPressed ? "#000000" : "#000000",
-      },
-    }),
-    today: ({ isPressed }) => ({
-      container: {
-        borderColor: "#2e2e2e",
-        borderWidth: isPressed ? 0 : 2,
-        borderRadius: isPressed ? 13 : 15,
-        backgroundColor: isPressed ? linearAccent : "transparent",
-        
-      },
-      content: {
-        color: isPressed ? "#ffffff" : "#000000",
-      },
-    }),
-    active: ({ isEndOfRange, isStartOfRange }) => ({
-      container: {
-        backgroundColor: "transparent",
-        borderTopLeftRadius: isStartOfRange ? 0 : 0,
-        borderBottomLeftRadius: isStartOfRange ? 0 : 0,
-        borderTopRightRadius: isEndOfRange ? 0 : 0,
-        borderBottomRightRadius: isEndOfRange ? 0 : 0,
-        borderBottomWidth:5,
-        borderBottomColor: linearAccent,
-      },
-      content: {
-        color: "#000000",
-      },
-    }),
-  },
+  const slideIn = useCallback(() => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [slideAnim]);
+
+  const slideOut = useCallback(() => {
+    Animated.timing(slideAnim, {
+      toValue: 400,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [slideAnim]);
+
+  return { slideAnim, slideIn, slideOut };
 };
 
+export default function HomeScreen() {
+  const [selectedDate, setSelectedDate] = useState("");
+  const [shifts, setShifts] = useState<Shift[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { slideAnim, slideIn, slideOut } = useSlideAnimation(400);
 
+  useEffect(() => {
+    fetchShifts();
+  }, []);
 
-const today = toDateId(new Date());
+  const fetchShifts = async () => {
+    try {
+      const fetchedShifts = await getUserShifts();
+      setShifts(fetchedShifts);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching shifts:', error);
+      setLoading(false);
+      // You might want to add some error handling UI here
+    }
+  };
 
-export default function CalendarScreen() {
-  const { selectedDate, setSelectedDate } = useCalendarStore();
+  const handleDayPress = useCallback((day: DateData) => {
+    setSelectedDate(day.dateString);
+    slideIn();
+  }, [slideIn]);
+
+  const getMarkedDates = () => {
+    const markedDates: { [key: string]: any } = {};
+    shifts.forEach((shift) => {
+      markedDates[shift.date] = {
+        marked: true,
+        dotColor: '#5f9ea0',
+      };
+    });
+    return markedDates;
+  };
+
+  const getSelectedDateShifts = () => {
+    return shifts.filter((shift) => shift.date === selectedDate);
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Calendar</Text>
-      <View style={styles.calendarContainer}>
-        {/* <Text style={styles.selectedDate}>Selected date: {selectedDate}</Text> */}
-        <Calendar.List
-        theme={linearTheme}
-          calendarActiveDateRanges={[
-            {
-              startId: selectedDate,
-              endId: selectedDate,
-            },
-          ]}
-          calendarInitialMonthId={today}
-          onCalendarDayPress={setSelectedDate}
-          calendarRowVerticalSpacing={40}
-          calendarSpacing={20}
-          calendarMonthHeaderHeight={40}
-          calendarWeekHeaderHeight={30}
-          calendarRowHorizontalSpacing={5}
-          getCalendarMonthFormat={(date) => date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.stepContainer}>
+        <Calendar
+          onDayPress={handleDayPress}
+          markedDates={getMarkedDates()}
+          theme={{
+            backgroundColor: '#ffffff',
+            calendarBackground: '#ffffff',
+            textSectionTitleColor: '#b6c1cd',
+            selectedDayBackgroundColor: '#007AFF',
+            selectedDayTextColor: '#ffffff',
+            todayTextColor: '#007AFF',
+            dayTextColor: '#2d4150',
+            textDisabledColor: '#d9e1e8',
+            dotColor: '#007AFF',
+            selectedDotColor: '#ffffff',
+            arrowColor: '#007AFF',
+            monthTextColor: '#2d4150',
+            textDayFontSize: 16,
+            textMonthFontSize: 16,
+            textDayHeaderFontSize: 13
+          }}
         />
       </View>
-    </View>
+      <Animated.View
+        style={[
+          styles.slideView,
+          {
+            transform: [{ translateY: slideAnim }],
+          },
+        ]}
+      >
+        <Text style={styles.selectedDateText}>
+          Selected Date: {selectedDate}
+        </Text>
+        {getSelectedDateShifts().map((shift) => (
+          <View key={shift.shift_id} style={styles.shiftItem}>
+            <Text style={styles.shiftTime}>
+              {shift.start_time} - {shift.end_time}
+            </Text>
+            <Text style={styles.shiftNickname}>{shift.nickname}</Text>
+          </View>
+        ))}
+        <TouchableOpacity onPress={slideOut} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>Close</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    justifyContent: 'center',
     backgroundColor: '#F2F2F7',
   },
-  header: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: '#000',
-    padding: 16,
-    paddingTop: 60,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#F2F2F7',
   },
-  calendarContainer: {
-    flex: 1,
-    padding: 16,
+  stepContainer: {
+    marginBottom: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginHorizontal: 16,
+    marginTop: 16,
   },
-  selectedDate: {
-    fontSize: 16,
+  slideView: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 250,
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  selectedDateText: {
+    fontSize: 18,
+    textAlign: 'center',
     marginBottom: 10,
+    color: '#2d4150',
+  },
+  shiftItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  shiftTime: {
+    fontSize: 16,
+    color: '#2d4150',
+  },
+  shiftNickname: {
+    fontSize: 16,
+    color: '#007AFF',
+  },
+  closeButton: {
+    padding: 10,
+    alignSelf: 'center',
+    backgroundColor: '#007AFF',
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  closeButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
   },
 });
 
-// import React, { useState, useEffect } from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-// import { Calendar, DateData, MarkedDates } from 'react-native-calendars';
-// import { useCalendarStore } from '../store/calendar';
 
-// interface PeriodData {
-//   startDate: string;
-//   endDate: string;
-//   type: 'eating' | 'drinking' | 'exercise';
-// }
+// import React, { useRef, useState } from 'react';
+// import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+// import { Calendar } from 'react-native-calendars';
+// import { ScrollView } from 'react-native-gesture-handler';
 
-// export default function CalendarScreen() {
-//   const { selectedDate, setSelectedDate } = useCalendarStore();
-//   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
+// export default function HomeScreen() {
+//   const [selectedDate, setSelectedDate] = useState("");
+//   const slideAnim = useRef(new Animated.Value(400)).current;
 
-//   useEffect(() => {
-//     fetchPeriodData();
-//   }, []);
-
-//   const fetchPeriodData = async () => {
-//     try {
-//       // Simulating API call
-//       const response = await new Promise<PeriodData[]>((resolve) => 
-//         setTimeout(() => resolve([
-//           { startDate: '2024-11-01', endDate: '2024-11-01', type: 'eating' },
-//           { startDate: '2024-11-05', endDate: '2024-11-07', type: 'drinking' },
-//           { startDate: '2024-11-10', endDate: '2024-11-12', type: 'exercise' },
-//         ]), 1000)
-//       );
-      
-//       const newMarkedDates: MarkedDates = {};
-//       response.forEach(period => {
-//         const color = getColorForType(period.type);
-//         const startDate = new Date(period.startDate);
-//         const endDate = new Date(period.endDate);
-        
-//         for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
-//           const dateString = date.toISOString().split('T')[0];
-//           newMarkedDates[dateString] = {
-//             color,
-//             startingDay: dateString === period.startDate,
-//             endingDay: dateString === period.endDate,
-//           };
-//         }
-//       });
-      
-//       setMarkedDates(newMarkedDates);
-//     } catch (error) {
-//       console.error('Error fetching period data:', error);
-//     }
-//   };
-
-//   const getColorForType = (type: PeriodData['type']): string => {
-//     switch (type) {
-//       case 'eating':
-//         return '#FF9999';
-//       case 'drinking':
-//         return '#99FF99';
-//       case 'exercise':
-//         return '#9999FF';
-//       default:
-//         return '#CCCCCC';
-//     }
-//   };
-
-//   const onDayPress = (day: DateData) => {
+//   const handleDayPress = (day: any) => {
 //     setSelectedDate(day.dateString);
+//     Animated.timing(slideAnim, {
+//       toValue: 0,
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start();
+//   };
+
+//   const closeSlideView = () => {
+//     Animated.timing(slideAnim, {
+//       toValue: 400,
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start();
 //   };
 
 //   return (
-//     <View style={styles.container}>
-//       <Text style={styles.header}>Calendar</Text>
-//       <Calendar
-//         onDayPress={onDayPress}
-//         markingType={'period'}
-//         markedDates={{
-//           ...markedDates,
-//           [selectedDate]: { 
-//             ...markedDates[selectedDate],
-//             selected: true,
-//             selectedColor: '#007AFF',
+//     <ScrollView contentContainerStyle={styles.container}>
+//       <View style={styles.stepContainer}>
+//         <Calendar
+//           onDayPress={handleDayPress}
+//           markingType="multi-period"
+//           markedDates={{
+//             "2024-11-14": {
+//               periods: [
+//                 { startingDay: true, endingDay: true, color: "#5f9ea0" },
+//               ],
+//             },
+//           }}
+//           theme={{
+//             backgroundColor: '#ffffff',
+//             calendarBackground: '#ffffff',
+//             textSectionTitleColor: '#b6c1cd',
+//             selectedDayBackgroundColor: '#007AFF',
+//             selectedDayTextColor: '#ffffff',
+//             todayTextColor: '#007AFF',
+//             dayTextColor: '#2d4150',
+//             textDisabledColor: '#d9e1e8',
+//             dotColor: '#007AFF',
+//             selectedDotColor: '#ffffff',
+//             arrowColor: '#007AFF',
+//             monthTextColor: '#2d4150',
+//             textDayFontSize: 16,
+//             textMonthFontSize: 16,
+//             textDayHeaderFontSize: 13
+//           }}
+//         />
+//       </View>
+//       <Animated.View
+//         style={[
+//           styles.slideView,
+//           {
+//             transform: [{ translateY: slideAnim }],
 //           },
-//         }}
-//         theme={{
-//           backgroundColor: '#ffffff',
-//           calendarBackground: '#ffffff',
-//           textSectionTitleColor: '#b6c1cd',
-//           selectedDayBackgroundColor: '#007AFF',
-//           selectedDayTextColor: '#ffffff',
-//           todayTextColor: '#007AFF',
-//           dayTextColor: '#2d4150',
-//           textDisabledColor: '#d9e1e8',
-//           dotColor: '#007AFF',
-//           selectedDotColor: '#ffffff',
-//           arrowColor: '#007AFF',
-//           monthTextColor: '#2d4150',
-//           textDayFontFamily: 'System',
-//           textMonthFontFamily: 'System',
-//           textDayHeaderFontFamily: 'System',
-//           textDayFontWeight: '300',
-//           textMonthFontWeight: 'bold',
-//           textDayHeaderFontWeight: '300',
-//           textDayFontSize: 16,
-//           textMonthFontSize: 16,
-//           textDayHeaderFontSize: 13
-//         }}
-//         style={styles.calendar}
-//       />
-//     </View>
+//         ]}
+//       >
+//         <Text style={styles.selectedDateText}>
+//           Selected Date: {selectedDate}
+//         </Text>
+//         <TouchableOpacity onPress={closeSlideView} style={styles.closeButton}>
+//           <Text style={styles.closeButtonText}>Close</Text>
+//         </TouchableOpacity>
+//       </Animated.View>
+//     </ScrollView>
 //   );
 // }
 
 // const styles = StyleSheet.create({
 //   container: {
-//     flex: 1,
+//     flexGrow: 1,
+//     justifyContent: 'center',
 //     backgroundColor: '#F2F2F7',
 //   },
-//   header: {
-//     fontSize: 34,
-//     fontWeight: 'bold',
-//     color: '#000',
-//     padding: 16,
-//     paddingTop: 60,
-//     backgroundColor: '#F2F2F7',
-//   },
-//   calendar: {
+//   stepContainer: {
+//     marginBottom: 8,
+//     backgroundColor: '#ffffff',
 //     borderRadius: 10,
-//     elevation: 4,
-//     margin: 16,
+//     overflow: 'hidden',
+//     marginHorizontal: 16,
+//     marginTop: 16,
+//   },
+//   slideView: {
+//     position: 'absolute',
+//     bottom: 0,
+//     left: 0,
+//     right: 0,
+//     height: 250,
+//     backgroundColor: '#ffffff',
+//     padding: 20,
+//     borderTopLeftRadius: 20,
+//     borderTopRightRadius: 20,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: -2 },
+//     shadowOpacity: 0.1,
+//     shadowRadius: 4,
+//     elevation: 5,
+//   },
+//   selectedDateText: {
+//     fontSize: 18,
+//     textAlign: 'center',
+//     marginBottom: 10,
+//     color: '#2d4150',
+//   },
+//   closeButton: {
+//     padding: 10,
+//     alignSelf: 'center',
+//     backgroundColor: '#007AFF',
+//     borderRadius: 10,
+//   },
+//   closeButtonText: {
+//     color: '#ffffff',
+//     fontSize: 16,
 //   },
 // });
 
 
-// import React from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-// import { Calendar, DateData } from 'react-native-calendars';
-// import { useCalendarStore } from '../store/calendar';
-
-// export default function CalendarScreen() {
-//   const { selectedDate, setSelectedDate } = useCalendarStore();
-
-//   const onDayPress = (day: DateData) => {
-//     setSelectedDate(day.dateString);
-//   };
+// // import React, { useRef, useState } from 'react';
+// // import { View, Text, StyleSheet, Animated } from 'react-native';
+// // import { Calendar } from 'react-native-calendars';
+// // import ParallaxScrollView from 'react-native-parallax-scroll-view';
+// // import { Image, TouchableOpacity } from 'react-native';
+// // import { ThemedView } from '../components/ThemedView';
+// // import { ThemedText } from '../components/ThemedText';
+// // import { HelloWave } from '../components/HelloWave';
 
 
+// // export default function HomeScreen() {
+// //   const [selectedDate, setSelectedDate] = useState("");
+// //   const slideAnim = useRef(new Animated.Value(400)).current;
+
+// //   const handleDayPress = (day: any) => {
+// //     setSelectedDate(day.dateString);
+// //     // Slide in the view
+// //     Animated.timing(slideAnim, {
+// //       toValue: 0, // Slide to visible position
+// //       duration: 300,
+// //       useNativeDriver: true,
+// //     }).start();
+// //   };
+
+// //   const closeSlideView = () => {
+// //     // Slide out the view
+// //     Animated.timing(slideAnim, {
+// //       toValue: 300, // Slide back to off-screen
+// //       duration: 300,
+// //       useNativeDriver: true,
+// //     }).start();
+// //   };
 
 
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.header}>Calendar</Text>
-//       <Calendar
-//         onDayPress={onDayPress}
-//         markingType={'period'}
+// //   return (
+// //     <ParallaxScrollView
+      
+// //     >
+// //       <View style={styles.container}>
+// //         <ThemedView style={styles.stepContainer}>
+// //           <Calendar
+// //             onDayPress={handleDayPress}
+// //             markingType="multi-period"
+// //             markedDates={{
+// //               "2024-11-14": {
+// //                 periods: [
+// //                   { startingDay: true, endingDay: true, color: "#5f9ea0" },
+// //                 ],
+// //               },
+// //             }}
+// //           />
+// //         </ThemedView>
+// //         <Animated.View
+// //           style={[
+// //             styles.slideView,
+// //             {
+// //               transform: [{ translateY: slideAnim }],
+// //             },
+// //           ]}
+// //         >
+// //           <Text style={styles.selectedDateText}>
+// //             Selected Date: {selectedDate}
+// //           </Text>
+// //           <TouchableOpacity onPress={closeSlideView} style={styles.closeButton}>
+// //             <Text style={styles.closeButtonText}>Close</Text>
+// //           </TouchableOpacity>
+// //         </Animated.View>
+// //       </View>
+// //     </ParallaxScrollView>
+// //   );
+// // }
 
-//         markedDates={{
-//           [selectedDate]: { disabled: true, startingDay: true, color: '#f99920', endingDay: true}
-//         }}
-//         theme={{
-//           backgroundColor: '#ffffff',
-//           calendarBackground: '#ffffff',
-//           textSectionTitleColor: '#b6c1cd',
-//           selectedDayBackgroundColor: '#007AFF',
-//           selectedDayTextColor: '#ffffff',
-//           todayTextColor: '#007AFF',
-//           dayTextColor: '#2d4150',
-//           textDisabledColor: '#d9e1e8',
-//           dotColor: '#007AFF',
-//           selectedDotColor: '#ffffff',
-//           arrowColor: '#007AFF',
-//           monthTextColor: '#2d4150',
-//           textDayFontFamily: 'System',
-//           textMonthFontFamily: 'System',
-//           textDayHeaderFontFamily: 'System',
-//           textDayFontWeight: '300',
-//           textMonthFontWeight: 'bold',
-//           textDayHeaderFontWeight: '300',
-//           textDayFontSize: 16,
-//           textMonthFontSize: 16,
-//           textDayHeaderFontSize: 13
-//         }}
-//         style={styles.calendar}
-        
-//       />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#F2F2F7',
-//   },
-//   header: {
-//     fontSize: 34,
-//     fontWeight: 'bold',
-//     color: '#000',
-//     padding: 16,
-//     paddingTop: 60,
-//     backgroundColor: '#F2F2F7',
-//   },
-//   calendar: {
-//     borderRadius: 10,
-//     elevation: 4,
-//     margin: 16,
-//   },
-// });
+// // const styles = StyleSheet.create({
+// //   reactLogo: {
+// //     height: 178,
+// //     width: 290,
+// //     bottom: 0,
+// //     left: 0,
+// //     position: "absolute",
+// //   },
+// //   titleContainer: {
+// //     flexDirection: "row",
+// //     alignItems: "center",
+// //     gap: 8,
+// //   },
+// //   stepContainer: {
+// //     gap: 8,
+// //     marginBottom: 8,
+// //   },
+// //   container: {
+// //     flex: 1,
+// //     justifyContent: "center",
+// //   },
+// //   slideView: {
+// //     position: "absolute",
+// //     bottom: 0,
+// //     left: 0,
+// //     right: 0,
+// //     height: 250,
+// //     backgroundColor: "#fff",
+// //     padding: 20,
+// //     borderRadius: 20,
+// //     shadowColor: "#000",
+// //     shadowOffset: { width: 0, height: 2 },
+// //     shadowOpacity: 0.3,
+// //     shadowRadius: 4,
+// //     elevation: 5,
+// //   },
+// //   selectedDateText: {
+// //     fontSize: 18,
+// //     textAlign: "center",
+// //     marginBottom: 10,
+// //   },
+// //   closeButton: {
+// //     padding: 10,
+// //     alignSelf: "center",
+// //     backgroundColor: "#007AFF",
+// //     borderRadius: 10,
+// //   },
+// //   closeButtonText: {
+// //     color: "#fff",
+// //     fontSize: 16,
+// //   },
+// // });
