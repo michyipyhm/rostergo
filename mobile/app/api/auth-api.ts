@@ -1,3 +1,5 @@
+import * as SecureStore from 'expo-secure-store';
+
 // import { API_URL } from '@/config'
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
@@ -101,6 +103,36 @@ export async function register(userData: {
 }
 
 // Login
+// export async function login(): Promise<any> {
+//   try {
+//     const res = await fetch(apiUrl + '/api/login', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         "nickname": "",
+//         "password": ""
+//       })
+//     })
+    
+//     if (!res.ok) {
+//       throw new Error('Network response was not ok')
+//     }
+//     const data = await res.json()
+//     localStorage.setItem('token', data.token)
+//     console.log(data)
+//     return data
+//   } catch (error) {
+//     console.error('Error sending OTP:', error)
+//     throw error
+//   }
+// }
+
+//login
+
+
+
 export async function login(): Promise<any> {
   try {
     const res = await fetch(apiUrl + "/api/login", {
@@ -109,20 +141,29 @@ export async function login(): Promise<any> {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        nickname: "admin",
-        password: "123123",
-      }),
+        "nickname": "",
+        "password": ""
+      })
     });
-
+    
     if (!res.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error('Network response was not ok');
     }
+
     const data = await res.json();
-    localStorage.setItem("token", data.token);
+
+    // Store the token using SecureStore instead of localStorage
+    try {
+      await SecureStore.setItemAsync('token', data.token);
+    } catch (secureStoreError) {
+      console.error('Error storing token in SecureStore:', secureStoreError);
+      // You might want to handle this error differently depending on your app's requirements
+    }
+
     console.log(data);
     return data;
   } catch (error) {
-    console.error("Error sending OTP:", error);
+    console.error('Error during login:', error);
     throw error;
   }
 }
