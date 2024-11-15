@@ -29,20 +29,13 @@ const useSlideAnimation = (initialValue: number) => {
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState("");
-  const [shifts, setShifts] = useState<Shift[]>([]);
+  // const [shifts, setShifts] = useState<Shift[]>([]);
   // const [loading, setLoading] = useState(true);
   const { slideAnim, slideIn, slideOut } = useSlideAnimation(400);
-  const { data, isLoading, error } = useQuery({
+  const { data:shifts, isLoading, error } = useQuery({
     queryKey: ["getUserShifts"],
     queryFn: getUserShifts,
   });
-
-  // const { data, error, isLoading } = useQuery('shifts', () => getUserShifts(), {
-  //   refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes
-  // });
-  useEffect(() => {
-    // fetchShifts();
-  }, []);
 
   // const fetchShifts = async () => {
   //   try {

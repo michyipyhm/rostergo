@@ -20,19 +20,31 @@ export async function getUserShifts(): Promise<Shift[]> {
       throw new Error('No token found');
     }
 
-    const response = await fetch(`${apiUrl}/api/mobilecalendarpage`, {
-      method: 'GET',
+    // const response = await fetch(`${apiUrl}/api/mobilecalendarpage`, {
+    //   headers: {
+    //     'Authorization': `Bearer ${token}`,
+    //   },
+    // });
+
+    // if (!response.ok) {
+    //   throw new Error('Network response was not ok');
+    // }
+
+    // return response.json();
+    const res = await fetch(apiUrl + '/api/mobilecalendarpage', {
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
-
-    if (!response.ok) {
+    
+    if (!res.ok) {
       throw new Error('Network response was not ok');
     }
 
-    return response.json();
+    const data = await res.json();
+
+    return data;
+
   } catch (error) {
     console.error('Error fetching user shifts:', error);
     throw error;
