@@ -2,7 +2,7 @@ const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
 export async function getShiftList(): Promise<any> {
     try {
-      const res = await fetch(apiUrl + '/api/leaveRequests', {
+      const res = await fetch(apiUrl + '/api/mobileShiftList', {
         method: 'GET',
       })
       
