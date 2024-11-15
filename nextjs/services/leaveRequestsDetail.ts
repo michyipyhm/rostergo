@@ -1,5 +1,5 @@
-import { Pool } from "pg";
 import { pgClient } from "./pgClient";
+
 
 type LeaveRequest = {
   id: number;
@@ -27,12 +27,7 @@ type LeaveRequestDetail = LeaveRequest & {
   leave_type: LeaveType;
 };
 
-const pool = new Pool({
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-});
+
 
 export async function getLeaveRequestDetailByUserId(
   userId: number
@@ -49,23 +44,23 @@ export async function getLeaveRequestDetailByUserId(
   `;
 
   try {
-    const result = await pool.query(query, [userId]);
+    const result = await pgClient.query(query, [userId]);
 
     return result.rows.map((row) => ({
       id: row.id,
       user_id: row.user_id,
       shift_slot_id: row.shift_slot_id,
       leave_type_id: row.leave_type_id,
-      start_date: row.start_date,
-      end_date: row.end_date,
+      start_date: new Date(row.start_date), // 确保转换为 Date 对象
+      end_date: new Date(row.end_date), // 确保转换为 Date 对象
       status: row.status,
       user: {
         id: row.user_id,
-        name: row.user_nickname,
+        name: row.user_name, // 使用正确的字段名
       },
       leave_type: {
         id: row.leave_type_id,
-        name: row.leave_type_name,
+        name: row.leave_type_name, // 使用正确的字段名
       },
     }));
   } catch (error) {

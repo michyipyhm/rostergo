@@ -7,7 +7,12 @@ class LoginService {
 
   async authenticateUser(nickname: string, password: string) {
     try {
-      const sql = `SELECT * from users where nickname = $1`
+      const sql = `SELECT *, from users where nickname = $1
+      
+      JOIN positions ON users.position_id = positions.id
+      WHERE users.nickname = $1
+
+        `
       const result = await pgClient.query(sql, [nickname])
 
       if (result.rows.length === 0) {
