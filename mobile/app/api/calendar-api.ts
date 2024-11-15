@@ -1,4 +1,5 @@
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from 'expo-secure-store';
+import { storageUtil } from './auth-api';
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
@@ -24,7 +25,7 @@ async function getToken(): Promise<string | null> {
 // Get User Shifts
 export async function getUserShifts(): Promise<Shift[]> {
   try {
-    const token = await getToken();
+    const token = await storageUtil.getItem('token');
     if (!token) {
       throw new Error("No token found");
     }
@@ -41,7 +42,10 @@ export async function getUserShifts(): Promise<Shift[]> {
       throw new Error("Network response was not ok");
     }
 
-    return response.json();
+    const data = await response.json();
+
+    return data;
+
   } catch (error) {
     console.error("Error fetching user shifts:", error);
     throw error;
