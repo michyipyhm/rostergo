@@ -4,6 +4,7 @@ import { useParams, notFound } from "next/navigation";
 import styles from './MonthlyRoster.module.scss';
 import { MonthlyRosterData } from "@/services/models";
 import holidaysData from "@/HKPH-en.json"
+import EditRoster from './EditRoster';
 
 function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
     const { users, shifts, shiftRequests, leaveRequests } = data
@@ -66,7 +67,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         Thursday: 4,
         Friday: 5,
         Saturday: 6,
-    };
+    }
 
     // calculate rest days in a month based on weekday and rest days per week
     const calculateRestDays = (weekdayStr: string, perWeek: number) => {
