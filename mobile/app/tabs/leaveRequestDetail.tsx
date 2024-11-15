@@ -1,133 +1,75 @@
-// import { Tabs } from "expo-router";
-// import { View, Text, StyleSheet, TextInput } from "react-native";
-// import { FlatList } from "react-native-gesture-handler";
-// import React, { useEffect, useState } from "react";
-
-// export default function GetLeaveRequestDetailByUserId(leaveRequests: any) {
-//   const [input, setInput] = useState("");
-  
-
-//     useEffect(() => {
-//       fetch("http://localhost:3000/api/leaveRequestsDetail", { method: "GET" })
-//         .then((Response) => Response.json())
-//         .then((responseJson) => {
-//           console.log(responseJson);
-//         })
-//         .catch((error) => {
-//           console.error(error);
-//         });
-//     }, []);
-    
-
-//   return (
-//     <View>
-//       <Text style={styles.title}>Leave Request Detail</Text>
-//       <View style={styles.headerRow}>
-//         <Text style={styles.headerItem}>Leave Type:</Text>
-//         <Text style={styles.headerItem}>Shift Slot:</Text>
-//         <Text style={styles.headerItem}>Start Date:</Text>
-//         <Text style={styles.headerItem}>End Date:</Text>
-//         <Text style={styles.headerItem}>Duration:</Text>
-//         <Text style={styles.headerItem}>Proof(if needed):</Text>
-//       </View>
-//       <TextInput
-//         style={{
-//           height: 80,
-//           width: 300,
-//           backgroundColor: "white",
-//           borderColor: "gray",
-//           borderWidth: 1,
-//         }}
-//         onChangeText={(text) => setInput(text)}
-//         value={input}
-//       />
-//       <Text style={styles.headerItem}>Status:</Text>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   row: {
-//     flexDirection: "row", 
-//     justifyContent: "space-between", 
-//     padding: 10,
-//   },
-//   item: {
-//     flex: 1, 
-//     textAlign: "center", 
-//   },
-//   title: {
-//     fontSize: 36,
-//     textAlign: "center",
-//     marginVertical: 20, 
-//   },
-//   headerRow: {
-    
-//     justifyContent: "flex-start",
-//     padding: 10,
-//     backgroundColor: "#f0f0f0", 
-//   },
-//   headerItem: {
-    
-//   },
-// });
-
 import { Tabs } from "expo-router";
-import { View, Text, StyleSheet, TextInput, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
+import { getLeaveDetail } from "../api/leave-api";
+import { useQuery } from "@tanstack/react-query";
 
-const LeaveRequestDetail = () => {
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(true);  // 添加加载状态
-  const [error, setError] = useState<string | null>(null);  // 添加错误状态
-  const [leaveRequestDetail, setLeaveRequestDetail] = useState<any>(null); // 添加状态以存储请求数据
 
-  useEffect(() => {
-    fetch("/api/leaveRequestsDetail", { method: "GET" })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((responseJson) => {
-        setLeaveRequestDetail(responseJson);
-        setLoading(false);  // 数据加载完成
-      })
-      .catch((error) => {
-        console.error(error);
-        setError("加载数据时出错，请稍后再试。");  // 设置错误信息
-        setLoading(false);  // 数据加载完成（失败）
-      });
-  }, []);
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />; // 显示加载指示器
-  }
+  export default function LeaveRequestDetail() {
+    const { data, isLoading, error } = useQuery({
+      queryKey: ["getLeaveDetail"],
+      queryFn: getLeaveDetail,
+    });
+  
+    if (isLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <Text>Loading...</Text>
+        </View>
+      );
+    }
+  
+    if (error) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text>Error: {error.message}</Text>
+        </View>
+      );
+    }
 
   return (
+    
     <View>
       <Text style={styles.title}>Leave Request Detail</Text>
 
-      {error && <Text style={styles.error}>{error}</Text>}  // 显示错误信息
+    
+      <FlatList
+  data={data}
+  keyExtractor={(item) => item.id.toString()} // Assuming each leave request has a unique id
+  renderItem={({ item }) => {
+    console.log(item);
+    // 假设 start_date 和 end_date 是字符串格式的日期
+    const startDate = new Date(item.start_date);
+    const endDate = new Date(item.end_date);
+    
+    // 格式化为 YYYY-MM-DD
+    const formattedStartDate = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`;
+    const formattedEndDate = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
 
-      <View style={styles.headerRow}>
-        <Text style={styles.headerItem}>Leave Type:</Text>
-        <Text style={styles.headerItem}>Shift Slot:</Text>
-        <Text style={styles.headerItem}>Start Date:</Text>
-        <Text style={styles.headerItem}>End Date:</Text>
-        <Text style={styles.headerItem}>Duration:</Text>
-        <Text style={styles.headerItem}>Proof(if needed):</Text>
-      </View>
+    const leaveType = item.leave_type_name || 'N/A';
+    const shiftSlotTitle = item.shift_slots?.title || 'N/A'; // 使用可选链
+    const startTime = item.shift_slots?.start_time || 'N/A';
+    const endTime = item.shift_slots?.end_time || 'N/A';
+    const ShiftDetail = `Shift Slot: ${shiftSlotTitle} (${startTime} - ${endTime})`;
+    const duration = item.duration || 'N/A';
+    const status = item.status || 'N/A';
 
-      <TextInput
-        style={styles.textInput}
-        onChangeText={(text) => setInput(text)}
-        value={input}
-      />
-      <Text style={styles.headerItem}>Status:</Text>
-    </View>
-  );
+    return (
+        <View>
+            <Text style={styles.headerItem}>Leave Type: {leaveType}</Text>
+            <Text style={styles.headerItem}>{ShiftDetail}</Text>
+            <Text style={styles.headerItem}>Start Date: {formattedStartDate}</Text>
+            <Text style={styles.headerItem}>End Date: {formattedEndDate}</Text>
+            <Text style={styles.headerItem}>Duration: {duration}</Text>
+            <Text style={styles.headerItem}>Proof (if needed):</Text>
+            <TextInput style={styles.textInput} placeholder="Enter proof if needed" />
+            <Text style={styles.headerItem}>Status: {status}</Text>
+        </View>
+    );
+}}
+/>
+</View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -163,8 +105,18 @@ const styles = StyleSheet.create({
   error: {
     color: "red",
     textAlign: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   }
 });
 
-export default LeaveRequestDetail;  // 确保组件以正确的方式导出
+
 

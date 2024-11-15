@@ -17,4 +17,22 @@ export async function getAllLeaves(): Promise<any> {
       throw error
     }
   }
+
+  export async function getLeaveDetail(): Promise<any> {
+    try {
+      const res = await fetch(apiUrl + '/api/leaveRequestsDetail', {
+        method: 'GET',
+      })
+      
+      if (!res.ok) {
+        throw new Error('Network response was not ok')
+      }
+      const data = (await res.json()).data
+      // console.log("data: ", data)
+      return data
+    } catch (error) {
+      console.error('Error sending OTP:', error)
+      throw error
+    }
+  }
   
