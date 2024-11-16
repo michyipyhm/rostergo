@@ -1,28 +1,29 @@
-import { Redirect, Stack } from 'expo-router';
-import { useAuthStore } from '../store/auth';
+import Header from "@/components/Header";
+import { Redirect, Stack } from "expo-router";
+import { SafeAreaView } from "react-native";
 
 export default function AuthLayout() {
-  const { isAuthenticated } = useAuthStore();
-
-  // If the user is authenticated, redirect to the main app
-  if (isAuthenticated) {
-    return <Redirect href="/(app)" />;
-  }
-
   return (
-    <Stack initialRouteName="register">
-      <Stack.Screen
-        name="register"
-        options={{ headerShown: false, title: 'Register' }}
-      />
-      <Stack.Screen
-        name="verify"
-        options={{ headerShown: false, title: 'Verify' }}
-      />
-      <Stack.Screen
-        name="login"
-        options={{ headerShown: false, title: 'Login' }}
-      />
-    </Stack>
+    <>
+      <SafeAreaView>
+        <Header />
+      </SafeAreaView>
+
+      <Stack initialRouteName="index">
+        <Stack.Screen
+          name="index"
+          options={{ headerShown: false, title: "Verify" }}
+        />
+        <Stack.Screen
+          name="register"
+          options={{ headerShown: false, title: "Register" }}
+        />
+
+        <Stack.Screen
+          name="login"
+          options={{ headerShown: false, title: "Login" }}
+        />
+      </Stack>
+    </>
   );
 }
