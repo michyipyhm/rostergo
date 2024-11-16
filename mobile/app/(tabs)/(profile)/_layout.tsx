@@ -12,12 +12,19 @@ export default function ProfileLayout() {
       <Stack initialRouteName="index">
         <Stack.Screen
           name="index"
-          options={{ headerShown: false, title: "Profile" }}
+          options={{ headerShown: false, title: "Profile Screen" }}
         />
-
         <Stack.Screen
-          name="editProfile"
-          options={{ headerShown: false, title: "Edit Profile" }}
+          name="changePassword"
+          options={{ headerShown: false, title: "Change Password Screen" }}
+        />
+        <Stack.Screen
+          name="information"
+          options={{ headerShown: false, title: "User Information Screen" }}
+        />
+         <Stack.Screen
+          name="payslips"
+          options={{ headerShown: false, title: "User Payslips Screen" }}
         />
       </Stack>
     </>

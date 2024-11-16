@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Image,
-  TouchableOpacity,
+  SafeAreaView,
   StyleSheet,
   Alert,
   Button,

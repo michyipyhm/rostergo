@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import { Redirect, Stack } from "expo-router";
 import { SafeAreaView } from "react-native";
 
-export default function AuthLayout() {
+export default function shiftLayout() {
   return (
     <>
       <SafeAreaView>
@@ -12,15 +12,11 @@ export default function AuthLayout() {
       <Stack initialRouteName="index">
         <Stack.Screen
           name="index"
-          options={{ headerShown: false, title: "Verify Screen" }}
+          options={{ headerShown: false, title: "Shift List Screen" }}
         />
         <Stack.Screen
-          name="register"
-          options={{ headerShown: false, title: "Register Screen" }}
-        />
-        <Stack.Screen
-          name="login"
-          options={{ headerShown: false, title: "Login Screen" }}
+          name="shiftDetail"
+          options={{ headerShown: false, title: "Shift Detail Screen" }}
         />
       </Stack>
     </>

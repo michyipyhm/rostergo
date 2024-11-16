@@ -6,8 +6,8 @@ export default function Header() {
 
   return (
     <>
-      <Text>Header</Text>
-      <Button onPress={() => router.back()} title="Back" />
+      <Text>我是組長勝利哥</Text>
+      <Button onPress={() => router.back()} title="Go back button" />
     </>
   );
 }
