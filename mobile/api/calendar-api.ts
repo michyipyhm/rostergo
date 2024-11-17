@@ -12,25 +12,16 @@ export interface Shift {
   nickname: string;
 }
 
-// Helper function to get the token
-async function getToken(): Promise<string | null> {
-  try {
-    return await SecureStore.getItemAsync("token");
-  } catch (error) {
-    console.error("Error retrieving token:", error);
-    return null;
-  }
-}
-
 // Get User Shifts
 export async function getUserShifts(): Promise<Shift[]> {
   try {
     const token = await storageUtil.getItem('token');
+    console.log("calender token is", token);
     if (!token) {
       throw new Error("No token found");
     }
 
-    const response = await fetch(`${apiUrl}/api/mobilecalendarpage`, {
+    const res = await fetch(`${apiUrl}/api/mobilecalendarpage`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -38,11 +29,13 @@ export async function getUserShifts(): Promise<Shift[]> {
       },
     });
 
-    if (!response.ok) {
+    if (!res.ok) {
       throw new Error("Network response was not ok");
     }
 
-    const data = await response.json();
+    const data = await res.json();
+
+    console.log("User Shifts:", data);
 
     return data;
 

@@ -12,6 +12,7 @@ export async function handleGetShifts(req: NextRequest) {
   }
   try {
     const shifts = await getUserShifts(userId);
+    console.log("Shifts:", shifts);
     return NextResponse.json(shifts);
   } catch (error) {
     console.error("Error in handleGetShifts:", error);

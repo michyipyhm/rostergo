@@ -26,6 +26,7 @@ export default function TabLayout() {
         }),
       }}
     >
+      
       <Tabs.Screen
         name="(shift)"
         options={{
