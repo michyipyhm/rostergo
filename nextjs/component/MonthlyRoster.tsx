@@ -12,7 +12,10 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
     const params = useParams()
     const date = params?.date
 
-    const [publicHolidays, setPublicHolidays] = useState<Set<number>>(new Set())
+    const [publicHolidays, setPublicHolidays] = useState<Set<number>>(new Set());
+    const [showEditRoster, setShowEditRoster] = useState(false);
+    const [selectedDay, setSelectedDay] = useState<number | null>(null);
+    const [selectedMemberName, setSelectedMemberName] = useState<string | null>(null);
 
     // check the date(string) parameter should be YYYY-MM
     if (!date || Array.isArray(date) || !/^\d{4}-\d{2}$/.test(date)) {
@@ -144,9 +147,19 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         return acc;
     }, {} as Record<number, string[]>);
 
+    // handleCellClick 更新狀態
     const handleCellClick = (day: number, memberName: string) => {
-        alert(`Clicked on day ${day} for ${memberName}`)
-    }
+        setSelectedDay(day);
+        setSelectedMemberName(memberName);
+        setShowEditRoster(true);
+    };
+
+    // 關閉小視窗的方法
+    const closeEditRoster = () => {
+        setShowEditRoster(false);
+        setSelectedDay(null);
+        setSelectedMemberName(null);
+    };
 
     // Generate weekday labels for each day of the month
     const weekdays = Array.from({ length: daysInMonth }, (_, i) => {
@@ -200,7 +213,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                     {member.position_type === "Part Time" ? (
                                         "N/A"
                                     ) : member.isWeekend_Restday === true ? (
-                                        "Weekends & Holidays"
+                                        "Weekend Holidays"
                                     ) : (
                                         `${member.rest_day} days`
                                     )}
@@ -228,7 +241,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                             onClick={() => handleCellClick(i + 1, member.name)}
                                             className={cellClassName}
                                         >
-                                            {showTheDay}
+                                            {shiftsStatus[member.id]?.[i] || ""}
                                         </td>
                                     );
                                 })}
@@ -237,6 +250,13 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                     </tbody>
                 </table>
             </div>
+            {showEditRoster && selectedDay !== null && selectedMemberName !== null && (
+                <EditRoster
+                    day={selectedDay}
+                    memberName={selectedMemberName}
+                    onClose={closeEditRoster}
+                />
+            )}
         </div>
     );
 }
