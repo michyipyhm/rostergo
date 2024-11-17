@@ -12,24 +12,6 @@ async function generateJWT(payload: any) {
     .sign(SECRET_KEY);
   }
 
-  // return new Promise((resolve, reject) => {
-  //   jwt.sign(
-  //     payload,
-  //     KEY,
-  //     {
-  //       expiresIn: 31556926, // 1 year in seconds
-  //     },
-  //     (err, token) => {
-  //       console.log("err: ", err);
-  //       console.log("token: ", token);
-  //       if (err) {
-  //         reject(err);
-  //       }
-  //       resolve(token);
-  //     }
-  //   );
-  // });
-
 export async function POST(request: NextRequest) {
   const { nickname, password } = await request.json();
   console.log("KEY: ", SECRET_KEY);
@@ -52,7 +34,7 @@ export async function POST(request: NextRequest) {
       };
 
       const token = await generateJWT(payload);
-      console.log("TOKEN: ", token);
+      // console.log("TOKEN: ", token);
       return NextResponse.json(
         { message: "Login successful", token },
         { status: 200 }

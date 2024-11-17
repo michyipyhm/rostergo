@@ -18,13 +18,9 @@ export default function ProfileLayout() {
           name="changePassword"
           options={{ headerShown: false, title: "Change Password Screen" }}
         />
-        <Stack.Screen
-          name="information"
-          options={{ headerShown: false, title: "User Information Screen" }}
-        />
          <Stack.Screen
           name="payslips"
-          options={{ headerShown: false, title: "User Payslips Screen" }}
+          options={{ headerShown: false, title: "Payslips Screen" }}
         />
       </Stack>
     </>

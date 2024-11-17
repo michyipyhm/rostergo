@@ -47,7 +47,7 @@ export const storageUtil = {
 // Send OTP (Verify Phone Number)
 export async function sendOtp(phoneNumber: string): Promise<OtpResponse> {
   try {
-    const response = await fetch(`${apiUrl}/api/phoneverify`, {
+    const response = await fetch(`${apiUrl}/api/phoneVerify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +74,7 @@ export async function verifyOtp(
   enteredOtp: string
 ): Promise<VerifyOtpResponse> {
   try {
-    const response = await fetch(`${apiUrl}/api/phoneverify`, {
+    const response = await fetch(`${apiUrl}/api/phoneVerify`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export async function register(userData: {
   phone: string;
 }): Promise<RegisterResponse> {
   try {
-    const response = await fetch(`${apiUrl}/api/mobileregister`, {
+    const response = await fetch(`${apiUrl}/api/mobileRegister`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,40 +123,10 @@ export async function register(userData: {
   }
 }
 
-// Login
-// export async function login(): Promise<any> {
-//   try {
-//     const res = await fetch(apiUrl + '/api/login', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         "nickname": "",
-//         "password": ""
-//       })
-//     })
-    
-//     if (!res.ok) {
-//       throw new Error('Network response was not ok')
-//     }
-//     const data = await res.json()
-//     localStorage.setItem('token', data.token)
-//     console.log(data)
-//     return data
-//   } catch (error) {
-//     console.error('Error sending OTP:', error)
-//     throw error
-//   }
-// }
-
-//login
-
-
 
 export async function login(nickname: string, password: string): Promise<any> {
   try {
-    const res = await fetch(apiUrl + '/api/userLogin', {
+    const res = await fetch(apiUrl + '/api/mobileLogin', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

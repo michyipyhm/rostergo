@@ -71,7 +71,6 @@ class AdminEmployeeService {
           positions.type as employee_type,
           grades.annual_leave_quota as annual_leave,
           users.status as status,
-          users.resign_date as resign_date,
           users.join_date as join_date,
           users.resign_date as resign_date,
           users.updated_at as updated_at
