@@ -1,27 +1,35 @@
-import { getLeaveRequestlistByUserId } from '@/services/leaveRequests';
-import { NextResponse, NextRequest } from 'next/server';
+import { getLeaveRequestlistByUserId } from "@/services/leaveRequests";
+import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  // Retrieve the user payload from the query parameters
-  const userPayload = req.nextUrl.searchParams.get("user");
-  console.log(req.nextUrl.searchParams.get("user"))
-  const userId = 2
+  // Retrieve userId from request headers and parse it
+  const userIdParam = req.headers.get("userId");
+  const userId = parseInt(userIdParam);
 
-  const data = await getLeaveRequestlistByUserId(userId);
+  // Validate userId
+  if (isNaN(userId)) {
+    return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
+  }
 
-//   // Parse the user payload from JSON string to object
-//   let parsedUserPayload = null;
-//   if (userPayload) {
-//     try {
-//       parsedUserPayload = JSON.parse(userPayload);
-//     } catch (error) {
-//       console.error('Error parsing user payload:', error);
-//       return NextResponse.json({ error: 'Invalid user payload' }, { status: 400 });
-//     }
-//   }
+  try {
+    // Fetch leave request list by userId
+    const data = await getLeaveRequestlistByUserId(userId);
 
-//   console.log(parsedUserPayload);
-  
-  // Return the response with the user payload
-  return NextResponse.json({ data, userPayload });
+    // Check if data was found
+    if (!data) {
+      return NextResponse.json(
+        { error: "No data found for the specified userId" },
+        { status: 404 }
+      );
+    }
+
+    // Return the fetched data
+    return NextResponse.json({ data });
+  } catch (error) {
+    console.error("Error fetching leave requests:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }

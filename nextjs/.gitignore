@@ -43,3 +43,6 @@ envfile
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+Freda.md

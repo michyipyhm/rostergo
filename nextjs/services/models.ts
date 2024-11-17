@@ -41,12 +41,20 @@ export interface LoginUser {
   updated_at: Date;
 }
 
-// export interface OtpUpdateResult {
-//   user: LoginUser | null;
-//   redirectToLogin: boolean;
-//   redirectToRegister: boolean;
-//   redirectToVerifyOtp: boolean;
-// }
+export interface mobileRegisterResult {
+  success: boolean;
+  message: string;
+  userId?: number;
+}
+
+export interface mobileRegisterUser {
+  id: number;
+  nickname: string;
+  password: string;
+  phone: string;
+  gender: 'male' | 'female';
+}
+
 
 export interface verifyNumberResult {
   user: LoginUser | null;

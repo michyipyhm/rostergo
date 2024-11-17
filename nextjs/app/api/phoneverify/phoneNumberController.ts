@@ -1,11 +1,11 @@
+import { NextRequest, NextResponse } from "next/server";
+import dotenv from "dotenv";
+import axios from "axios";
 import {
   saveOtpToDB,
   verifyOtp,
   verifyPhoneNumber,
-} from "@/services/otpService";
-import { NextRequest, NextResponse } from "next/server";
-import dotenv from "dotenv";
-import axios from "axios";
+} from "@/services/mobileOtpService";
 
 dotenv.config({ path: "@/.env" });
 
@@ -20,7 +20,7 @@ export async function handleVerifyPhoneNumber(
 ): Promise<NextResponse> {
   try {
     const { phone } = await req.json();
-    console.log(phone)
+    console.log("next.js receive phone number:", phone);
     if (!phone) {
       return NextResponse.json(
         { error: "Phone number required" },
@@ -46,62 +46,53 @@ export async function handleVerifyPhoneNumber(
       });
     }
 
-    // if (result.redirectToVerifyOtp) {
-    //   const generateOtp = () => {
-    //     return Math.floor(100000 + Math.random() * 900000).toString();
-    //   };
-    //   const generatedOtp = generateOtp();
+    if (result.redirectToVerifyOtp) {
+      const generateOtp = () => {
+        return Math.floor(100000 + Math.random() * 900000).toString();
+      };
+      const generatedOtp = generateOtp();
 
-    //   //call whatsappppp
-    //   try {
-    //     await axios.post(
-    //       whatsappApiUrl,
-    //       {
-    //         messaging_product: "whatsapp",
-    //         to: phone,
-    //         type: "template",
-    //         template: {
-    //           name: "your_otp_template",
-    //           language: { code: "en_US" },
-    //           components: [
-    //             {
-    //               type: "body",
-    //               parameters: [
-    //                 {
-    //                   type: "text",
-    //                   text: generatedOtp,
-    //                 },
-    //               ],
-    //             },
-    //           ],
-    //         },
-    //       },
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${whatsappAccessToken}`,
-    //           "Content-Type": "application/json",
-    //         },
-    //       }
-    //     );
+      //call whatsappppp
+      try {
+        await axios.post(
+          whatsappApiUrl,
+          {
+            messaging_product: "whatsapp",
+            recipient_type: "individual",
+            to: `852${phone}`,
+            type: "text",
+            text: {
+              preview_url: false,
+              body: `Your OTP is ${generatedOtp}`,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${whatsappAccessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-    //     console.log(`OTP sent to ${phone} via WhatsApp`);
+        console.log(`OTP sent to ${phone} via WhatsApp`);
 
-    //     const otpSaved = await saveOtpToDB(phone, generatedOtp);
+        const otpSaved = await saveOtpToDB(phone, generatedOtp);
 
-    //     return NextResponse.json({
-    //       message: result.message,
-    //       redirectToLogin: false,
-    //       redirectToVerifyOtp: true,
-    //       user: result.user,
-    //     });
-      // } catch (error) {
-    //     console.error("Error sending WhatsApp message:", error);
-    //     return NextResponse.json(
-    //       { error: "Failed to send OTP via WhatsApp" },
-    //       { status: 500 }
-    //     );
-    //   }
-    // }
+        return NextResponse.json({
+          message: result.message,
+          redirectToLogin: false,
+          redirectToVerifyOtp: true,
+          user: result.user,
+        });
+      } catch (error) {
+        console.error("Error sending WhatsApp message:", error);
+        console.log(await error.toJSON());
+        return NextResponse.json(
+          { error: "Failed to send OTP via WhatsApp" },
+          { status: 500 }
+        );
+      }
+    }
 
     return NextResponse.json({
       message: "Unexpected result",
@@ -144,7 +135,7 @@ export async function handleVerifyOtp(req: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
       message: "OTP verified successfully",
-      redirectToLogin: true,
+      redirectToRegister: true,
       user: verifiedUser,
     });
   } catch (error) {

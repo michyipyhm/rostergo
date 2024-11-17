@@ -1,53 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
-// import jwt from "jsonwebtoken";
-import * as jose from 'jose';
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY); // Make sure to set your secret key in environment variables
+import * as jose from "jose";
 
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY); // Ensure your secret key is set in environment variables
+
+// Function to check if the route is excluded from middleware
 const isRouteWithoutMiddleware = (path: string) => {
-  const excludedPrefix = [
+  const excludedPrefixes = [
     "/login",
     "/api/login",
+    "/api/userLogin",
     "/_next/static",
     "/favicon.ico",
   ];
-  return excludedPrefix.some((prefix) => path.startsWith(prefix));
+  return excludedPrefixes.some((prefix) => path.startsWith(prefix));
 };
 
+// Middleware function
 export async function middleware(request: NextRequest) {
   const res = NextResponse.next();
-
-  // Decode the token if it exists
-  // let decodedPayload = null;
-  // if (token) {
-  //   try {
-  //     decodedPayload = jwt.decode(token); // Verify and decode the token
-  //   } catch (err) {
-  //     console.error("Token verification failed:", err);
-  //     return NextResponse.error(); // Return an error response if verification fails
-  //   }
-  // }
-
-  // Add CORS headers to the response
+  console.log(request.method);
+  // Set CORS headers
   res.headers.append("Access-Control-Allow-Credentials", "true");
   res.headers.append("Access-Control-Allow-Origin", "*"); // Replace with your actual origin
   res.headers.append(
     "Access-Control-Allow-Methods",
-    "GET,DELETE,PATCH,POST,PUT"
+    "GET, DELETE, PATCH, POST, PUT"
   );
   res.headers.append(
     "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    "X-CSRF-Token, X-Requested-With, Accept, Content-Type, Authorization"
   );
 
   // Handle preflight requests
   if (request.method === "OPTIONS") {
-    return res; // Respond with CORS headers for preflight request
+    return res; // Respond with CORS headers for preflight requests
   }
 
   const pathname = request.nextUrl.pathname;
+
+  // Check if the route is excluded from middleware
   if (isRouteWithoutMiddleware(pathname)) {
-    return res;
-    // return NextResponse.next();
+    return res; // Skip middleware for excluded routes
   }
 
   // Retrieve the token from the Authorization header
@@ -58,32 +51,36 @@ export async function middleware(request: NextRequest) {
     token = authHeader.split(" ")[1]; // Extract the token
   }
 
+  // Return error if the token is missing
   if (!token) {
     return NextResponse.json({ message: "Missing token" }, { status: 401 });
   }
 
-
   try {
-    const { payload} = await jose.jwtVerify(token, SECRET_KEY);
-    // const decodedPayload = jwt.verify(token, SECRET_KEY);
-    // Add the decoded payload to the request headers
+    // Verify the token
+    const { payload } = await jose.jwtVerify(token, SECRET_KEY);
+
+    // Log the decoded payload for debugging
+    // console.log({ payload });
+    const userId = payload.id.toString();
+
+    // Clone the request and add the user payload to the headers
     const requestWithUser = request.clone();
-    requestWithUser.headers.set("x-user-data", JSON.stringify(payload));
-    
+    requestWithUser.headers.set("userId", userId);
+
     return NextResponse.next({
       request: requestWithUser,
     });
   } catch (err) {
-      console.error("Token verification failed:", err);
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-    } 
+    console.error("Token verification failed:", err);
+    return NextResponse.json(
+      { message: "Invalid token", error: err.message },
+      { status: 401 }
+    );
   }
+}
 
-  // request.nextUrl.searchParams.set("user", JSON.stringify(decodedPayload));
-  // const data = request.nextUrl.searchParams.get("user");
-  // console.log(data);
-  // return res; // Return the response with CORS headers
-
+// Configuration for middleware matcher
 export const config = {
-  matcher: "/api/login",
+  matcher: ["/api/:path*"], // Adjust to match all API routes
 };
