@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminLoginService } from "@/services/adminLoginService";
-import * as jose from 'jose'
+import * as jose from "jose";
 
 const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
 
 async function generateJWT(payload: any) {
   return await new jose.SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
+    .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime('6h')
+    .setExpirationTime("6h")
     .sign(SECRET_KEY);
-  }
+}
 
 export async function POST(request: NextRequest) {
   const { nickname, password } = await request.json();
@@ -23,7 +23,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await adminLoginService.authenticateAdmin(nickname, password);
+    const result = await adminLoginService.authenticateAdmin(
+      nickname,
+      password
+    );
     if (result.success && result.admin) {
       /* Sign token */
       const payload = {

@@ -2,12 +2,40 @@ import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const secretKey = new TextEncoder().encode("your-secret-key"); // Replace with your secret key
+const allowedOrigins = [
+  "*",
+  "https://yourdomain.com",
+  "https://anotherdomain.com",
+]; // Add allowed origins
+
+const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Define paths for user and admin
+  // Create a response object that will act as request context for downstream
+  const nextResponse = NextResponse.next();
+
+  // CORS Preflight Request Handling
+  if (req.method === "OPTIONS") {
+    nextResponse.headers.set(
+      "Access-Control-Allow-Origin",
+      allowedOrigins.includes("*")
+        ? "*"
+        : req.headers.get("Origin") || allowedOrigins[0]
+    );
+    nextResponse.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    nextResponse.headers.set(
+      "Access-Control-Allow-Headers",
+      "Authorization, Content-Type"
+    );
+    nextResponse.headers.set("Access-Control-Max-Age", "86400"); // Cache preflight for 1 day
+    return nextResponse;
+  }
+
   const isUserPath = pathname.startsWith("/api/user");
   const isAdminPath = pathname.startsWith("/api/admin");
 
@@ -17,31 +45,65 @@ export async function middleware(req: NextRequest) {
     req.headers.get("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return NextResponse.redirect(new URL("/api/unauthorized", req.url));
+    return NextResponse.json(
+      { error: "Unauthorized: Missing token" },
+      {
+        status: 401,
+        headers: {
+          "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+        },
+      }
+    );
   }
 
   try {
     // Verify the token and extract the payload
     const { payload } = await jwtVerify(token, secretKey);
 
-    // Check the role in the token payload
     const userRole = payload.role as string;
 
     if (isUserPath && userRole !== "user") {
-      return NextResponse.redirect(new URL("/api/unauthorized", req.url));
+      return NextResponse.json(
+        { error: "Forbidden: Insufficient permissions for user api" },
+        {
+          status: 403,
+          headers: {
+            "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+          },
+        }
+      );
     }
 
     if (isAdminPath && userRole !== "admin") {
-      return NextResponse.redirect(new URL("/api/unauthorized", req.url));
+      return NextResponse.json(
+        { error: "Forbidden: Insufficient permissions for admin api" },
+        {
+          status: 403,
+          headers: {
+            "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+          },
+        }
+      );
     }
 
     // Store payload in a custom header for downstream use
-    const res = NextResponse.next();
-    res.headers.set("x-jwt-payload", JSON.stringify(payload)); // Attach payload to the header
-    return res;
+    nextResponse.headers.set("x-jwt-payload", JSON.stringify(payload));
+    nextResponse.headers.set(
+      "Access-Control-Allow-Origin",
+      req.headers.get("Origin") || "*"
+    ); // Dynamic origin
+    return nextResponse;
   } catch (error) {
     console.error("JWT verification failed:", error);
-    return NextResponse.redirect(new URL("/api/unauthorized", req.url));
+    return NextResponse.json(
+      { error: "Unauthorized: Invalid or expired token" },
+      {
+        status: 401,
+        headers: {
+          "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+        },
+      }
+    );
   }
 }
 
