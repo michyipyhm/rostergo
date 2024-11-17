@@ -1,86 +1,50 @@
-import { NextRequest, NextResponse } from "next/server";
-import * as jose from "jose";
+import { jwtVerify } from "jose";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY); // Ensure your secret key is set in environment variables
+const secretKey = new TextEncoder().encode("your-secret-key"); // Replace with your secret key
 
-// Function to check if the route is excluded from middleware
-const isRouteWithoutMiddleware = (path: string) => {
-  const excludedPrefixes = [
-    "/login",
-    "/api/adminLogin",
-    "/api/mobileLogin",
-    "/_next/static",
-    "/favicon.ico",
-  ];
-  return excludedPrefixes.some((prefix) => path.startsWith(prefix));
-};
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-// Middleware function
-export async function middleware(request: NextRequest) {
-  const res = NextResponse.next();
-  console.log(request.method);
-  // Set CORS headers
-  res.headers.append("Access-Control-Allow-Credentials", "true");
-  res.headers.append("Access-Control-Allow-Origin", "*"); // Replace with your actual origin
-  res.headers.append(
-    "Access-Control-Allow-Methods",
-    "GET, DELETE, PATCH, POST, PUT"
-  );
-  res.headers.append(
-    "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Content-Type, Authorization"
-  );
+  // Define paths for user and admin
+  const isUserPath = pathname.startsWith("/api/user");
+  const isAdminPath = pathname.startsWith("/api/admin");
 
-  // Handle preflight requests
-  if (request.method === "OPTIONS") {
-    return res; // Respond with CORS headers for preflight requests
-  }
+  // Extract token from cookies or headers
+  const token =
+    req.cookies.get("authToken")?.value ||
+    req.headers.get("Authorization")?.replace("Bearer ", "");
 
-  const pathname = request.nextUrl.pathname;
-
-  // Check if the route is excluded from middleware
-  if (isRouteWithoutMiddleware(pathname)) {
-    return res; // Skip middleware for excluded routes
-  }
-
-  // Retrieve the token from the Authorization header
-  const authHeader = request.headers.get("Authorization");
-  let token = null;
-
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1]; // Extract the token
-  }
-
-  // Return error if the token is missing
   if (!token) {
-    return NextResponse.json({ message: "Missing token" }, { status: 401 });
+    return NextResponse.redirect(new URL("/api/unauthorized", req.url));
   }
 
   try {
-    // Verify the token
-    const { payload } = await jose.jwtVerify(token, SECRET_KEY);
+    // Verify the token and extract the payload
+    const { payload } = await jwtVerify(token, secretKey);
 
-    // Log the decoded payload for debugging
-    // console.log({ payload });
-    const userId = payload.id.toString();
+    // Check the role in the token payload
+    const userRole = payload.role as string;
 
-    // Clone the request and add the user payload to the headers
-    const requestWithUser = request.clone();
-    requestWithUser.headers.set("userId", userId);
+    if (isUserPath && userRole !== "user") {
+      return NextResponse.redirect(new URL("/api/unauthorized", req.url));
+    }
 
-    return NextResponse.next({
-      request: requestWithUser,
-    });
-  } catch (err) {
-    console.error("Token verification failed:", err);
-    return NextResponse.json(
-      { message: "Invalid token", error: err.message },
-      { status: 401 }
-    );
+    if (isAdminPath && userRole !== "admin") {
+      return NextResponse.redirect(new URL("/api/unauthorized", req.url));
+    }
+
+    // Store payload in a custom header for downstream use
+    const res = NextResponse.next();
+    res.headers.set("x-jwt-payload", JSON.stringify(payload)); // Attach payload to the header
+    return res;
+  } catch (error) {
+    console.error("JWT verification failed:", error);
+    return NextResponse.redirect(new URL("/api/unauthorized", req.url));
   }
 }
 
-// Configuration for middleware matcher
 export const config = {
-  matcher: ["/api/:path*"], // Adjust to match all API routes
+  matcher: ["/api/user/:path*", "/api/admin/:path*"], // Guard specific paths
 };
