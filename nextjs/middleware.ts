@@ -7,8 +7,8 @@ const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY); // Ensure your
 const isRouteWithoutMiddleware = (path: string) => {
   const excludedPrefixes = [
     "/login",
-    "/api/login",
-    "/api/userLogin",
+    "/api/adminLogin",
+    "/api/mobileLogin",
     "/_next/static",
     "/favicon.ico",
   ];

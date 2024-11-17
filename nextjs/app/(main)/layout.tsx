@@ -81,7 +81,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/">Daily Status</Nav.Link>
-              <Nav.Link href="/monthly-roster">Monthly Roster</Nav.Link>
+              <Nav.Link href="/roster">Monthly Roster</Nav.Link>
               <Nav.Link href="/employee">Employee</Nav.Link>
               <Nav.Link href="/branch">Branch</Nav.Link>
               <Nav.Link href="/shift-slot">Shift Slot</Nav.Link>

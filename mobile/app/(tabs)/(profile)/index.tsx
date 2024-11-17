@@ -1,46 +1,73 @@
-import { useRouter } from "expo-router";
-import { SafeAreaView, Button, View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import React from 'react';
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
+// import { getProfile } from '@/api/profile-api';
+import { format } from 'date-fns';
 
+function InfoItem({ label, value }: { label: string; value: string | number | null }) {
+  return (
+    <View style={styles.infoRow}>
+      <Text style={styles.label}>{label}:</Text>
+      <Text style={styles.value}>{value || 'N/A'}</Text>
+    </View>
+  );
+}
 export default function Profile() {
   const router = useRouter();
+  // const { data: profile, isLoading, error } = useQuery({
+  //   queryKey: ["profile"],
+  //   queryFn: getProfile,
+  // });
+
+  // if (isLoading) {
+  //   return (
+  //     <View style={styles.centerContainer}>
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
+
+  // if (error) {
+  //   return (
+  //     <View style={styles.centerContainer}>
+  //       <Text style={styles.errorText}>Error loading profile</Text>
+  //     </View>
+  //   );
+  // }
+
+  // const formattedJoinDate = profile?.join_date 
+  //   ? format(new Date(profile.join_date), 'dd/MM/yyyy')
+  //   : 'N/A';
+
   return (
-    <SafeAreaView>
-      <Text>Profile</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.card}>
+        {/* <InfoItem label="Nickname" value={profile.nickname} />
+        <InfoItem label="Gender" value={profile.gender} />
+        <InfoItem label="Phone" value={profile.phone} />
+        <InfoItem label="Branch" value={profile.branch} />
+        <InfoItem label="Position" value={profile.position} />
+        <InfoItem label="Grade" value={profile.grade} />
+        <InfoItem label="AL Quota" value={`${profile.annual_leave} days`} />
+        <InfoItem label="Join Date" value={formattedJoinDate} /> */}
 
-      <View style={styles.profileHeader}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/100' }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.userName}>User Name</Text>
+        <InfoItem label="Nickname" value="hi" />
+        <InfoItem label="Gender" value="male" />
+        <InfoItem label="Phone" value="1234" />
+        <InfoItem label="Branch" value="1" />
+        <InfoItem label="Position" value="sales"/>
+        <InfoItem label="Grade" value="senior" />
+        <InfoItem label="AL Quota" value=" 14 days"/>
+        <InfoItem label="Join Date" value="2024-11-01" />
+        
+        <TouchableOpacity
+          style={styles.payslipsButton}
+          onPress={() => router.push('/payslips')}
+        >
+          <Text style={styles.payslipsButtonText}>Payslips</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        // onPress={() => router.push('ResetPassword')}
-      >
-        <Text style={styles.buttonText}>Change Password</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        // onPress={() => router.push('UserInformation')}
-      >
-        <Text style={styles.buttonText}>Information</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        // onPress={() => router.push('Payslips')}
-      >
-        <Text style={styles.buttonText}>Payslips</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.button, styles.logoutButton]}>
-        <Text style={[styles.buttonText, styles.logoutButtonText]}>Logout</Text>
-      </TouchableOpacity>
-
-      <Button
-        // onPress={() => router.push("/(tabs)/(profile)/editProfile")}
-        title="Go somewhere"
-      />
     </SafeAreaView>
   );
 }
@@ -48,38 +75,58 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f5f5f5',
+    padding: 16,
   },
-  profileHeader: {
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  infoRow: {
+    flexDirection: 'row',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
   },
-  button: {
-    backgroundColor: '#ffffff',
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  buttonText: {
+  label: {
+    flex: 1,
     fontSize: 16,
-    textAlign: 'center',
+    color: '#333',
+    fontWeight: '500',
   },
-  logoutButton: {
-    backgroundColor: '#ff6347',
-    marginTop: 20,
+  value: {
+    flex: 2,
+    fontSize: 16,
+    color: '#666',
   },
-  logoutButtonText: {
-    color: '#ffffff',
+  payslipsButton: {
+    marginTop: 24,
+    backgroundColor: '#f0f0f0',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  payslipsButtonText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
   },
 });
