@@ -8,13 +8,13 @@ async function generateJWT(payload: any) {
   return await new jose.SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('6h')
+    .setExpirationTime('12h')
     .sign(SECRET_KEY);
   }
 
 export async function POST(request: NextRequest) {
   const { nickname, password } = await request.json();
-  console.log("KEY: ", SECRET_KEY);
+
   try {
     if (!nickname || !password) {
       return NextResponse.json(
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const result = await adminLoginService.authenticateAdmin(nickname, password);
     if (result.success && result.admin) {
       /* Sign token */
-      const payload = {
+      const payload = { 
         id: result.admin.id,
         nickname: result.admin.nickname,
         admin: result.admin.admin,
@@ -34,9 +34,11 @@ export async function POST(request: NextRequest) {
       };
 
       const token = await generateJWT(payload);
-      // console.log("TOKEN: ", token);
+      console.log("TOKEN: ", token);
+  
+      
       return NextResponse.json(
-        { message: "Login successful", token },
+        { message: "Login successful", token, payload },
         { status: 200 }
       );
     } else {

@@ -35,27 +35,6 @@ class AdminLoginService {
     }
   }
 
-  // async verifySession() {
-  //   try {
-  //     const session = await sessionStore.get()
-  //     if (!session.id) {
-  //       return { success: false, message: 'No active session' }
-  //     }
-
-  //     const sql = 'SELECT * FROM users WHERE id = $1 AND admin = true'
-  //     const result = await pgClient.query(sql, [session.id])
-
-  //     if (result.rows.length === 0) {
-  //       await sessionStore.clear() 
-  //       return { success: false, message: 'Invalid session' }
-  //     }
-
-  //     return { success: true, user: result.rows[0] }
-  //   } catch (error) {
-  //     console.error('Error verifying session:', error)
-  //     return { success: false, message: 'An error occurred while verifying the session' }
-  //   }
-  // }
 
   async changePassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean> {
     try {

@@ -29,7 +29,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(shift)"
         options={{
-          title: "Work",
+          title: "Shift",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="briefcase.fill" color={color} />
           ),

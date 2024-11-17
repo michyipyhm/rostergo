@@ -8,16 +8,14 @@ async function generateJWT(payload: any) {
   return await new jose.SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("6h")
+    .setExpirationTime("12h")
     .sign(SECRET_KEY);
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    // Parse the request body
-    const { nickname, password } = await request.json();
+  const { nickname, password } = await request.json();
 
-    // Validate input
+  try {
     if (!nickname || !password) {
       return NextResponse.json(
         { message: "Nickname and password are required" },
@@ -25,7 +23,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Authenticate user
     const result = await mobileLoginService.authenticateUser(
       nickname,
       password
@@ -41,12 +38,11 @@ export async function POST(request: NextRequest) {
         type: result.user.type,
       };
 
-      // Generate JWT token
       const token = await generateJWT(payload);
       console.log("TOKEN:", token);
 
       return NextResponse.json(
-        { message: "Login successful", token },
+        { message: "Login successful", token, payload },
         { status: 200 }
       );
     } else {
