@@ -48,6 +48,7 @@ export const storageUtil = {
 export async function sendOtp(phoneNumber: string): Promise<OtpResponse> {
   try {
     const response = await fetch(`${apiUrl}/api/phoneverify`, {
+      
       method: "POST",
       headers: {
         "Content-Type": "application/json",
