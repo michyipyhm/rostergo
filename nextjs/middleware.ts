@@ -1,86 +1,112 @@
-import { NextRequest, NextResponse } from "next/server";
-import * as jose from "jose";
+import { jwtVerify } from "jose";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY); // Ensure your secret key is set in environment variables
+const allowedOrigins = [
+  "*",
+  "https://yourdomain.com",
+  "https://anotherdomain.com",
+]; // Add allowed origins
 
-// Function to check if the route is excluded from middleware
-const isRouteWithoutMiddleware = (path: string) => {
-  const excludedPrefixes = [
-    "/login",
-    "/api/login",
-    "/api/userLogin",
-    "/_next/static",
-    "/favicon.ico",
-  ];
-  return excludedPrefixes.some((prefix) => path.startsWith(prefix));
-};
+const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
 
-// Middleware function
-export async function middleware(request: NextRequest) {
-  const res = NextResponse.next();
-  console.log(request.method);
-  // Set CORS headers
-  res.headers.append("Access-Control-Allow-Credentials", "true");
-  res.headers.append("Access-Control-Allow-Origin", "*"); // Replace with your actual origin
-  res.headers.append(
-    "Access-Control-Allow-Methods",
-    "GET, DELETE, PATCH, POST, PUT"
-  );
-  res.headers.append(
-    "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Content-Type, Authorization"
-  );
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  // Handle preflight requests
-  if (request.method === "OPTIONS") {
-    return res; // Respond with CORS headers for preflight requests
+  // Create a response object that will act as request context for downstream
+  const nextResponse = NextResponse.next();
+
+  // CORS Preflight Request Handling
+  if (req.method === "OPTIONS") {
+    nextResponse.headers.set(
+      "Access-Control-Allow-Origin",
+      allowedOrigins.includes("*")
+        ? "*"
+        : req.headers.get("Origin") || allowedOrigins[0]
+    );
+    nextResponse.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    nextResponse.headers.set(
+      "Access-Control-Allow-Headers",
+      "Authorization, Content-Type"
+    );
+    nextResponse.headers.set("Access-Control-Max-Age", "86400"); // Cache preflight for 1 day
+    return nextResponse;
   }
 
-  const pathname = request.nextUrl.pathname;
+  const isUserPath = pathname.startsWith("/api/user");
+  const isAdminPath = pathname.startsWith("/api/admin");
 
-  // Check if the route is excluded from middleware
-  if (isRouteWithoutMiddleware(pathname)) {
-    return res; // Skip middleware for excluded routes
-  }
+  // Extract token from cookies or headers
+  const token =
+    req.cookies.get("authToken")?.value ||
+    req.headers.get("Authorization")?.replace("Bearer ", "");
 
-  // Retrieve the token from the Authorization header
-  const authHeader = request.headers.get("Authorization");
-  let token = null;
-
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1]; // Extract the token
-  }
-
-  // Return error if the token is missing
   if (!token) {
-    return NextResponse.json({ message: "Missing token" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized: Missing token" },
+      {
+        status: 401,
+        headers: {
+          "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+        },
+      }
+    );
   }
 
   try {
-    // Verify the token
-    const { payload } = await jose.jwtVerify(token, SECRET_KEY);
+    // Verify the token and extract the payload
+    const { payload } = await jwtVerify(token, secretKey);
 
-    // Log the decoded payload for debugging
-    // console.log({ payload });
-    const userId = payload.id.toString();
+    const userRole = payload.role as string;
 
-    // Clone the request and add the user payload to the headers
-    const requestWithUser = request.clone();
-    requestWithUser.headers.set("userId", userId);
+    if (isUserPath && userRole !== "user") {
+      return NextResponse.json(
+        { error: "Forbidden: Insufficient permissions for user api" },
+        {
+          status: 403,
+          headers: {
+            "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+          },
+        }
+      );
+    }
 
-    return NextResponse.next({
-      request: requestWithUser,
-    });
-  } catch (err) {
-    console.error("Token verification failed:", err);
+    if (isAdminPath && userRole !== "admin") {
+      return NextResponse.json(
+        { error: "Forbidden: Insufficient permissions for admin api" },
+        {
+          status: 403,
+          headers: {
+            "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+          },
+        }
+      );
+    }
+
+    // Store payload in a custom header for downstream use
+    nextResponse.headers.set("x-jwt-payload", JSON.stringify(payload));
+    nextResponse.headers.set(
+      "Access-Control-Allow-Origin",
+      req.headers.get("Origin") || "*"
+    ); // Dynamic origin
+    return nextResponse;
+  } catch (error) {
+    console.error("JWT verification failed:", error);
     return NextResponse.json(
-      { message: "Invalid token", error: err.message },
-      { status: 401 }
+      { error: "Unauthorized: Invalid or expired token" },
+      {
+        status: 401,
+        headers: {
+          "Access-Control-Allow-Origin": req.headers.get("Origin") || "*",
+        },
+      }
     );
   }
 }
 
-// Configuration for middleware matcher
 export const config = {
-  matcher: ["/api/:path*"], // Adjust to match all API routes
+  matcher: ["/api/user/:path*", "/api/admin/:path*"], // Guard specific paths
 };

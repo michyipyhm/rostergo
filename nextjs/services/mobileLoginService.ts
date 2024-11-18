@@ -7,37 +7,31 @@ class MobileLoginService {
 
   async authenticateUser(nickname: string, password: string) {
     try {
-      // SQL query to fetch user data based on nickname
       const sql = `
         SELECT 
           users.id,
+          users.password,
           users.nickname, 
           users.admin, 
-          positions.type,
-          users.password  -- Ensure to select the password hash for validation
+          positions.type
         FROM users
         JOIN positions ON users.position_id = positions.id
-        WHERE users.nickname = $1 AND admin = false
+        WHERE users.nickname = $1 AND users.admin = false
       `;
   
-      // Execute the query
       const result = await pgClient.query(sql, [nickname]);
-  
-      // Check if the user exists
+
       if (result.rows.length === 0) {
         return { success: false, message: 'No such user' };
       }
   
       const userData = result.rows[0];
-  
-      // Validate the password
       const isPasswordValid = await checkPassword(password, userData.password);
   
       if (!isPasswordValid) {
         return { success: false, message: 'Invalid password' };
       }
   
-      // Return user data upon successful authentication
       return {
         success: true,
         user: {

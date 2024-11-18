@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { handleVerifyOtp, handleVerifyPhoneNumber } from './phoneNumberController'
 
 export async function POST(req: NextRequest): Promise<any> {
-  console.log("POST")
+  console.log("POST in route")
   return handleVerifyPhoneNumber(req)
 }
 
