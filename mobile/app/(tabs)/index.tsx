@@ -97,7 +97,7 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: "#0A1423", dark: "#0A1423" }}
       headerImage={
         <Image
-          source={require("@/assets/images/working.jpg")}
+          source={require("@/assets/images/working2.jpg")}
           style={styles.reactLogo}
         />
       }
@@ -133,7 +133,7 @@ export default function HomeScreen() {
         ]}
       >
         <Text style={styles.selectedDateText}>
-          Selected Date: {selectedDate}
+          {selectedDate}
         </Text>
         {selectedShift && (
           <Text style={styles.shiftTimeText}>
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   shiftTimeText: {
     fontSize: 18,
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   shiftSlotText: {
     fontSize: 18,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   selectedDateText: {
-    fontSize: 22,
+    fontSize: 26,
     textAlign: "center",
     marginBottom: 25,
   },
@@ -222,21 +222,22 @@ const styles = StyleSheet.create({
   //   marginBottom: 25,
   // },
   closeButton: {
-    padding: 10,
+    padding: 12,
     alignSelf: "center",
     backgroundColor: "#0A1423",
-    borderRadius: 10,
-    marginTop: 10,
+    borderRadius: 25,
+    marginTop: 12,
   },
   sickLeaveButton: {
-    padding: 10,
+    padding: 12,
     alignSelf: "center",
     backgroundColor: "#0A1423",
-    borderRadius: 10,
+    borderRadius: 25,
     marginTop: 15
   },
   closeButtonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: "500",
   },
 });
