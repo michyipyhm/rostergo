@@ -1,4 +1,4 @@
-import { pgClient } from "./pgClient";
+import { pgClient } from "@/lib/pgClient";
 
 
 type LeaveRequest = {

@@ -1,4 +1,4 @@
-import { pgClient } from "@/services/pgClient";
+import { pgClient } from "@/lib/pgClient";
 
 class ManpowerService {
 

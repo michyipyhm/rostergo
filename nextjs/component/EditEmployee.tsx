@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Employee } from '@/services/models';
+import { Employee } from '@/lib/models';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap'
 import styles from './EditEmployee.module.scss';
 import { formatYYYYMMDD } from '@/lib/dateFormatters'

@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   slideView: {
     position: "absolute",
-    bottom: -12,
+    bottom: 0,
     left: 0,
     right: 0,
     height: 250,

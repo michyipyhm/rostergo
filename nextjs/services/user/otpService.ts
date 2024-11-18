@@ -1,5 +1,6 @@
-import { pgClient } from "./pgClient";
-import { LoginUser, verifyNumberResult } from "./models";
+import { LoginUser, verifyNumberResult } from "@/lib/models";
+import { pgClient } from "@/lib/pgClient";
+
 
 export async function verifyPhoneNumber(
   phone: string

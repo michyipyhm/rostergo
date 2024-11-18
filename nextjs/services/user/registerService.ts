@@ -1,5 +1,5 @@
-import { mobileRegisterResult, mobileRegisterUser } from "./models";
-import { pgClient } from "./pgClient";
+import { mobileRegisterResult } from "@/lib/models";
+import { pgClient } from "@/lib/pgClient";
 
 export async function mobileRegister(
   phone: string,

@@ -1,6 +1,6 @@
 
-import { pgClient } from '@/services/pgClient'
-import { checkPassword, hashPassword } from '../lib/bcrypt'
+import { checkPassword } from '@/lib/bcrypt';
+import { pgClient } from '@/lib/pgClient'
 
 class MobileLoginService {
   constructor() {}

@@ -2,7 +2,7 @@ import React from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-// import { getProfile } from '@/api/profile-api';
+import { getProfile } from '@/api/profile-api';
 import { format } from 'date-fns';
 
 function InfoItem({ label, value }: { label: string; value: string | number | null }) {
@@ -15,51 +15,51 @@ function InfoItem({ label, value }: { label: string; value: string | number | nu
 }
 export default function Profile() {
   const router = useRouter();
-  // const { data: profile, isLoading, error } = useQuery({
-  //   queryKey: ["profile"],
-  //   queryFn: getProfile,
-  // });
+  const { data: profile, isLoading, error } = useQuery({
+    queryKey: ["profile"],
+    queryFn: getProfile,
+  });
 
-  // if (isLoading) {
-  //   return (
-  //     <View style={styles.centerContainer}>
-  //       <Text>Loading...</Text>
-  //     </View>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
-  // if (error) {
-  //   return (
-  //     <View style={styles.centerContainer}>
-  //       <Text style={styles.errorText}>Error loading profile</Text>
-  //     </View>
-  //   );
-  // }
+  if (error) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.errorText}>Error loading profile</Text>
+      </View>
+    );
+  }
 
-  // const formattedJoinDate = profile?.join_date 
-  //   ? format(new Date(profile.join_date), 'dd/MM/yyyy')
-  //   : 'N/A';
+  const formattedJoinDate = profile?.join_date 
+    ? format(new Date(profile.join_date), 'dd/MM/yyyy')
+    : 'N/A';
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        {/* <InfoItem label="Nickname" value={profile.nickname} />
+        <InfoItem label="Nickname" value={profile.nickname} />
         <InfoItem label="Gender" value={profile.gender} />
         <InfoItem label="Phone" value={profile.phone} />
         <InfoItem label="Branch" value={profile.branch} />
         <InfoItem label="Position" value={profile.position} />
         <InfoItem label="Grade" value={profile.grade} />
         <InfoItem label="AL Quota" value={`${profile.annual_leave} days`} />
-        <InfoItem label="Join Date" value={formattedJoinDate} /> */}
+        <InfoItem label="Join Date" value={formattedJoinDate} />
 
-        <InfoItem label="Nickname" value="hi" />
+        {/* <InfoItem label="Nickname" value="hi" />
         <InfoItem label="Gender" value="male" />
         <InfoItem label="Phone" value="1234" />
         <InfoItem label="Branch" value="1" />
         <InfoItem label="Position" value="sales"/>
         <InfoItem label="Grade" value="senior" />
         <InfoItem label="AL Quota" value=" 14 days"/>
-        <InfoItem label="Join Date" value="2024-11-01" />
+        <InfoItem label="Join Date" value="2024-11-01" /> */}
         
         <TouchableOpacity
           style={styles.payslipsButton}

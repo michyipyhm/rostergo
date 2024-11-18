@@ -1,4 +1,4 @@
-import { pgClient } from "@/services/pgClient";
+import { pgClient } from "@/lib/pgClient";
 import * as jose from 'jose';
 
 const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);

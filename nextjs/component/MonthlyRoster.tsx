@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, notFound, useRouter } from "next/navigation";
 import styles from './MonthlyRoster.module.scss';
-import { MonthlyRosterData } from "@/services/models";
+import { MonthlyRosterData } from "@/lib/models";
 import holidaysData from "@/HKPH-en.json"
 import EditRoster from './EditRoster';
 

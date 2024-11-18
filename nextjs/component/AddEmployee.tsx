@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
-import { Employee } from '@/services/models'
+import { Employee } from '@/lib/models'
 
 
 interface AddEmployeeModalProps {

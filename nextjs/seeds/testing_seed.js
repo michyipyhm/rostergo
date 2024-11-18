@@ -264,5 +264,25 @@ exports.seed = async function (knex) {
       over_time_approve: true,
       status: "check out",
     },
+    {
+      date: "2024-11-14",
+      shift_slot_id: 2,
+      user_id: 2,
+    },
+    {
+      date: "2024-11-20",
+      shift_slot_id: 3,
+      user_id: 2,
+    },
+    {
+      date: "2024-11-22",
+      shift_slot_id: 4,
+      user_id: 2,
+    },
+    {
+      date: "2024-11-04",
+      shift_slot_id: 5,
+      user_id: 2,
+    }
   ]);
 };

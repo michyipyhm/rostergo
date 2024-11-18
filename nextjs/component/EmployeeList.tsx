@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import styles from './EmployeeList.module.scss';
-import { Employee } from '@/services/models'
+import { Employee } from '@/lib/models'
 import Link from "next/link"
 import { formatYYYYMMDD, formatYYYYMMDDHHMM } from '@/lib/dateFormatters'
 

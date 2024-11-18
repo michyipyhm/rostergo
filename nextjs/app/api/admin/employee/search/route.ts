@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { pgClient } from '@/services/pgClient'
+import { pgClient } from '@/lib/pgClient'
 
 export async function GET(req: NextRequest) {
   try {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { manpowerService } from "@/services/manpowerService";
+import { manpowerService } from "@/services/admin/manpowerService";
 
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.pathname.split("/").pop()

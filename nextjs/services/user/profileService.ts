@@ -1,4 +1,4 @@
-import { pgClient } from "./pgClient";
+import { pgClient } from "@/lib/pgClient";
 
 class MobileProfileService {
   constructor() {}
@@ -15,7 +15,7 @@ class MobileProfileService {
           positions.name as position,
           grades.name as grade,
           grades.annual_leave_quota as annual_leave,
-          users.join_date as join_date,         
+          users.join_date as join_date
         FROM users
         JOIN positions ON users.position_id = positions.id
         JOIN grades ON positions.grade_id = grades.id
