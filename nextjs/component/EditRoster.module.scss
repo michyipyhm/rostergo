@@ -1,0 +1,27 @@
+.editWindow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 60px;
+  width: 600px;
+  height: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.editContainer{
+  display: flex;
+  flex-direction: column;
+}
+
+.memberName{
+  font-size:xx-large;
+}
+
+.btnSection{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

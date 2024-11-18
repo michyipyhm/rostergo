@@ -1,7 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 import styles from './ManpowerTable.module.scss';
-import { Shift } from "@/services/models";
+import { Shift } from "@/lib/models";
 
 interface ManpowerTableProps {
   shifts: Shift[];

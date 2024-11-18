@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuthStore } from '../store/auth';
-import { useMutation } from '@tanstack/react-query';
-import { register } from '../api/auth-api';
+import { useRouter } from "expo-router";
+import { Alert, SafeAreaView, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
+import { useAuthStore } from "../store/auth";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "@/api/auth-api";
+
 
 interface RegisterData {
   nickname: string;
   password: string;
   confirmPassword: string;
   gender: 'male' | 'female';
+  
 }
+
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -36,7 +39,7 @@ export default function RegisterScreen() {
           { text: 'OK', onPress: () => router.push('/login') }
         ]);
       } else {
-        Alert.alert('Error', data.message);
+        Alert.alert('Error');
       }
     },
     onError: (error) => {
@@ -62,9 +65,10 @@ export default function RegisterScreen() {
     registerMutation.mutate(formData);
   };
 
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
+    <SafeAreaView style={styles.container}>
+<Text style={styles.title}>Create Account</Text>
       
       <View style={styles.inputWrapper}>
         <Text style={styles.label}>Nickname</Text>
@@ -145,7 +149,9 @@ export default function RegisterScreen() {
       >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
-    </View>
+      
+      <Text>Login</Text>
+    </SafeAreaView>
   );
 }
 

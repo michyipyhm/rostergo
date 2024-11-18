@@ -102,13 +102,6 @@ exports.seed = async function (knex) {
       start_time: "13:00:00",
       end_time: "15:00:00",
     },
-    {
-      branch_id: 2,
-      title: "Shift E",
-      short_title: "E",
-      start_time: "13:00:00",
-      end_time: "15:00:00",
-    },
   ]);
 
   await knex("users").insert([
@@ -179,17 +172,6 @@ exports.seed = async function (knex) {
       join_date: "2024-08-01",
     },
     {
-      nickname: "admin2",
-      password: await hashPassword("123123"),
-      phone: "12312377",
-      admin: true,
-      gender: "male",
-      branch_id: 2,
-      position_id: 1,
-      status: "active",
-      join_date: "2024-01-01",
-    },
-    {
       nickname: "resign1",
       password: await hashPassword("123123"),
       phone: "92312377",
@@ -209,7 +191,7 @@ exports.seed = async function (knex) {
   ]);
 
   await knex("shift_requests").insert([
-    { user_id: 4, date: "2024-11-28", shift_slot_id: 3, status: "pending" },
+    { user_id: 4, date: "2024-11-28", shift_slot_id: 3, status: "approve" },
     { user_id: 4, date: "2024-11-29", shift_slot_id: 2, status: "pending" },
     { user_id: 5, date: "2024-11-28", shift_slot_id: 1, status: "pending" },
     { user_id: 5, date: "2024-11-29", shift_slot_id: 4, status: "pending" },
@@ -223,7 +205,7 @@ exports.seed = async function (knex) {
       end_date: "2024-11-27",
       duration: "Full day",
       leave_type_id: 1,
-      status: "pending",
+      status: "approve",
     },
     {
       user_id: 3,
@@ -238,7 +220,7 @@ exports.seed = async function (knex) {
 
   await knex("shifts").insert([
     {
-      date: "2024-11-07",
+      date: "2024-11-25",
       shift_slot_id: 1,
       user_id: 2,
       checkin_time: "08:52:33",
@@ -247,7 +229,7 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-07",
+      date: "2024-11-25",
       shift_slot_id: 2,
       user_id: 3,
       checkin_time: "11:55:48",
@@ -256,7 +238,7 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-04",
+      date: "2024-11-25",
       shift_slot_id: 1,
       user_id: 4,
       checkin_time: "08:59:53",
@@ -265,7 +247,7 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-03",
+      date: "2024-11-25",
       shift_slot_id: 2,
       user_id: 5,
       checkin_time: "11:54:18",
@@ -274,7 +256,7 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-02",
+      date: "2024-11-26",
       shift_slot_id: 1,
       user_id: 2,
       checkin_time: "08:57:16",
@@ -282,60 +264,25 @@ exports.seed = async function (knex) {
       over_time_approve: true,
       status: "check out",
     },
-    { date: "2024-11-29", shift_slot_id: 1, user_id: 1 },
     {
-      date: "2024-10-25",
-      shift_slot_id: 1,
-      user_id: 8,
-      checkin_time: "08:59:53",
-      checkout_time: "12:07:43",
-      over_time_approve: true,
-      status: "check out",
-    },
-    {
-      date: "2024-11-02",
-      shift_slot_id: 1,
-      user_id: 8,
-      checkin_time: "08:59:53",
-      checkout_time: "12:07:43",
-      over_time_approve: true,
-      status: "check out",
-    },
-    {
-      date: "2024-11-18",
+      date: "2024-11-14",
       shift_slot_id: 2,
       user_id: 2,
-      over_time_approve: true,
     },
     {
-      date: "2024-11-19",
+      date: "2024-11-20",
       shift_slot_id: 3,
       user_id: 2,
-      over_time_approve: true,
     },
     {
       date: "2024-11-22",
       shift_slot_id: 4,
       user_id: 2,
-      over_time_approve: true,
     },
     {
-      date: "2024-11-23",
-      shift_slot_id: 1,
-      user_id: 2,
-      over_time_approve: true,
-    },
-    {
-      date: "2024-11-26",
+      date: "2024-11-04",
       shift_slot_id: 5,
       user_id: 2,
-      over_time_approve: true,
-    },
-    {
-      date: "2024-11-28",
-      shift_slot_id: 6,
-      user_id: 2,
-      over_time_approve: true,
-    },
+    }
   ]);
 };

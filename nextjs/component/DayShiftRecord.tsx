@@ -2,7 +2,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 import styles from './DayShiftRecord.module.scss';
-import { Shift } from "@/services/models";
+import { Shift } from "@/lib/models";
 
 interface DayShiftRecordProps {
   shifts: Shift[];
