@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, FlatList, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
@@ -5,8 +6,28 @@ import { getLeaveDetail } from '@/api/leave-api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar, ChevronDown } from 'lucide-react-native';
 
+interface ShiftSlot {
+  start_time?: string;
+  end_time?: string;
+  title?: string;
+}
+
+interface LeaveType {
+  name: string;
+}
+
+interface LeaveRequestItem {
+  id: number;
+  shift_slot?: ShiftSlot;
+  start_date: string;
+  end_date: string;
+  leave_type: LeaveType;
+  status: string;
+  duration?: string;
+}
+
 export default function LeaveRequestDetail() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<LeaveRequestItem[], Error>({
     queryKey: ['getLeaveDetail'],
     queryFn: getLeaveDetail,
   });
@@ -46,21 +67,7 @@ export default function LeaveRequestDetail() {
   );
 }
 
-interface ShiftSlot {
-  start_time?: string;
-  end_time?: string;
-}
-
-interface LeaveRequestItemProps {
-  item: {
-    shift_slot?: ShiftSlot;
-    start_date: string;
-    end_date: string;
-  };
-}
-
-
-function LeaveRequestItem({ item }) {
+function LeaveRequestItem({ item }: { item: LeaveRequestItem }) {
   const [startTime, setStartTime] = useState(item.shift_slot?.start_time ? new Date(item.shift_slot.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A');
   const [endTime, setEndTime] = useState(item.shift_slot?.end_time ? new Date(item.shift_slot.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A');
   const [startDate, setStartDate] = useState(new Date(item.start_date));
@@ -78,25 +85,25 @@ function LeaveRequestItem({ item }) {
 
   const durations = ['Full Day', 'Half day (AM)', 'Half day (PM)'];
 
-  const onChangeStartDate = (event: any, selectedDate: Date) => {
+  const onChangeStartDate = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || startDate;
     setShowStartDatePicker(Platform.OS === 'ios');
     setStartDate(currentDate);
     setStartDateString(currentDate.toISOString().split('T')[0]);
   };
 
-  const onChangeEndDate = (event: any, selectedDate: Date) => {
+  const onChangeEndDate = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || endDate;
     setShowEndDatePicker(Platform.OS === 'ios');
     setEndDate(currentDate);
     setEndDateString(currentDate.toISOString().split('T')[0]);
   };
 
-  const handleStartDateInput = (text: React.SetStateAction<string>) => {
+  const handleStartDateInput = (text: string) => {
     setStartDateString(text);
   };
 
-  const handleEndDateInput = (text: React.SetStateAction<string>) => {
+  const handleEndDateInput = (text: string) => {
     setEndDateString(text);
   };
 
@@ -224,14 +231,7 @@ function LeaveRequestItem({ item }) {
           {showDurationDropdown && renderDropdown(durations, duration, setDuration)}
         </View>
       </View>
-      <View style={styles.proofGroup}>
-        <Text style={styles.proofLabel}>Proof (if needed):</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Enter proof if needed"
-          multiline
-        />
-      </View>
+     
       <View style={styles.formGroup}>
         <Text style={styles.label}>Status:</Text>
         <Text style={styles.value}>{status}</Text>
@@ -331,14 +331,7 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
   },
-  proofGroup: {
-    marginBottom: 16,
-  },
-  proofLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 8,
-  },
+ 
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

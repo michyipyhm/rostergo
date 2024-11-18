@@ -6,14 +6,22 @@ import { getLeaveRequestDetailByUserId } from '@/services/user/leaveRequestsDeta
 const SECRET_KEY = new TextEncoder().encode('your-secret-key'); // 替换为你的密钥
 
 export async function GET(req: NextRequest) {
-  // Retrieve userId from request headers and parse it
-  const userIdParam = req.headers.get("userId");
-  const userId = parseInt(userIdParam);
+  const jwtPayloadString = req.headers.get("x-jwt-payload");
 
+  if (!jwtPayloadString) {
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+  }
+  
+  const jwtPayload = JSON.parse(jwtPayloadString);
+
+  const userId = jwtPayload.id;
+
+  console.log("userid from jwt:", userId);
   // Validate userId
   if (isNaN(userId)) {
     return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
   }
+
 
   try {
     // Fetch leave request list by userId
