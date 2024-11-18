@@ -79,7 +79,7 @@ function EmployeeList() {
             <td>{formatResignDate(employee.resign_date)}</td>
             <td>{formatYYYYMMDDHHMM(employee.updated_at)}</td>
             <td><Link 
-                  href={`/admin/employee/edit?id=${employee.id}`}
+                  href={`/employee/edit?id=${employee.id}`}
                 > edit
               </Link>
             </td>

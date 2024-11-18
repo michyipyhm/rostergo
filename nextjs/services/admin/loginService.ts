@@ -1,5 +1,5 @@
 import { pgClient } from '@/lib/pgClient'
-import { checkPassword, hashPassword } from '../lib/bcrypt'
+import { checkPassword, hashPassword } from '@/lib/bcrypt'
 
 
 class AdminLoginService {
