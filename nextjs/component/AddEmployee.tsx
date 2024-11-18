@@ -21,7 +21,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ show, onHide, onEmp
       setError('')
       setSearchResult(null)
 
-      const response = await fetch(`/api/employee/search?term=${encodeURIComponent(searchTerm)}`)
+      const response = await fetch(`/api/admin/employee/search?term=${encodeURIComponent(searchTerm)}`)
       const data = await response.json()
 
       if (!response.ok) {
@@ -48,7 +48,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ show, onHide, onEmp
     try {
       if (!searchResult) return
 
-      const response = await fetch('/api/employee/update-branch', {
+      const response = await fetch('/api/admin/employee/update-branch', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

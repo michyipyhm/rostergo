@@ -23,7 +23,7 @@ export default function EditEmployee({ id }: { id: string }) {
         setIsLoading(true)
         setError(null)
  
-        const response = await fetch(`/api/employee/${id}`)
+        const response = await fetch(`/api/admin/employee/${id}`)
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -53,7 +53,7 @@ export default function EditEmployee({ id }: { id: string }) {
 
     try {
       // const token = localStorage.getItem('token')
-      const response = await fetch(`/api/employee/${id}`, {
+      const response = await fetch(`/api/admin/employee/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

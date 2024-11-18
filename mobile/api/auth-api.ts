@@ -127,7 +127,7 @@ export async function register(userData: {
 
 export async function login(nickname: string, password: string): Promise<any> {
   try {
-    const res = await fetch(apiUrl + '/api/mobileLogin', {
+    const res = await fetch(apiUrl + '/api/auth/userLogin', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

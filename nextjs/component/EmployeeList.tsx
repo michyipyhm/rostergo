@@ -18,7 +18,7 @@ function EmployeeList() {
           throw new Error('No token found');
         }
 
-        const response = await fetch('/api/employee', {
+        const response = await fetch('/api/admin/employee', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -79,7 +79,7 @@ function EmployeeList() {
             <td>{formatResignDate(employee.resign_date)}</td>
             <td>{formatYYYYMMDDHHMM(employee.updated_at)}</td>
             <td><Link 
-                  href={`/employee/edit?id=${employee.id}`}
+                  href={`/admin/employee/edit?id=${employee.id}`}
                 > edit
               </Link>
             </td>
