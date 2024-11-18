@@ -1,7 +1,0 @@
-
-JWT_KEY=
-POSTGRES_DB=rostergo
-POSTGRES_USER=michael
-POSTGRES_PASSWORD=michael
-POSTGRES_HOST=postgres
-
