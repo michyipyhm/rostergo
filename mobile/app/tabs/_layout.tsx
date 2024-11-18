@@ -21,7 +21,7 @@ export default function AuthLayout() {
           <Calendar style={styles.navIcon} />
           <Text style={styles.navText}>Schedule</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/leaveRequestList')}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/tabs/leaveRequestList')}>
           <Calendar style={styles.navIcon} />
           <Text style={styles.navText}>Leave</Text>
         </TouchableOpacity>
