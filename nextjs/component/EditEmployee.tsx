@@ -225,9 +225,9 @@ export default function EditEmployee({ id }: { id: string }) {
         
 
         <div className={styles.buttonGroup}>
-          <Button variant="danger" className="me-2">
+          {/* <Button variant="danger" className="me-2">
             Delete
-          </Button>
+          </Button> */}
           <Button variant="primary" className="me-2" onClick={handleSave} disabled={isSaving}>
             {isSaving ? 'Saving...' : 'Save'}
           </Button>

@@ -1,12 +1,13 @@
 
-.manpowerTable {
-  // max-height: 100%;
+.employeeList {
   max-height: 45vh;
   overflow-y: auto;
 }
 
 .table {
-  border: 2px solid #333
+  border: 2px solid #333;
+  margin-left: 20px;
+  width: 95%;
 }
 
 .table th,

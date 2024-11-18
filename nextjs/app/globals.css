@@ -44,24 +44,26 @@ a {
 
 .layoutContainer {
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  flex-direction: row;
+  justify-content: space-between;
   width: 100%;
-  /* background-color: #ffffff; */
 }
 
 .firstSection {
   display: flex;
-  justify-content: space-between;
-  height: 30%;
-}
+  width: 25%;
+  gap: 3%
+} 
 
 .userActions {
   display: flex;
-  width: 50%;
+  align-items: center;
   justify-content: flex-end;
+  width: 40%;
   gap: 3%;
 }
+
+
 
 .layoutNavbar {
   background-color: #f8f9fa;
@@ -74,7 +76,7 @@ a {
   list-style: none;
   display: flex;
   justify-content: space-between;
-  width: 80%;
+  width: 85%;
   margin: 0 auto;
   padding: 0;
 }
