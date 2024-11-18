@@ -15,11 +15,39 @@ interface EditRosterProps {
 }
 
 function EditRoster({ day, memberId, nickname, month, shift, shiftRequest, leaveRequest, onClose, shiftOptions }: EditRosterProps) {
+    const [newShift, setNewShift] = useState<string>(shift || "");
 
-    const [newShift, setNewShift] = useState<string>(shift || "")
-    const handleSave = () => {
-        alert(`Selected Shift: ${newShift}`);
-        onClose()
+    const handleSave = async () => {
+        if (!newShift) {
+            alert("Please select a shift before saving.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/editShift", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: memberId,
+                    month,
+                    day,
+                    shift_slot: newShift, // 傳遞選擇的 shift_slot
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to save the shift.");
+            }
+
+            const result = await response.json();
+            alert(result.message || "Shift updated successfully.");
+            onClose()
+        } catch (error) {
+            console.error("Error saving shift:", error);
+            alert("Error saving shift. Please try again.");
+        }
     };
 
     return (
@@ -60,6 +88,6 @@ function EditRoster({ day, memberId, nickname, month, shift, shiftRequest, leave
             </Modal.Footer>
         </Modal>
     );
-};
+}
 
 export default EditRoster;

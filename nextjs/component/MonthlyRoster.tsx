@@ -1,12 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams, notFound } from "next/navigation";
+import { useParams, notFound, useRouter } from "next/navigation";
 import styles from './MonthlyRoster.module.scss';
 import { MonthlyRosterData } from "@/services/models";
 import holidaysData from "@/HKPH-en.json"
 import EditRoster from './EditRoster';
 
 function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
+
+    const router = useRouter()
+
     const { users, shifts, shiftRequests, leaveRequests, shift_slots } = data
 
     const params = useParams()
@@ -261,6 +264,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         setSelectedShift(null); // 重置 shift
         setSelectedShiftRequest(null); // 重置 shiftRequest
         setSelectedLeaveRequest(null); // 重置 leaveRequest
+        router.refresh()
     };
 
     // Generate weekday labels for each day of the month

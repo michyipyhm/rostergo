@@ -153,7 +153,7 @@ class MonthlyRosterService {
         WHERE id = $1
       `;
 
-      // edit shift
+      // edit or add shift
       if (shift_result.rows.length > 0) {
         const current_shift_id = shift_result.rows[0].id
         const update_current_shift_sql = `
