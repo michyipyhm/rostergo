@@ -1,4 +1,4 @@
-import { mobileProfileService } from '@/services/mobileProfileService';
+import { mobileProfileService } from "@/services/user/profileService";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {

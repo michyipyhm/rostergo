@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mobileLoginService } from "@/services/user/loginService";
 import * as jose from "jose";
+import { mobileLoginService } from "@/services/user/loginService";
 
 const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET);
 

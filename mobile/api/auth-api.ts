@@ -47,7 +47,7 @@ export const storageUtil = {
 // Send OTP (Verify Phone Number)
 export async function sendOtp(phoneNumber: string): Promise<OtpResponse> {
   try {
-    const response = await fetch(`${apiUrl}/api/phoneverify`, {
+    const response = await fetch(`${apiUrl}/api/auth/phoneVerify`, {
       
       method: "POST",
       headers: {
@@ -75,7 +75,7 @@ export async function verifyOtp(
   enteredOtp: string
 ): Promise<VerifyOtpResponse> {
   try {
-    const response = await fetch(`${apiUrl}/api/phoneVerify`, {
+    const response = await fetch(`${apiUrl}/api/auth/phoneVerify`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export async function register(userData: {
   phone: string;
 }): Promise<RegisterResponse> {
   try {
-    const response = await fetch(`${apiUrl}/api/mobileRegister`, {
+    const response = await fetch(`${apiUrl}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

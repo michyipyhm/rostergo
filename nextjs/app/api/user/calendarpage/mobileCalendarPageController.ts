@@ -1,4 +1,4 @@
-import { getUserShifts } from "@/services/mobileCalendarPageService";
+import { getUserShifts } from "@/services/user/calendarPageService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function handleGetShifts(req: NextRequest) {

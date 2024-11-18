@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import dotenv from "dotenv";
 import axios from "axios";
-import {
-  saveOtpToDB,
-  verifyOtp,
-  verifyPhoneNumber,
-} from "@/services/mobileOtpService";
+import { saveOtpToDB, verifyOtp, verifyPhoneNumber } from "@/services/user/otpService";
+
 
 dotenv.config({ path: "@/.env" });
 
