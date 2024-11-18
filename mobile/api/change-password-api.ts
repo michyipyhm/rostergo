@@ -1,6 +1,5 @@
 import { storageUtil } from './auth-api';
 
-
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
 export async function mobileChangePassword(
@@ -8,7 +7,10 @@ export async function mobileChangePassword(
 
   try {
     const token = await storageUtil.getItem('token');
-    const res = await fetch(apiUrl + '/api/auth/changePassword', {
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    const res = await fetch(apiUrl + '/api/auth/changepassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

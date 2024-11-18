@@ -2,15 +2,19 @@ import { mobileProfileService } from "@/services/user/profileService";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const userIdParam = req.headers.get("userId");
-
-    if (!userIdParam) {
-      return NextResponse.json({ error: "UserId not provided in headers" }, { status: 400 });
+  const payload = JSON.parse(req.headers.get("x-jwt-payload"));
+  console.log("check verified payload", payload);
+  const userIdParam = payload.id;
+  if (!userIdParam) {
+    return NextResponse.json(
+      { error: "UserId not provided in headers" },
+      { status: 400 }
+    );
   }
-  
-    const userId = parseInt(userIdParam);
 
-     // Validate userId
+  const userId = parseInt(userIdParam);
+
+  // Validate userId
   if (isNaN(userId)) {
     return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
   }

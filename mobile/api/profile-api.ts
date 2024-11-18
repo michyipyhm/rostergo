@@ -1,4 +1,3 @@
-import * as SecureStore from 'expo-secure-store';
 import { storageUtil } from './auth-api';
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
@@ -6,8 +5,6 @@ const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 export async function getProfile(): Promise<any> {
   try {
     const token = await storageUtil.getItem('token');
-
-
     if (!token) {
       throw new Error('No authentication token found');
     }
@@ -16,7 +13,7 @@ export async function getProfile(): Promise<any> {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/json'
       }
     });
 

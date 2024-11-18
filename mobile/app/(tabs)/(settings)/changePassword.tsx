@@ -10,7 +10,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { mobileChangePassword } from "@/api/changePassword-api";
+import { mobileChangePassword } from "@/api/change-password-api";
 
 export default function changePassword() {
   const router = useRouter();

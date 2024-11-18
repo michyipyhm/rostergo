@@ -25,10 +25,6 @@ export default function settings() {
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
 
-      <Button
-       
-        title="Go somewhere"
-      />
     </SafeAreaView>
   );
 }
