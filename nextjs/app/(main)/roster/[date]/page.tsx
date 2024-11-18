@@ -5,6 +5,7 @@ import { monthlyRosterService } from "@/services/monthlyRosterService"
 import { notFound } from "next/navigation"
 import { Params } from "@/services/models";
 import ShiftSlot from '@/component/ShiftSlot';
+import LeaveRequest from '@/component/LeaveRequest';
 
 interface MonthlyRosterPageProps {
     searchParams: URLSearchParams;
@@ -15,7 +16,7 @@ export default async function MonthlyRoster({ params }: { params: Params }) {
     const { date } = await params
     const datePattern = /^\d{4}-\d{2}$/
     if (!datePattern.test(date)) {
-      notFound()
+        notFound()
     }
     if (!date) {
         notFound()
@@ -31,19 +32,14 @@ export default async function MonthlyRoster({ params }: { params: Params }) {
             </div>
 
             <div>
-                <br></br>
                 <div>
                     <ShiftSlot />
                 </div>
-
                 <div>
-                    [Save]
-                </div>
-
-                <div>
-                    Last updated at:[]
+                    <LeaveRequest date={date} />
                 </div>
             </div>
+
         </div>
     );
 }

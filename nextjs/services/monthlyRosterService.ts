@@ -189,5 +189,59 @@ class MonthlyRosterService {
     }
   }
 
+  async getShiftSlot() {
+    try {
+      const shift_slots_sql = `
+        SELECT 
+            shift_slots.*
+        FROM shift_slots;
+        `;
+      const shift_slots_result = await pgClient.query(shift_slots_sql)
+
+      const leave_types_sql = `
+      SELECT 
+          leave_types.*
+      FROM leave_types;
+      `;
+    const leave_types_result = await pgClient.query(leave_types_sql)
+      return {
+        shift_slots: shift_slots_result.rows,
+        leave_types: leave_types_result.rows
+      }
+    } catch (error) {
+      console.error("Database query error:", error);
+      throw new Error("Database error");
+    }
+  }
+
+  async getLeaveRequest(date) {
+    try {
+      const leave_requests_sql = `
+        SELECT 
+          leave_requests.*, 
+          users.id AS user_id,
+          users.nickname AS user_nickname,
+          shift_slots.title AS slot_title, 
+          shift_slots.short_title AS slot_short_title,
+	    	  leave_types.name AS  leave_type_name,
+	    	  leave_types.short_name AS leave_type_short_name
+        FROM leave_requests
+        JOIN users ON leave_requests.user_id = users.id
+        JOIN shift_slots ON leave_requests.shift_slot_id = shift_slots.id
+	    	JOIN leave_types ON leave_requests.leave_type_id = leave_types.id
+        WHERE DATE_TRUNC('month', leave_requests.start_date) = $1;
+        `
+        const leave_requests_result = await pgClient.query(leave_requests_sql, [`${date}-01`])
+
+
+      return {
+        leave_requests: leave_requests_result.rows,
+      }
+    } catch (error) {
+      console.error("Database query error:", error);
+      throw new Error("Database error");
+    }
+  }
+
 }
 export const monthlyRosterService = new MonthlyRosterService();

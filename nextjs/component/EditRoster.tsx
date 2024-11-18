@@ -33,7 +33,7 @@ function EditRoster({ day, memberId, nickname, month, shift, shiftRequest, leave
                     id: memberId,
                     month,
                     day,
-                    shift_slot: newShift, // 傳遞選擇的 shift_slot
+                    shift_slot: newShift,
                 }),
             });
 
