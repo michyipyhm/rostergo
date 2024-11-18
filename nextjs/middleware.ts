@@ -23,23 +23,21 @@ export async function middleware(req: NextRequest) {
   // Create a response object that will act as request context for downstream
   const nextResponse = NextResponse.next();
 
+  nextResponse.headers.append("Access-Control-Allow-Credentials", "true");
+  nextResponse.headers.append("Access-Control-Allow-Origin", "*"); // Replace with your actual origin
+  nextResponse.headers.append(
+    "Access-Control-Allow-Methods",
+    "GET, DELETE, PATCH, POST, PUT"
+  );
+  nextResponse.headers.append(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Content-Type, Authorization"
+  );
+
+  nextResponse.headers.set("Access-Control-Max-Age", "86400"); // Cache preflight for 1 day
+
   // CORS Preflight Request Handling
   if (req.method === "OPTIONS") {
-    nextResponse.headers.set(
-      "Access-Control-Allow-Origin",
-      allowedOrigins.includes("*")
-        ? "*"
-        : req.headers.get("Origin") || allowedOrigins[0]
-    );
-    nextResponse.headers.set(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS"
-    );
-    nextResponse.headers.set(
-      "Access-Control-Allow-Headers",
-      "Authorization, Content-Type"
-    );
-    nextResponse.headers.set("Access-Control-Max-Age", "86400"); // Cache preflight for 1 day
     return nextResponse;
   }
 

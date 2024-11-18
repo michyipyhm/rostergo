@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { monthlyRosterService } from "@/services/monthlyRosterService";
+import { monthlyRosterService } from "@/services/admin/monthlyRosterService";
 
 export async function GET(req: NextRequest) {
     const date = req.nextUrl.searchParams.get("date")

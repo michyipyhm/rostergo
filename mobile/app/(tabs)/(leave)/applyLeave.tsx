@@ -464,14 +464,14 @@
 //     </View>
 //   )
 
-//   const onChangeStartDate = (event, selectedDate) => {
+//   const onChangeStartDate = (event: any, selectedDate: Date) => {
 //     const currentDate = selectedDate || startDate
 //     setShowStartDatePicker(Platform.OS === 'ios')
 //     setStartDate(currentDate)
 //     setStartDateString(currentDate.toISOString().split('T')[0])
 //   }
 
-//   const onChangeEndDate = (event, selectedDate) => {
+//   const onChangeEndDate = (event: any, selectedDate: Date) => {
 //     const currentDate = selectedDate || endDate
 //     setShowEndDatePicker(Platform.OS === 'ios')
 //     setEndDate(currentDate)
@@ -495,7 +495,7 @@
 //     setStartDateString(text)
 //   }
 
-//   const handleEndDateInput = (text) => {
+//   const handleEndDateInput = (text: React.SetStateAction<string>) => {
 //     setEndDateString(text)
 //   }
 
