@@ -3,7 +3,7 @@ import MonthlyRosterSelector from '@/component/MonthlyRosterSelector';
 import React from 'react'
 import { monthlyRosterService } from "@/services/monthlyRosterService"
 import { notFound } from "next/navigation"
-import { Params } from "@/services/models";
+import { Params } from "@/lib/models";
 import ShiftSlot from '@/component/ShiftSlot';
 import LeaveRequest from '@/component/LeaveRequest';
 

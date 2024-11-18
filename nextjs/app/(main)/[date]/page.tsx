@@ -3,8 +3,8 @@ import CalendarAdmin from '@/component/Calendar'
 import ManpowerTable from '@/component/ManpowerTable'
 import DayShiftRecord from '@/component/DayShiftRecord'
 import styles from '@/app/page.module.scss'
-import { manpowerService } from "@/services/manpowerService"
-import { Params } from "@/services/models";
+import { manpowerService } from "@/services/admin/manpowerService"
+import { Params } from "@/lib/models";
 import { notFound } from "next/navigation"
 
 const DatePage = async ({ params }: { params: Params }) => {

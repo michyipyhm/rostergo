@@ -12,7 +12,7 @@ export async function getProfile(): Promise<any> {
       throw new Error('No authentication token found');
     }
 
-    const res = await fetch(apiUrl + '/api/profile', {
+    const res = await fetch(apiUrl + '/api/user/profile', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
