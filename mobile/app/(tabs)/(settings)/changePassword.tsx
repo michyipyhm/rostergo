@@ -7,18 +7,30 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
+import { mobileChangePassword } from "@/api/changePassword-api";
 
 export default function changePassword() {
   const router = useRouter();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [retypePassword, setRetypePassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = () => {
-    // Implement password reset logic here
-    console.log("Password reset submitted");
+  const handleSubmit = async() => {
+    if (newPassword !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    try {
+      await mobileChangePassword(currentPassword, newPassword);
+      Alert.alert("Success", "Password changed successfully");
+      router.push('/login');
+    } catch (error) {
+      Alert.alert("Error", "Failed to change password");
+    }
   };
 
   return (
@@ -40,16 +52,16 @@ export default function changePassword() {
       />
       <TextInput
         style={styles.input}
-        placeholder="Retype Password"
+        placeholder="Confirm Password"
         secureTextEntry
-        value={retypePassword}
-        onChangeText={setRetypePassword}
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
 
-      <Button onPress={() => router.back()} title="Back to Profile" />
+      <Button onPress={() => router.back()} title="Back" />
     </SafeAreaView>
   );
 }

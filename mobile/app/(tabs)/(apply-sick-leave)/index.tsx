@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, Button, SafeAreaView } from "react-native";
 import { FlatList } from 'react-native-gesture-handler';
 
 
@@ -13,7 +13,7 @@ export default function LeaveRequestList (leaveRequests: any) {
     
     };
   return (
-    <View>
+    <SafeAreaView>
      
       {/* <Tabs.Screen
         options={{
@@ -39,7 +39,7 @@ export default function LeaveRequestList (leaveRequests: any) {
         title="Apply" 
         onPress={handleButtonClick} 
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
