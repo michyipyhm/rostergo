@@ -8,7 +8,7 @@ export async function mobileChangePassword(
 
   try {
     const token = await storageUtil.getItem('token');
-    const res = await fetch(apiUrl + '/api/changePassword', {
+    const res = await fetch(apiUrl + '/api/auth/changePassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
