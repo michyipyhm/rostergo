@@ -9,36 +9,11 @@
     gap: 20px;
 }
 
-.slotList{
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-.slot{
-    display: flex;
-    flex-direction: row;
-    gap: 25px;
-}
-
-.explainBox {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid;
-    font-size: 20px;
+.headerRow {
     font-weight: bold;
-    margin-right: -20px;
+    padding: 10px 15px;
 }
 
-.explainTime {
-    display: flex;
-    align-items: center;
-}
-
-.explainBoxFont{
-    font-size: 20px;
-    font-weight: bold;
+.appBtn{
+    margin-right: 5px;
 }

@@ -18,6 +18,8 @@ export default async function MonthlyRoster({ params }: { params: Params }) {
         notFound()
     }
     const result = await monthlyRosterService.getMonthlyRoster(date)
+    const leaveRequestData = await monthlyRosterService.getLeaveRequest(date)
+    const leaveRequest = leaveRequestData.leave_requests
 
     return (
         <div>
@@ -27,12 +29,12 @@ export default async function MonthlyRoster({ params }: { params: Params }) {
                 <MonthlyRosterForm data={result} />
             </div>
 
-            <div>
-                <div>
+            <div style={{ margin: "20px 0" }}>
+                <div style={{ margin: "20px 0" }}>
                     <ShiftSlot />
                 </div>
                 <div>
-                    <LeaveRequest date={date} />
+                    <LeaveRequest leaveRequests={leaveRequest} />
                 </div>
             </div>
 

@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const { id, month, day, shift_slot } = body;
-        // console.log("Received Request Body:", body)
+        console.log("Received Request Body:", body)
 
         if (!id || !month || !day || !shift_slot) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });

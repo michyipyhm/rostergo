@@ -209,8 +209,8 @@ class MonthlyRosterService {
         leave_types: leave_types_result.rows
       }
     } catch (error) {
-      console.error("Database query error:", error);
-      throw new Error("Database error");
+      console.error("Database query error:", error)
+      throw new Error("Database error")
     }
   }
 
@@ -233,7 +233,6 @@ class MonthlyRosterService {
         `
         const leave_requests_result = await pgClient.query(leave_requests_sql, [`${date}-01`])
 
-
       return {
         leave_requests: leave_requests_result.rows,
       }
@@ -243,5 +242,36 @@ class MonthlyRosterService {
     }
   }
 
+  async handleLeaveRequest(id: number, status: string){
+    
+    try {
+      const leave_requests_sql = `
+        SELECT 
+          leave_requests.*
+        FROM leave_requests
+        WHERE id = $1
+        `
+        const leave_requests_result = await pgClient.query(leave_requests_sql, [id])
+
+        if (leave_requests_result.rows.length > 0 && leave_requests_result.rows[0].id === id) {
+          const update_leave_requests_sql =`
+          UPDATE leave_requests
+            SET status = $1
+            WHERE id = $2;
+          `
+          await pgClient.query(update_leave_requests_sql, [status, id])
+        } else {
+          throw new Error("Request not exist")
+        }
+
+      return {
+        success: true,
+        message: "Updated successfully",
+      }
+    } catch (error) {
+      console.error("Database query error:", error);
+      throw new Error("Database error");
+    }
+  }
 }
 export const monthlyRosterService = new MonthlyRosterService();
