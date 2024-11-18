@@ -1,10 +1,10 @@
-import { mobileShiftListService } from '@/services/mobileShiftListService'
+import { mobileShiftListService } from '@/services/user/ShiftListService';
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
 
 try {
-  const id = 2
+  const id = "2"
   // const token = request.headers.get('Authorization')?.split(' ')[1];
   const shiftList = await mobileShiftListService.getShiftListById(id)
   return NextResponse.json(shiftList);

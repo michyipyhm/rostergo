@@ -1,7 +1,7 @@
-import { getLeaveRequestDetailByUserId } from '@/services/leaveRequestsDetail';
 import { NextResponse, NextRequest } from 'next/server';
 
 import { jwtVerify } from 'jose';
+import { getLeaveRequestDetailByUserId } from '@/services/user/leaveRequestsDetailService';
 
 const SECRET_KEY = new TextEncoder().encode('your-secret-key'); // 替换为你的密钥
 

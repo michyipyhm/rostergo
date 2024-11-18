@@ -7,6 +7,7 @@ class MobileShiftListService {
     try {
       const sql = `
       SELECT 
+      shifts.user_id as user_id,
       shifts.date as date,
       shift_slots.title as shift_slot
     FROM shifts

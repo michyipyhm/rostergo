@@ -1,4 +1,4 @@
-import { getLeaveRequestlistByUserId } from "@/services/leaveRequests";
+import { getLeaveRequestlistByUserId } from "@/services/user/leaveRequestsService";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
