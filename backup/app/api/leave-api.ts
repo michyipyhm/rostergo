@@ -19,6 +19,7 @@ export async function getAllLeaves(): Promise<any> {
     }
 
     const data = (await res.json()).data;
+    console.log(data)
     return data;
   } catch (error) {
     console.error('Error fetching leave requests:', error);
@@ -79,7 +80,7 @@ export async function submitLeaveApplication(data: LeaveApplicationData): Promis
 
   try {
     const token = await storageUtil.getItem('token');
-    const response = await fetch(`${apiUrl}/api/applyLeave`, {
+    const response = await fetch(`${apiUrl}/api/user/applyLeave`, {
       method: 'POST',
       body: formData,
       headers: {
@@ -138,7 +139,7 @@ export async function submitLeaveApplication(data: LeaveApplicationData): Promis
         } as any);
       }
   
-      const response = await fetch(`${apiUrl}/api/applySickLeave`, {
+      const response = await fetch(`${apiUrl}/api/user/applySickLeave`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -190,7 +191,7 @@ interface ShiftSlot {
 export async function fetchShiftSlots(userId: string): Promise<ShiftSlot[]> {
   try {
     const token = await storageUtil.getItem('token');
-    const response = await fetch(`${apiUrl}/api/fetchShiftSlots/${userId}`, {
+    const response = await fetch(`${apiUrl}/api/user/fetchShiftSlots/${userId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,

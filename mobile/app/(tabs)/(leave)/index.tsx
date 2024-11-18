@@ -42,7 +42,7 @@ export default function LeaveRequestList() {
   }
 
   const navigateToApplyLeave = () => {
-    router.push("/(tabs)/(leave)/applyLeave");
+    router.push(`/(tabs)/(leave)/applyLeave`);
   };
 
   return (

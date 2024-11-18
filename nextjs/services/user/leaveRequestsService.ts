@@ -1,4 +1,5 @@
 import { pgClient } from "@/lib/pgClient";
+import { co } from "@fullcalendar/core/internal-common";
 
 
 type LeaveRequest = {
@@ -15,6 +16,11 @@ type LeaveType = {
   name: string;
 };
 
+type User = {
+  id: number;
+  nickname: string;
+};
+
 export async function getLeaveRequestlistByUserId(
   userId: number
 ): Promise<any> {
@@ -26,7 +32,8 @@ export async function getLeaveRequestlistByUserId(
      WHERE user_id = $1`,
     data
   );
-
+  console.log(userId);
+console.log(result.rows);
   return result.rows;
 }
 
