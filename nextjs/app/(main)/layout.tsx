@@ -65,13 +65,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <div className="layoutContainer">
 
       <div className="firstSection">
-        
           <Link href="/">
             <Image src="/rostergo10_final_transparent.png" alt="RosterGo" width={80} height={80} />
           </Link>
         <div className="fs-3">Hi! {nickname} 👋</div>
      </div>
-
 
       <div className="userActions">
         <div className="fs-5">{dateFormat}</div>
@@ -91,8 +89,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       />
     </div>
 
-
-      
         <nav className="layoutNavbar">
           <ul className="nav-links">
             <li><Link href="/">Daily Status</Link></li>
@@ -103,10 +99,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           </ul>
         </nav>
       
-
       <div>{children}</div>
-
-      </>
-    
+      </>  
   )
 }
