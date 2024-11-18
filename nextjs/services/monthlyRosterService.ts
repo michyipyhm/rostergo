@@ -68,21 +68,126 @@ class MonthlyRosterService {
         WHERE (users.status = 'active' AND users.join_date < $1)
 			    OR (users.status = 'resigned' AND users.join_date < $1 AND users.resign_date > $2);
       `
+
+      const shift_slots_sql = `
+        SELECT 
+          shift_slots.*
+        FROM shift_slots;
+      `
+
       const shifts_result = await pgClient.query(shifts_sql, [`${date}-01`])
       const shift_requests_result = await pgClient.query(shift_requests_sql, [`${date}-01`])
       const leave_requests_result = await pgClient.query(leave_requests_sql, [`${date}-01`])
       const users_result = await pgClient.query(users_sql, [`${nextMonthDate}-01`, `${date}-01`])
+      const shift_slots_result = await pgClient.query(shift_slots_sql)
 
       return {
         users: users_result.rows,
         shifts: shifts_result.rows,
         shiftRequests: shift_requests_result.rows,
-        leaveRequests: leave_requests_result.rows
+        leaveRequests: leave_requests_result.rows,
+        shift_slots: shift_slots_result.rows,
       }
     } catch (error) {
       console.error("Database query error:", error)
       throw new Error("Database error")
     }
   }
+
+  async editDailyShiftSlot(id: number, month: string, day: number, shift_slot: string) {
+    try {
+      // set the date to yyyy-mm
+      const formattedDate = `${month}-${String(day).padStart(2, '0')}`;
+
+      // get shift slot id
+      const shift_slot_id_sql = `
+        SELECT
+          shift_slots.id
+        FROM shift_slots
+        WHERE shift_slots.short_title = $1;
+      `;
+      const shift_slot_id_result = await pgClient.query(shift_slot_id_sql, [shift_slot]);
+      if (shift_slot_id_result.rows.length === 0) {
+        throw new Error("Shift slot not found");
+      }
+      const shift_slot_id = shift_slot_id_result.rows[0].id;
+
+      // shift
+      const shift_sql = `
+        SELECT
+          shifts.*
+        FROM shifts
+        JOIN users ON shifts.user_id = users.id
+        WHERE users.id = $1
+        AND date = $2
+      `;
+      const shift_result = await pgClient.query(shift_sql, [id, formattedDate]);
+
+      // shift request
+      const shift_request_sql = `
+        SELECT
+          shift_requests.*
+        FROM shift_requests
+        JOIN users ON shift_requests.user_id = users.id
+        WHERE users.id = $1
+        AND date = $2
+      `;
+      const shift_request_result = await pgClient.query(shift_request_sql, [id, formattedDate]);
+
+      let shift_request_id = null
+      let shift_request_shift_slot_id = null
+      if (shift_request_result.rows.length > 0) {
+        shift_request_id = shift_request_result.rows[0].id
+        shift_request_shift_slot_id = shift_request_result.rows[0].shift_slot_id
+      }
+
+      // shift request update status sql
+      const update_shift_request_approve_sql = `
+        UPDATE shift_requests
+        SET status = 'approve'
+        WHERE id = $1
+      `;
+      const update_shift_request_disapprove_sql = `
+        UPDATE shift_requests
+        SET status = 'disapprove'
+        WHERE id = $1
+      `;
+
+      // edit shift
+      if (shift_result.rows.length > 0) {
+        const current_shift_id = shift_result.rows[0].id
+        const update_current_shift_sql = `
+          UPDATE shifts
+          SET shift_slot_id = $1
+          WHERE id = $2
+        `;
+        await pgClient.query(update_current_shift_sql, [shift_slot_id, current_shift_id])
+      } else {
+        const add_shift_sql = `
+          INSERT INTO shifts (date, shift_slot_id, user_id)
+          VALUES ($1, $2, $3)
+        `;
+        await pgClient.query(add_shift_sql, [formattedDate, shift_slot_id, id])
+      }
+
+      // edit shift request
+      if (shift_request_id) {
+        if (shift_request_shift_slot_id === shift_slot_id) {
+          await pgClient.query(update_shift_request_approve_sql, [shift_request_id])
+        } else {
+          await pgClient.query(update_shift_request_disapprove_sql, [shift_request_id])
+        }
+      }
+
+      return {
+        success: true,
+        message: "Updated successfully",
+      };
+    } catch (error) {
+      console.error("Database query error:", error);
+      throw new Error("Database error");
+    }
+  }
+
 }
 export const monthlyRosterService = new MonthlyRosterService();

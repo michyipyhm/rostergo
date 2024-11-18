@@ -135,9 +135,20 @@ export interface LeaveRequest {
   leave_type_short_name: string,
 }
 
+export interface Shift_slots {
+  id: number, 
+  branch_id: number,
+  title: string,
+  short_title: string,
+  start_time: string,
+  end_time: string,
+  work_hour: number,
+}
+
 export interface MonthlyRosterData {
   users: User[],
   shifts: MonthlyShift[],
-  shiftRequests: ShiftRequest[]
-  leaveRequests: LeaveRequest[]
+  shiftRequests: ShiftRequest[],
+  leaveRequests: LeaveRequest[],
+  shift_slots: Shift_slots[]
 }

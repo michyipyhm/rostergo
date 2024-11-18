@@ -7,7 +7,7 @@ import holidaysData from "@/HKPH-en.json"
 import EditRoster from './EditRoster';
 
 function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
-    const { users, shifts, shiftRequests, leaveRequests } = data
+    const { users, shifts, shiftRequests, leaveRequests, shift_slots } = data
 
     const params = useParams()
     const date = params?.date
@@ -15,7 +15,15 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
     const [publicHolidays, setPublicHolidays] = useState<Set<number>>(new Set());
     const [showEditRoster, setShowEditRoster] = useState(false);
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
-    const [selectedMemberName, setSelectedMemberName] = useState<string | null>(null);
+    const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
+    const [selectedNickname, setSelectedNickname] = useState<string | null>(null);
+    const [selectedMonth, setSelectedMonth] = useState<string>("");
+    const [selectedShift, setSelectedShift] = useState<string | null>(null);
+    const [selectedShiftRequest, setSelectedShiftRequest] = useState<string | null>(null);
+    const [selectedLeaveRequest, setSelectedLeaveRequest] = useState<string | null>(null);
+
+    const shiftOptions = shift_slots.map((slot) => slot.short_title)
+    // console.log(shiftOptions)
 
     // check the date(string) parameter should be YYYY-MM
     if (!date || Array.isArray(date) || !/^\d{4}-\d{2}$/.test(date)) {
@@ -92,7 +100,20 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         return weekdayRestDays + holidayRestDays
     };
 
-    //loop data 所有結果並集成 staffResult
+    //loop data 所有結果並集成 shift_slot
+    const shift_slot = [
+        ...shift_slots.map((shift_slot) => ({
+            id: shift_slot.id,
+            branch_id: shift_slot.branch_id,
+            title: shift_slot.title,
+            short_title: shift_slot.short_title,
+            start_time: shift_slot.start_time,
+            end_time: shift_slot.end_time,
+            work_hour: shift_slot.work_hour,
+        })),
+    ]
+
+    //改users data 做staff 方便睇
     const staff = [
         ...users.map((user) => ({
             id: user.id,
@@ -108,7 +129,7 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         })),
     ]
 
-    //loop data shifts所有結果
+    //loop data shifts所有結果入落table
     const shiftsStatus = staff.reduce((acc, member) => {
         acc[member.id] = Array(daysInMonth).fill("")
         shifts.forEach((shift) => {
@@ -120,45 +141,126 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         return acc;
     }, {} as Record<number, string[]>);
 
-    //loop data shift requests所有結果
-    const shiftRequestsStatus = staff.reduce((acc, member) => {
-        acc[member.id] = Array(daysInMonth).fill("");
-        shiftRequests.forEach((shiftRequest) => {
-            if (shiftRequest.user_id === member.id) {
-                const day = new Date(shiftRequest.date).getDate();
-                acc[member.id][day - 1] = shiftRequest.slot_short_title;
-            }
-        });
-        return acc;
-    }, {} as Record<number, string[]>);
-
-    //loop data leave requests所有結果
-    const leaveRequestsStatus = staff.reduce((acc, member) => {
-        acc[member.id] = Array(daysInMonth).fill("");
-        leaveRequests.forEach((leaveRequest) => {
-            if (leaveRequest.user_id === member.id) {
-                const startDay = new Date(leaveRequest.start_date).getDate();
-                const endDay = new Date(leaveRequest.end_date).getDate();
-                for (let d = startDay; d <= endDay; d++) {
-                    acc[member.id][d - 1] = leaveRequest.leave_type_short_name;
+    // Get shiftRequests result
+    const generateShiftRequestsStatus = (
+        shiftRequests: any[],
+        staff: any[],
+        daysInMonth: number,
+        filterFn: (shiftRequest: any) => boolean
+    ) => {
+        return staff.reduce((acc, member) => {
+            acc[member.id] = Array(daysInMonth).fill(null);
+            shiftRequests.forEach((shiftRequest) => {
+                if (shiftRequest.user_id === member.id && filterFn(shiftRequest)) {
+                    const day = new Date(shiftRequest.date).getDate();
+                    acc[member.id][day - 1] = shiftRequest.slot_short_title;
                 }
-            }
-        });
-        return acc;
-    }, {} as Record<number, string[]>);
+            });
+            return acc;
+        }, {} as Record<number, string[]>);
+    };
 
-    // handleCellClick 更新狀態
-    const handleCellClick = (day: number, memberName: string) => {
+    // shiftRequests result all result
+    const shiftRequestsStatus = generateShiftRequestsStatus(
+        shiftRequests,
+        staff,
+        daysInMonth,
+        () => true
+    );
+
+    // shiftRequests result "approve" result
+    const shiftRequestsConfirmed = generateShiftRequestsStatus(
+        shiftRequests,
+        staff,
+        daysInMonth,
+        (shiftRequest) => shiftRequest.status === "approve"
+    );
+
+    // shiftRequests result "pending" result
+    const shiftRequestsPending = generateShiftRequestsStatus(
+        shiftRequests,
+        staff,
+        daysInMonth,
+        (shiftRequest) => shiftRequest.status === "pending"
+    );
+
+    // Get leaveRequests result
+    const generateLeaveRequestsStatus = (
+        leaveRequests: any[],
+        staff: any[],
+        daysInMonth: number,
+        filterFn: (leaveRequest: any) => boolean
+    ) => {
+        return staff.reduce((acc, member) => {
+            acc[member.id] = Array(daysInMonth).fill("");
+            leaveRequests.forEach((leaveRequest) => {
+                if (leaveRequest.user_id === member.id && filterFn(leaveRequest)) {
+                    const startDay = new Date(leaveRequest.start_date).getDate();
+                    const endDay = new Date(leaveRequest.end_date).getDate();
+                    for (let d = startDay; d <= endDay; d++) {
+                        acc[member.id][d - 1] = leaveRequest.leave_type_short_name;
+                    }
+                }
+            });
+            return acc;
+        }, {} as Record<number, string[]>);
+    };
+
+    // leaveRequests all result
+    const leaveRequestsStatus = generateLeaveRequestsStatus(
+        leaveRequests,
+        staff,
+        daysInMonth,
+        () => true
+    );
+
+    // leaveRequests "approve" result
+    const leaveRequestsConfirmed = generateLeaveRequestsStatus(
+        leaveRequests,
+        staff,
+        daysInMonth,
+        (leaveRequest) => leaveRequest.status === "approve"
+    );
+
+    // leaveRequests "pending" result
+    const leaveRequestsPending = generateLeaveRequestsStatus(
+        leaveRequests,
+        staff,
+        daysInMonth,
+        (leaveRequest) => leaveRequest.status === "pending"
+    );
+
+    // Click for open EditWindow
+    const handleCellClick = (day: number, memberId: number, memberName: string) => {
         setSelectedDay(day);
-        setSelectedMemberName(memberName);
+        setSelectedMemberId(memberId);
+        setSelectedNickname(memberName);
+        setSelectedMonth(`${year}-${String(month).padStart(2, "0")}`);
+
+        // search shift, shiftRequest, leaveRequest by user id
+        const shift = shiftsStatus[memberId]?.[day - 1] || null;
+        const shiftRequest = shiftRequestsStatus[memberId]?.[day - 1] || null;
+        const leaveRequest = leaveRequestsStatus[memberId]?.[day - 1] || null;
+
+        setSelectedShift(shift);
+        setSelectedShiftRequest(shiftRequest);
+        setSelectedLeaveRequest(leaveRequest);
+
         setShowEditRoster(true);
     };
 
-    // 關閉小視窗的方法
+    // 狀態用於存儲選中的 shift, shiftRequest, 和 leaveRequest
+
+
+    // Close EditWindow
     const closeEditRoster = () => {
         setShowEditRoster(false);
         setSelectedDay(null);
-        setSelectedMemberName(null);
+        setSelectedMemberId(null);
+        setSelectedMonth("");
+        setSelectedShift(null); // 重置 shift
+        setSelectedShiftRequest(null); // 重置 shiftRequest
+        setSelectedLeaveRequest(null); // 重置 leaveRequest
     };
 
     // Generate weekday labels for each day of the month
@@ -213,9 +315,9 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                     {member.position_type === "Part Time" ? (
                                         "N/A"
                                     ) : member.isWeekend_Restday === true ? (
-                                        "Weekend Holidays"
+                                        "W&H"
                                     ) : (
-                                        `${member.rest_day} days`
+                                        `${member.rest_day}`
                                     )}
                                 </td>
                                 {Array.from({ length: daysInMonth }, (_, i) => {
@@ -223,25 +325,34 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                     const isWeekend = date.getDay() === 0 || date.getDay() === 6;
                                     const isHoliday = publicHolidays.has(i + 1);
                                     const shift = shiftsStatus[member.id]?.[i] || "";
-                                    const shiftRequest = shiftRequestsStatus[member.id]?.[i] || "";
-                                    const leaveRequest = leaveRequestsStatus[member.id]?.[i] || "";
-                                    const showTheDay = leaveRequest || shiftRequest || shift;
-                                    const cellClassName = `${styles.clickableCell} ${leaveRequest
-                                        ? styles.request
-                                        : shiftRequest
-                                            ? styles.request
-                                            : shift
-                                                ? styles.confirmed
-                                                : ""
-                                        } ${isWeekend ? styles.weekend : ""} ${isHoliday ? styles.holiday : ""}`;
+                                    const shiftRequestConfirmed = shiftRequestsConfirmed[member.id]?.[i] || "";
+                                    const shiftRequestPending = shiftRequestsPending[member.id]?.[i] || "";
+                                    const leaveRequestConfirmed = leaveRequestsConfirmed[member.id]?.[i] || "";
+                                    const leaveRequestPending = leaveRequestsPending[member.id]?.[i] || "";
+                                    const showTheDay =
+                                        leaveRequestConfirmed || leaveRequestPending ||
+                                        shiftRequestConfirmed || shift || shiftRequestPending;
+                                    const cellClassName = `
+                                        ${styles.clickableCell}
+                                        ${leaveRequestConfirmed ? styles.requestConfirmed
+                                            : leaveRequestPending ? styles.request
+                                                : shiftRequestConfirmed ? styles.requestConfirmed
+                                                    : shift ? styles.confirmed
+                                                        : shiftRequestPending ? styles.request
+                                                            : ""
+                                        }
+                                        ${isWeekend ? styles.weekend
+                                            : ""}
+                                        ${isHoliday ? styles.holiday
+                                            : ""}`;
 
                                     return (
                                         <td
                                             key={i + 1}
-                                            onClick={() => handleCellClick(i + 1, member.name)}
+                                            onClick={() => handleCellClick(i + 1, member.id, member.name)}
                                             className={cellClassName}
                                         >
-                                            {shiftsStatus[member.id]?.[i] || ""}
+                                            {showTheDay}
                                         </td>
                                     );
                                 })}
@@ -250,11 +361,17 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                     </tbody>
                 </table>
             </div>
-            {showEditRoster && selectedDay !== null && selectedMemberName !== null && (
+            {showEditRoster && selectedDay !== null && selectedMemberId !== null && (
                 <EditRoster
                     day={selectedDay}
-                    memberName={selectedMemberName}
+                    memberId={selectedMemberId}
+                    nickname={selectedNickname}
+                    month={selectedMonth}
+                    shift={selectedShift}
+                    shiftRequest={selectedShiftRequest}
+                    leaveRequest={selectedLeaveRequest}
                     onClose={closeEditRoster}
+                    shiftOptions={shiftOptions}
                 />
             )}
         </div>

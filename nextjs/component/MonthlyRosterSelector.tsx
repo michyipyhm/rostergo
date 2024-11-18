@@ -56,21 +56,28 @@ function MonthlyRosterSelector() {
             </div>
 
             <div className={styles.explainCard}>
-                <div className={`${styles.explainBox} ${styles.confirmed}`}>
-                    A
-                </div><span className={styles.explainBoxFont}>:Shift / Leave Confirmed</span>
-                <div className={`${styles.explainBox} ${styles.request}`}><span style={{ color: 'rgba(0, 0, 0, 0.3)' }}>
-                    A
-                </span></div><span className={styles.explainBoxFont}>:Request Not Confirm</span>
-                <div className={`${styles.explainBox} ${styles.requestConfirmed}`}>
-                    A
-                </div><span className={styles.explainBoxFont}>:Request Confirmed</span>
-                <div className={`${styles.explainBox} ${styles.confirmed}`}>
+                <div className={styles.explainText}>
+                    <div className={`${styles.explainBoxForText} ${styles.confirmed}`}>
+                        A
+                    </div><span className={styles.explainBoxFont}>:Shift / Leave / Request Confirmed</span>
+
+                    <div className={styles.explainBoxForText}><span style={{ color: 'rgba(0, 0, 0, 0.3)' }}>
+                        A
+                    </span></div><span className={styles.explainBoxFont}>:Request Not Confirm</span>
+                </div>
+
+                <div className={styles.explainColor}>
+                    <div className={`${styles.explainBoxForColor} ${styles.confirmed}`}>
+
+                    </div><span className={styles.explainBoxFont}>:Rest Day</span>
+                    <div className={`${styles.explainBoxForColor} ${styles.restday}`}>
+
+                    </div><span className={styles.explainBoxFont}>:Weekends & Holidays(W&H)</span>
+                    <div className={`${styles.explainBoxForColor} ${styles.request}`}><span style={{ color: 'rgba(0, 0, 0, 0.3)' }}>
                     
-                </div><span className={styles.explainBoxFont}>:Rest Day</span>
-                <div className={`${styles.explainBox} ${styles.restday}`}>
-                    
-                    </div><span className={styles.explainBoxFont}>:Weekends & Holidays</span>
+                    </span></div><span className={styles.explainBoxFont}>:Request day</span>
+                </div>
+
             </div>
         </div>
     )

@@ -1,27 +1,64 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Modal } from 'react-bootstrap';
+import styles from './EditRoster.module.scss';
 
-type EditRosterProps = {
+interface EditRosterProps {
     day: number;
-    memberName: string;
+    memberId: number;
+    nickname: string | null;
+    month: string;
+    shift: string | null;
+    shiftRequest: string | null;
+    leaveRequest: string | null;
     onClose: () => void;
+    shiftOptions: string[]
 }
 
-const EditRoster: React.FC<EditRosterProps> = ({ day, memberName, onClose }) => {
+function EditRoster({ day, memberId, nickname, month, shift, shiftRequest, leaveRequest, onClose, shiftOptions }: EditRosterProps) {
+
+    const [newShift, setNewShift] = useState<string>(shift || "")
+    const handleSave = () => {
+        alert(`Selected Shift: ${newShift}`);
+        onClose()
+    };
+
     return (
-        <div style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'Blue',
-            padding: '20px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-            zIndex: 1000
-        }}>
-            <p>Hi {memberName}, This is {day}</p>
-            <Button onClick={onClose}>Close</Button>
-        </div>
+        <Modal show onHide={onClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Edit Roster</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p><strong>Member ID:</strong> {memberId}</p>
+                <p><strong>Nickname:</strong> {nickname}</p>
+                <p><strong>Date:</strong> {`${month}-${String(day).padStart(2, "0")}`}</p>
+                <Form.Group controlId="shiftSelect">
+                    <Form.Label><strong>Current Shift: {shift}</strong></Form.Label>
+                    <Form.Control
+                        as="select"
+                        value={newShift}
+                        onChange={(e) => setNewShift(e.target.value)}
+                    >
+                        <option value="">Select a shift for change</option>
+                        {shiftOptions.map((option, index) => (
+                            <option key={index} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </Form.Control>
+                </Form.Group>
+                <br></br>
+                <p><strong>Shift Request:</strong> {shiftRequest || ""}</p>
+                <p><strong>Leave Request:</strong> {leaveRequest || ""}</p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="primary" onClick={handleSave}>
+                    Save
+                </Button>
+                <Button variant="secondary" onClick={onClose}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 };
 
