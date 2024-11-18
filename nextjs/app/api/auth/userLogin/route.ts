@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
       };
 
       const token = await generateJWT(payload);
-      console.log("TOKEN:", token);
+      console.log("user login TOKEN:", token);
+      console.log("user login PAYLOAD:", payload)
 
       return NextResponse.json(
         { message: "Login successful", token, payload },

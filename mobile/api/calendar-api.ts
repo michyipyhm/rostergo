@@ -21,7 +21,7 @@ export async function getUserShifts(): Promise<Shift[]> {
       throw new Error("No token found");
     }
 
-    const res = await fetch(`${apiUrl}/api/user/calendarPage`, {
+    const res = await fetch(`${apiUrl}/api/user/calendarpage`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

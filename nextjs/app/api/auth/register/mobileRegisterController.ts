@@ -1,5 +1,5 @@
-import { mobileRegister } from "@/services/mobileRegister";
 import { mobileRegisterUser } from "@/lib/models";
+import { mobileRegister } from "@/services/user/registerService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function createUserResult(
