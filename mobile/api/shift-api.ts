@@ -11,7 +11,7 @@ export async function getShiftList(): Promise<any> {
         throw new Error('No authentication token found');
       }
       
-      const res = await fetch(apiUrl + '/api/user/shiftList', {
+      const res = await fetch(apiUrl + '/api/user/shiftlist', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
