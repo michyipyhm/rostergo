@@ -8,7 +8,14 @@ const allowedOrigins = [
   "https://anotherdomain.com",
 ]; // Add allowed origins
 
-const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error("JWT_SECRET is not set in the environment variables");
+  process.exit(1);
+}
+
+// Use the raw string as the secret key
+const secretKey = new TextEncoder().encode(JWT_SECRET);
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -58,7 +65,9 @@ export async function middleware(req: NextRequest) {
 
   try {
     // Verify the token and extract the payload
-    const { payload } = await jwtVerify(token, secretKey);
+    const { payload } = await jwtVerify(token, secretKey, {
+      algorithms: ["HS256"], // Specify the algorithm explicitly
+    });
 
     const userRole = payload.role as string;
 
@@ -94,7 +103,7 @@ export async function middleware(req: NextRequest) {
     ); // Dynamic origin
     return nextResponse;
   } catch (error) {
-    console.error("JWT verification failed:", error);
+    console.error("JWT verification failed:", error.code, error.message);
     return NextResponse.json(
       { error: "Unauthorized: Invalid or expired token" },
       {

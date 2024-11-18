@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
 import { mobileLoginService } from "@/services/user/loginService";
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET);
 
 async function generateJWT(payload: any) {
   return await new jose.SignJWT(payload)
@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
       };
 
       const token = await generateJWT(payload);
-      console.log("TOKEN:", token);
+      console.log("user login TOKEN:", token);
+      console.log("user login PAYLOAD:", payload)
 
       return NextResponse.json(
         { message: "Login successful", token, payload },

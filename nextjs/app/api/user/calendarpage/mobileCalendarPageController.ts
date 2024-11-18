@@ -6,6 +6,8 @@ export async function handleGetShifts(req: NextRequest) {
   const userIdParam = req.headers.get("userId");
   const userId = parseInt(userIdParam);
 
+  console.log("userIdParam:", userIdParam);
+  
   // Validate userId
   if (isNaN(userId)) {
     return NextResponse.json({ error: "Invalid userId" }, { status: 400 });

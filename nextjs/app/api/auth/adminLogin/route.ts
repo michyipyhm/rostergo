@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
 import { adminLoginService } from "@/services/admin/adminLoginService";
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET);
 
 async function generateJWT(payload: any) {
   return await new jose.SignJWT(payload)
