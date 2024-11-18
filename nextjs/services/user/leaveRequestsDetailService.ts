@@ -1,6 +1,5 @@
 import { pgClient } from "@/lib/pgClient";
 
-
 type LeaveRequest = {
   id: number;
   user_id: number;
@@ -8,14 +7,21 @@ type LeaveRequest = {
   leave_type_id: number;
   start_date: Date;
   end_date: Date;
+  duration: string;
   status: string;
 };
 
 type User = {
   id: number;
-  name: string;
+  nickname: string;
 };
 
+type ShiftSlot = {
+  id: number;
+  title: string;
+  start_time: Date;
+  end_time: Date;
+};
 
 type LeaveType = {
   id: number;
@@ -24,10 +30,9 @@ type LeaveType = {
 
 type LeaveRequestDetail = LeaveRequest & {
   user: User;
+  shift_slot: ShiftSlot;
   leave_type: LeaveType;
 };
-
-
 
 export async function getLeaveRequestDetailByUserId(
   userId: number
@@ -35,11 +40,14 @@ export async function getLeaveRequestDetailByUserId(
   const query = `
     SELECT 
       lr.*, 
-      u.id AS user_id, u.nickname AS user_name,
-      lt.id AS leave_type_id, lt.name AS leave_type_name
+      u.id AS user_id, u.nickname AS user_nickname,
+      lt.id AS leave_type_id, lt.name AS leave_type_name,
+      ss.id AS shift_slot_id, ss.title AS shift_slot_title, 
+      ss.start_time AS shift_slot_start_time, ss.end_time AS shift_slot_end_time
     FROM leave_requests lr
     JOIN users u ON lr.user_id = u.id
     JOIN leave_types lt ON lr.leave_type_id = lt.id
+    LEFT JOIN shift_slots ss ON lr.shift_slot_id = ss.id
     WHERE lr.user_id = $1
   `;
 
@@ -51,20 +59,27 @@ export async function getLeaveRequestDetailByUserId(
       user_id: row.user_id,
       shift_slot_id: row.shift_slot_id,
       leave_type_id: row.leave_type_id,
-      start_date: new Date(row.start_date), // 确保转换为 Date 对象
-      end_date: new Date(row.end_date), // 确保转换为 Date 对象
+      start_date: new Date(row.start_date),
+      end_date: new Date(row.end_date),
+      duration: row.duration,
       status: row.status,
       user: {
         id: row.user_id,
-        name: row.user_name, // 使用正确的字段名
+        nickname: row.user_nickname,
       },
+      shift_slot: row.shift_slot_id ? {
+        id: row.shift_slot_id,
+        title: row.shift_slot_title,
+        start_time: row.shift_slot_start_time ? new Date(row.shift_slot_start_time) : null,
+        end_time: row.shift_slot_end_time ? new Date(row.shift_slot_end_time) : null,
+      } : null,
       leave_type: {
         id: row.leave_type_id,
-        name: row.leave_type_name, // 使用正确的字段名
+        name: row.leave_type_name,
       },
     }));
   } catch (error) {
     console.error("error", error);
-    throw error;
+    throw new Error("error");
   }
 }
