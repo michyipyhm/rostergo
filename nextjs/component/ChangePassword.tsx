@@ -28,7 +28,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ show, onHide 
     
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch ('/api/changePassword', {
+      const response = await fetch ('/api/auth/changePassword', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

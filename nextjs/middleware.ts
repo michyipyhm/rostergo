@@ -69,9 +69,7 @@ export async function middleware(req: NextRequest) {
       algorithms: ["HS256"], // Specify the algorithm explicitly
     });
 
-    const userRole = payload.role as string;
-
-    if (isUserPath && userRole !== "user") {
+    if (isUserPath && payload.admin) {
       return NextResponse.json(
         { error: "Forbidden: Insufficient permissions for user api" },
         {
@@ -83,7 +81,7 @@ export async function middleware(req: NextRequest) {
       );
     }
 
-    if (isAdminPath && userRole !== "admin") {
+    if (isAdminPath && !payload.admin) {
       return NextResponse.json(
         { error: "Forbidden: Insufficient permissions for admin api" },
         {

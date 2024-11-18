@@ -1,4 +1,172 @@
-import { Tabs } from "expo-router";
+// import React from "react";
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   FlatList,
+//   ScrollView,
+//   ActivityIndicator,
+// } from "react-native";
+// import { useQuery } from "@tanstack/react-query";
+// import { getAllLeaves } from "../api/leave-api";
+// import { ChevronRight } from 'lucide-react-native';
+// import { useRouter } from "expo-router";
+
+// export default function LeaveRequestList() {
+//   const router = useRouter();
+//   const { data, isLoading, error } = useQuery({
+//     queryKey: ["getAllLeaves"],
+//     queryFn: getAllLeaves,
+//   });
+
+//   const navigateToLeaveRequestDetail = (id) => {
+//     router.push(`/tabs/leaveRequestDetail`);
+//   };
+
+//   if (isLoading) {
+//     return (
+//       <View style={styles.loadingContainer}>
+//         <ActivityIndicator size="large" color="#0000ff" />
+//         <Text>Loading...</Text>
+//       </View>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <View style={styles.errorContainer}>
+//         <Text style={styles.error}>Error: {error.message}</Text>
+//       </View>
+//     );
+//   }
+
+//   const navigateToApplyLeave = () => {
+//     router.push("/tabs/applyLeave");
+//   };
+
+//   return (
+//     <ScrollView style={styles.container}>
+//       <View style={styles.card}>
+//         <View style={styles.header}>
+//           <Text style={styles.title}>Leave Request List</Text>
+//         </View>
+//         <View style={styles.content}>
+//           <FlatList
+//             data={data}
+//             keyExtractor={(item) => item.id.toString()}
+//             renderItem={({ item }) => {
+//               const startDate = new Date(item.start_date);
+//               const endDate = new Date(item.end_date);
+              
+//               const formattedStartDate = startDate.toISOString().split('T')[0];
+//               const formattedEndDate = endDate.toISOString().split('T')[0];
+
+//               const leaveType = item.leave_type_name;
+//               const status = item.status;
+
+//               return (
+//                 <TouchableOpacity 
+//                   style={styles.itemContainer}
+//                   onPress={() => navigateToLeaveRequestDetail(item.id)}
+//                 >
+//                   <View style={styles.itemContent}>
+//                     <Text style={styles.itemDate}>{`${formattedStartDate} - ${formattedEndDate}`}</Text>
+//                     <Text style={styles.itemType}>{leaveType}</Text>
+//                     <Text style={[styles.itemStatus, { color: status.toLowerCase() === 'approved' ? 'green' : status.toLowerCase() === 'rejected' ? 'red' : 'orange' }]}>{status}</Text>
+//                   </View>
+//                   <ChevronRight color="#000" size={20} />
+//                 </TouchableOpacity>
+//               );
+//             }}
+//           />
+//         </View>
+//       </View>
+//       <TouchableOpacity
+//         style={styles.applyButton}
+//         onPress={navigateToApplyLeave}
+//       >
+//         <Text style={styles.applyButtonText}>Apply Leave</Text>
+//       </TouchableOpacity>
+//     </ScrollView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#e6ffff',
+//   },
+//   card: {
+//     backgroundColor: '#fff',
+//     margin: 16,
+//     borderRadius: 8,
+//     overflow: 'hidden',
+//   },
+//   header: {
+//     backgroundColor: '#e6e6e6',
+//     padding: 16,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//   },
+//   content: {
+//     padding: 16,
+//   },
+//   itemContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     backgroundColor: '#f0f0f0',
+//     borderRadius: 4,
+//     padding: 12,
+//     marginBottom: 8,
+//   },
+//   itemContent: {
+//     flex: 1,
+//   },
+//   itemDate: {
+//     fontSize: 16,
+//     fontWeight: '500',
+//   },
+//   itemType: {
+//     fontSize: 14,
+//     color: '#666',
+//   },
+//   itemStatus: {
+//     fontSize: 14,
+//     fontWeight: '500',
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   errorContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   error: {
+//     color: 'red',
+//     textAlign: 'center',
+//   },
+//   applyButton: {
+//     backgroundColor: '#90EE90',
+//     padding: 16,
+//     borderRadius: 4,
+//     alignItems: 'center',
+//     margin: 16,
+//   },
+//   applyButtonText: {
+//     color: '#000',
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//   },
+// });
+
 import React from "react";
 import {
   View,
@@ -6,19 +174,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getAllLeaves } from "../api/leave-api";
+import { ChevronRight } from 'lucide-react-native';
+import { useRouter } from "expo-router";
 
 export default function LeaveRequestList() {
+  const router = useRouter();
   const { data, isLoading, error } = useQuery({
     queryKey: ["getAllLeaves"],
     queryFn: getAllLeaves,
   });
 
+  const navigateToLeaveRequestDetail = (id) => {
+    router.push(`/tabs/leaveRequestDetail`);
+  };
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
         <Text>Loading...</Text>
       </View>
     );
@@ -27,113 +205,145 @@ export default function LeaveRequestList() {
   if (error) {
     return (
       <View style={styles.errorContainer}>
-        <Text>Error: {error.message}</Text>
+        <Text style={styles.error}>Error: {error.message}</Text>
       </View>
     );
   }
-  console.log(data)
+
+  const navigateToApplyLeave = () => {
+    router.push("/tabs/applyLeave");
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Leave Request List</Text>
-      <View style={styles.headerRow}>
-        <Text style={styles.headerItem}>Date:</Text>
-        <Text style={styles.headerItem}>Leave Type:</Text>
-        <Text style={styles.headerItem}>Status:</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Leave Request List</Text>
+        </View>
+        <View style={styles.content}>
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => {
+              const startDate = new Date(item.start_date);
+              const endDate = new Date(item.end_date);
+              
+              const formattedStartDate = startDate.toISOString().split('T')[0];
+              const formattedEndDate = endDate.toISOString().split('T')[0];
+
+              const leaveType = item.leave_type_name;
+              const status = item.status;
+
+              return (
+                <TouchableOpacity 
+                  style={styles.itemContainer}
+                  onPress={() => navigateToLeaveRequestDetail(item.id)}
+                >
+                  <View style={styles.itemContent}>
+                    <Text style={styles.itemDate}>{`${formattedStartDate} - ${formattedEndDate}`}</Text>
+                    <Text style={styles.itemType}>{leaveType}</Text>
+                    <Text style={[styles.itemStatus, { color: status.toLowerCase() === 'approved' ? 'green' : status.toLowerCase() === 'rejected' ? 'red' : 'orange' }]}>{status}</Text>
+                  </View>
+                  <ChevronRight color="#000" size={20} />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
       </View>
-
-      <FlatList
-  data={data}
-  keyExtractor={(item) => item.id.toString()} // Assuming each leave request has a unique id
-  renderItem={({ item }) => {
-    console.log(item);
-    // 假设 start_date 和 end_date 是字符串格式的日期
-    const startDate = new Date(item.start_date);
-    const endDate = new Date(item.end_date);
-    
-    // 格式化为 YYYY-MM-DD
-    const formattedStartDate = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`;
-    const formattedEndDate = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
-
-    const leaveType = item.leave_type_name;
-    const status = item.status;
-
-    return (
-      <View style={styles.row}>
-        <Text style={styles.item}>{`${formattedStartDate} - ${formattedEndDate}`}</Text>
-        <Text style={styles.item}>{leaveType}</Text>
-        <Text style={styles.item}>{status}</Text>
-      </View>
-    );
-  }}
-/>
-
-
       <TouchableOpacity
-        style={styles.roundButton}
-        onPress={() => {
-          console.log("Round Button pressed!");
-          // Add navigation or other logic here
-        }}
+        style={styles.applyButton}
+        onPress={navigateToApplyLeave}
       >
-        <Text style={styles.buttonText}>+</Text>
+        <Text style={styles.applyButtonText}>+</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#e6ffff',
+  },
+  card: {
+    backgroundColor: '#fff',
+    margin: 16,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  header: {
+    backgroundColor: '#e6e6e6',
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  content: {
+    padding: 16,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 4,
+    padding: 12,
+    marginBottom: 8,
+  },
+  itemContent: {
+    flex: 1,
+  },
+  itemDate: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  itemType: {
+    fontSize: 14,
+    color: '#666',
+  },
+  itemStatus: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   errorContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 10,
+  error: {
+    color: 'red',
+    textAlign: 'center',
   },
-  item: {
-    flex: 1,
-    textAlign: "center",
-  },
-  title: {
-    fontSize: 36,
-    textAlign: "center",
-    marginVertical: 20,
-  },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-  },
-  headerItem: {
-    flex: 1,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  roundButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "grey",
-    position: "absolute",
-    right: 20,
+  applyButton: {
+    position: 'absolute',
     bottom: 20,
-    justifyContent: "center",
-    alignItems: "center",
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#90EE90',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  buttonText: {
-    color: "black",
+  applyButtonText: {
+    color: '#000',
     fontSize: 24,
+    fontWeight: 'bold',
   },
 });
