@@ -1,4 +1,3 @@
-import * as SecureStore from 'expo-secure-store';
 import { storageUtil } from './auth-api';
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
@@ -8,7 +7,7 @@ export async function getAllLeaves(): Promise<any> {
     // 從 SecureStore 獲取存儲的令牌
     const token = await storageUtil.getItem('token');
     console.log(token)
-    const res = await fetch(apiUrl + '/api/leaveRequests', {
+    const res = await fetch(apiUrl + '/api/user/leaveRequests', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`, 
@@ -30,7 +29,7 @@ export async function getAllLeaves(): Promise<any> {
   export async function getLeaveDetail(): Promise<any> {
     try {
       const token = await storageUtil.getItem('token');
-      const res = await fetch(apiUrl + '/api/leaveRequestsDetail', {
+      const res = await fetch(apiUrl + '/api/user/leaveRequestsDetail', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, 

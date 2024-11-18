@@ -18,10 +18,19 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ show, onHide, onEmp
 
   const handleSearch = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
       setError('')
       setSearchResult(null)
 
-      const response = await fetch(`/api/admin/employee/search?term=${encodeURIComponent(searchTerm)}`)
+      const response = await fetch(`/api/admin/employee/search?term=${encodeURIComponent(searchTerm)}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+      })
       const data = await response.json()
 
       if (!response.ok) {

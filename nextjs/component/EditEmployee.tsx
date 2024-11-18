@@ -20,10 +20,19 @@ export default function EditEmployee({ id }: { id: string }) {
   useEffect(() => {
     async function fetchEmployee() {
       try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No token found');
+        }
+
         setIsLoading(true)
         setError(null)
  
-        const response = await fetch(`/api/admin/employee/${id}`)
+        const response = await fetch(`/api/admin/employee/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -52,12 +61,12 @@ export default function EditEmployee({ id }: { id: string }) {
     setError(null)
 
     try {
-      // const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token')
       const response = await fetch(`/api/admin/employee/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           phone: employee.phone,
