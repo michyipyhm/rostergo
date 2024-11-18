@@ -26,7 +26,6 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
     const [selectedLeaveRequest, setSelectedLeaveRequest] = useState<string | null>(null);
 
     const shiftOptions = shift_slots.map((slot) => slot.short_title)
-    // console.log(shiftOptions)
 
     // check the date(string) parameter should be YYYY-MM
     if (!date || Array.isArray(date) || !/^\d{4}-\d{2}$/.test(date)) {

@@ -15,25 +15,29 @@ interface EditRosterProps {
 }
 
 function EditRoster({ day, memberId, nickname, month, shift, shiftRequest, leaveRequest, onClose, shiftOptions }: EditRosterProps) {
-    const [newShift, setNewShift] = useState<string>(shift || "");
+    const [newShift, setNewShift] = useState<string>(shift || "")
 
     const handleSave = async () => {
         if (!newShift) {
-            alert("Please select a shift before saving.");
-            return;
+            alert("Please select a shift before saving.")
+            return
         }
 
         try {
-            const response = await fetch("/api/editShift", {
+
+            const token = localStorage.getItem('token')
+
+            const response = await fetch("/api/admin/editshift", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     id: memberId,
                     month,
                     day,
-                    shift_slot: newShift, // 傳遞選擇的 shift_slot
+                    shift_slot: newShift,
                 }),
             });
 

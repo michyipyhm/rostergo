@@ -8,6 +8,7 @@ export async function mobileRegister(
   gender: "male" | "female"
 ): Promise<mobileRegisterResult> {
   try {
+
     const query = `
     UPDATE users 
     SET nickname = $1, password = $2, gender = $3, status = 'active'
@@ -22,6 +23,8 @@ export async function mobileRegister(
       phone,
     ]);
 
+
+    console.log("check result",result)
     if (result.rows.length > 0) {
       return {
         success: true,

@@ -10,6 +10,7 @@ export interface Shift {
   end_time: string;
   user_id: number;
   nickname: string;
+  shift_slot_id: number;
 }
 
 // Get User Shifts
@@ -35,9 +36,18 @@ export async function getUserShifts(): Promise<Shift[]> {
 
     const data = await res.json();
 
-    console.log("User Shifts:", data);
+    const adjustedData = data.map((shift: Shift) => {
+      const date = new Date(shift.date);
+      date.setDate(date.getDate() + 1);
+      return {
+        ...shift,
+        date: date.toISOString().split('T')[0], // Format as YYYY-MM-DD
+      };
+    });
 
-    return data;
+    console.log("Adjusted User Shifts:", adjustedData);
+
+    return adjustedData;
 
   } catch (error) {
     console.error("Error fetching user shifts:", error);

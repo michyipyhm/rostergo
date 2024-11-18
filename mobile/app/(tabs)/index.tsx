@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  SafeAreaView,
 } from "react-native";
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -17,6 +18,14 @@ import { Shift, getUserShifts } from "@/api/calendar-api";
 import { useQuery } from "@tanstack/react-query";
 import { MarkedDates } from "react-native-calendars/src/types";
 
+const shiftColors = {
+  1: "#3498DB", // Light Red
+  2: "#E74C3C", // Light Green
+  3: "#2ECC71", // Light Blue
+  4: "#F39C12", // Light Yellow
+  5: "#9B59B6", // Light Purple
+};
+
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
@@ -27,17 +36,23 @@ export default function HomeScreen() {
     queryFn: getUserShifts,
   });
 
+  const nickname = data && data.length > 0 ? data[0].nickname : "";
+
   const markedDates = useMemo<MarkedDates>(() => {
     if (!data) return {};
     return data.reduce<MarkedDates>((acc, shift) => {
       const date = shift.date.split("T")[0]; // Extract YYYY-MM-DD from the date string
+      const colorIndex = (shift.shift_slot_id % 5) + 1;
+      const color = shiftColors[colorIndex as keyof typeof shiftColors] || "#5f9ea0";
       acc[date] = {
-        periods: [{ startingDay: true, endingDay: true, color: "#5f9ea0" }],
+        periods: [{ startingDay: true, endingDay: true, color }],
       };
       return acc;
     }, {});
   }, [data]);
 
+
+  
   const handleDayPress = (day: { dateString: string }) => {
     setSelectedDate(day.dateString);
     const shift = data?.find((s) => s.date.startsWith(day.dateString));
@@ -75,18 +90,20 @@ export default function HomeScreen() {
     );
   }
 
+  
   return (
+    // <SafeAreaView>
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#0A1423", dark: "#0A1423" }}
       headerImage={
         <Image
-          source={require("@/assets/images/rostergo10.webp")}
+          source={require("@/assets/images/working2.jpg")}
           style={styles.reactLogo}
         />
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Welcome, {nickname}!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -104,6 +121,7 @@ export default function HomeScreen() {
           }}
           markedDates={markedDates}
         />
+      
       </ThemedView>
 
       <Animated.View
@@ -115,7 +133,7 @@ export default function HomeScreen() {
         ]}
       >
         <Text style={styles.selectedDateText}>
-          Selected Date: {selectedDate}
+          {selectedDate}
         </Text>
         {selectedShift && (
           <Text style={styles.shiftTimeText}>
@@ -133,15 +151,16 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </Animated.View>
     </ParallaxScrollView>
+    // </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   reactLogo: {
-    height: 178,
-    width: 290,
+    height: 250,
+    width: 400,
     bottom: 0,
-    left: 65,
+    // left: 65,
     position: "absolute",
   },
   loadingContainer: {
@@ -167,6 +186,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  shiftTimeText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  shiftSlotText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 15,
+  },
   slideView: {
     position: "absolute",
     bottom: 0,
@@ -183,31 +212,32 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   selectedDateText: {
-    fontSize: 22,
+    fontSize: 26,
     textAlign: "center",
     marginBottom: 25,
   },
-  shiftTimeText: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 25,
-  },
+  // shiftTimeText: {
+  //   fontSize: 18,
+  //   textAlign: "center",
+  //   marginBottom: 25,
+  // },
   closeButton: {
-    padding: 10,
+    padding: 12,
     alignSelf: "center",
     backgroundColor: "#0A1423",
-    borderRadius: 10,
-    marginTop: 10,
+    borderRadius: 25,
+    marginTop: 12,
   },
   sickLeaveButton: {
-    padding: 10,
+    padding: 12,
     alignSelf: "center",
     backgroundColor: "#0A1423",
-    borderRadius: 10,
+    borderRadius: 25,
     marginTop: 15
   },
   closeButtonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: "500",
   },
 });
