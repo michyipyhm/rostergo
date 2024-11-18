@@ -1,6 +1,6 @@
 import React from "react"
 import styles from './ShiftSlot.module.scss'
-import { monthlyRosterService } from '@/services/monthlyRosterService'
+import { monthlyRosterService } from '@/services/admin/monthlyRosterService'
 
 async function ShiftSlot() {
 

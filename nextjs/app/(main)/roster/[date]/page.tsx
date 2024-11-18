@@ -1,15 +1,11 @@
 import MonthlyRosterForm from '@/component/MonthlyRoster';
 import MonthlyRosterSelector from '@/component/MonthlyRosterSelector';
 import React from 'react'
-import { monthlyRosterService } from "@/services/monthlyRosterService"
+import { monthlyRosterService } from "@/services/admin/monthlyRosterService"
 import { notFound } from "next/navigation"
 import { Params } from "@/lib/models";
 import ShiftSlot from '@/component/ShiftSlot';
 import LeaveRequest from '@/component/LeaveRequest';
-
-interface MonthlyRosterPageProps {
-    searchParams: URLSearchParams;
-}
 
 export default async function MonthlyRoster({ params }: { params: Params }) {
 

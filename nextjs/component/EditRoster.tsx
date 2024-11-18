@@ -24,7 +24,8 @@ function EditRoster({ day, memberId, nickname, month, shift, shiftRequest, leave
         }
 
         try {
-            const response = await fetch("/api/editShift", {
+
+            const response = await fetch("/api/admin/editShift", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
