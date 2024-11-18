@@ -1,4 +1,4 @@
-import { mobileShiftListService } from '@/services/user/ShiftListService';
+import { mobileShiftListService } from '@/services/user/shiftListService';
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
