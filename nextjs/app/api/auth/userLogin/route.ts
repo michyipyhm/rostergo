@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mobileLoginService } from "@/services/mobileLoginService";
+import { mobileLoginService } from "@/services/user/loginService";
 import * as jose from "jose";
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET);
 
 async function generateJWT(payload: any) {
   return await new jose.SignJWT(payload)

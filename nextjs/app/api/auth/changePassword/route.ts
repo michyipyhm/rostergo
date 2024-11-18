@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminLoginService } from '@/services/adminLoginService'
+import { adminLoginService } from '@/services/admin/loginService'
 import * as jose from 'jose';
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_KEY);
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function POST(req: NextRequest) {
   try {
