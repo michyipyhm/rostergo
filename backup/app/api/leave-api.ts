@@ -7,7 +7,7 @@ export async function getAllLeaves(): Promise<any> {
     // 從 SecureStore 獲取存儲的令牌
     const token = await storageUtil.getItem('token');
     console.log(token)
-    const res = await fetch(apiUrl + '/api/user/leaveRequests', {
+    const res = await fetch(apiUrl + '/api/user/leaverequests', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`, 
@@ -30,7 +30,7 @@ export async function getAllLeaves(): Promise<any> {
   export async function getLeaveDetail(): Promise<any> {
     try {
       const token = await storageUtil.getItem('token');
-      const res = await fetch(apiUrl + '/api/user/leaveRequestsDetail', {
+      const res = await fetch(apiUrl + '/api/user/leaverequestsdetail', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, 
@@ -80,7 +80,7 @@ export async function submitLeaveApplication(data: LeaveApplicationData): Promis
 
   try {
     const token = await storageUtil.getItem('token');
-    const response = await fetch(`${apiUrl}/api/user/applyLeave`, {
+    const response = await fetch(`${apiUrl}/api/user/applyleave`, {
       method: 'POST',
       body: formData,
       headers: {
@@ -139,7 +139,7 @@ export async function submitLeaveApplication(data: LeaveApplicationData): Promis
         } as any);
       }
   
-      const response = await fetch(`${apiUrl}/api/user/applySickLeave`, {
+      const response = await fetch(`${apiUrl}/api/user/applysickleave`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
