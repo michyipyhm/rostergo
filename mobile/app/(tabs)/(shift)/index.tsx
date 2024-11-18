@@ -39,7 +39,7 @@ export default function shiftList() {
 
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id.toString()} // 假设每个请假请求有唯一的 id
+        keyExtractor={(item, index) => index.toString()} // 假设每个请假请求有唯一的 id
         renderItem={({ item }) => {
   
           const date = item.date;

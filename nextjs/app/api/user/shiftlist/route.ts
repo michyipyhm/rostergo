@@ -7,7 +7,7 @@ try {
   const id = "2"
   // const token = request.headers.get('Authorization')?.split(' ')[1];
   const shiftList = await mobileShiftListService.getShiftListById(id)
-  return NextResponse.json(shiftList);
+  return NextResponse.json({data: shiftList});
 } catch (error) {
   console.error("Error fetching employees:", error);
   return NextResponse.json(
