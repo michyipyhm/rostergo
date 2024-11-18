@@ -1,13 +1,17 @@
 import Header from "@/components/Header";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Stack, usePathname } from "expo-router";
 import { SafeAreaView } from "react-native";
 
 export default function AuthLayout() {
+  const pathname = usePathname();
+
   return (
     <>
-      <SafeAreaView>
-        <Header />
-      </SafeAreaView>
+      {pathname !== '/index' && (
+        <SafeAreaView>
+          <Header />
+        </SafeAreaView>
+      )}
 
       <Stack initialRouteName="index">
         <Stack.Screen

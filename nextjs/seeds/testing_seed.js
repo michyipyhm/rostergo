@@ -70,7 +70,7 @@ exports.seed = async function (knex) {
     {
       branch_id: 1,
       title: "Shift A",
-      short_title: "A",
+      short_title: "AA",
       start_time: "09:00:00",
       end_time: "12:00:00",
     },

@@ -1,26 +1,25 @@
 import MonthlyRosterForm from '@/component/MonthlyRoster';
 import MonthlyRosterSelector from '@/component/MonthlyRosterSelector';
 import React from 'react'
-import { monthlyRosterService } from "@/services/monthlyRosterService"
+import { monthlyRosterService } from "@/services/admin/monthlyRosterService"
 import { notFound } from "next/navigation"
 import { Params } from "@/lib/models";
 import ShiftSlot from '@/component/ShiftSlot';
-
-interface MonthlyRosterPageProps {
-    searchParams: URLSearchParams;
-}
+import LeaveRequest from '@/component/LeaveRequest';
 
 export default async function MonthlyRoster({ params }: { params: Params }) {
 
     const { date } = await params
     const datePattern = /^\d{4}-\d{2}$/
     if (!datePattern.test(date)) {
-      notFound()
+        notFound()
     }
     if (!date) {
         notFound()
     }
     const result = await monthlyRosterService.getMonthlyRoster(date)
+    const leaveRequestData = await monthlyRosterService.getLeaveRequest(date)
+    const leaveRequest = leaveRequestData.leave_requests
 
     return (
         <div>
@@ -30,20 +29,15 @@ export default async function MonthlyRoster({ params }: { params: Params }) {
                 <MonthlyRosterForm data={result} />
             </div>
 
-            <div>
-                <br></br>
-                <div>
+            <div style={{ margin: "20px 0" }}>
+                <div style={{ margin: "20px 0" }}>
                     <ShiftSlot />
                 </div>
-
                 <div>
-                    [Save]
-                </div>
-
-                <div>
-                    Last updated at:[]
+                    <LeaveRequest leaveRequests={leaveRequest} />
                 </div>
             </div>
+
         </div>
     );
 }

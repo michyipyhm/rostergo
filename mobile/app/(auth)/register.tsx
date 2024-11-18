@@ -150,7 +150,7 @@ export default function RegisterScreen() {
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
       
-      <Text>Login</Text>
+      {/* <Text>Login</Text> */}
     </SafeAreaView>
   );
 }
@@ -164,12 +164,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: "700",
     marginBottom: 32,
-    color: '#000',
+    color: "#000",
+    textAlign: "center",
+    marginTop: 40,
   },
   inputWrapper: {
     marginBottom: 24,
+    marginTop: 10,
+    marginHorizontal: 25,
   },
   label: {
     fontSize: 14,
@@ -190,15 +194,22 @@ const styles = StyleSheet.create({
   },
   genderButton: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: 14,
+    borderRadius: 25,
     borderWidth: 1,
     borderColor: '#E1E1E1',
     alignItems: 'center',
     backgroundColor: '#fff',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   genderButtonActive: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#0a1321',
     borderColor: '#007AFF',
   },
   genderButtonText: {
@@ -209,11 +220,19 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#0a1321',
     paddingVertical: 16,
-    borderRadius: 12,
+    marginHorizontal: 25,
+    borderRadius: 25,
     alignItems: 'center',
     marginTop: 32,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   buttonText: {
     color: '#fff',
