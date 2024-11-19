@@ -5,9 +5,6 @@ import { SafeAreaView } from "react-native";
 export default function leaveLayout() {
   return (
     <>
-      <SafeAreaView>
-        <Header />
-      </SafeAreaView>
 
       <Stack initialRouteName="index">
         <Stack.Screen

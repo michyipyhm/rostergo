@@ -24,10 +24,12 @@ export default function Login() {
 
     if (nickname && password) {
       const data = await login(nickname, password);
-      console.log(data);
+
+      const alertName = data.payload.nickname;
+
       router.navigate("/(tabs)");
 
-      Alert.alert("Login Successful", `Welcome, ${data}!`);
+      Alert.alert("Login Successful", `Welcome, ${alertName}!`);
     } else {
       Alert.alert("Error", "Please enter both username and password.");
     }

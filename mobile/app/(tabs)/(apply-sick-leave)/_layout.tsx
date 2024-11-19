@@ -5,9 +5,7 @@ import { SafeAreaView } from "react-native";
 export default function settingsLayout() {
   return (
     <>
-      <SafeAreaView>
-        <Header />
-      </SafeAreaView>
+  
 
       <Stack initialRouteName="index">
         <Stack.Screen

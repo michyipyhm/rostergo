@@ -1,15 +1,25 @@
-import { Tabs, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import { View, Text, StyleSheet, SafeAreaView, Button } from "react-native";
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getShiftList } from "@/api/shift-api";
 
+interface ShiftPage {
+  date: string;
+  shift_slot: string;
+  user_id: number;
+}
+
 export default function shiftList() {
   const router = useRouter();
-  const { data, isLoading, error } = useQuery({
+
+  const { data, isLoading, error } = useQuery<ShiftPage[], Error>({
     queryKey: ["getShiftList"],
-    queryFn: getShiftList,
+    queryFn: async () => {
+      const result = await getShiftList();
+      return Array.isArray(result) ? result : [result];
+    },
   });
 
   if (isLoading) {
@@ -28,36 +38,37 @@ export default function shiftList() {
     );
   }
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-     
       <Text style={styles.title}>Shift List Page</Text>
       <View style={styles.headerRow}>
         <Text style={styles.headerItem}>Date:</Text>
         <Text style={styles.headerItem}>Shift Slot:</Text>
       </View>
 
-      <FlatList
+      <FlatList<ShiftPage>
         data={data}
-        keyExtractor={(item) => item.id.toString()} // 假设每个请假请求有唯一的 id
-        renderItem={({ item }) => {
-  
-          const date = item.date;
-          const shift_slot = item.shift_slot;
-
-          return (
-            <View style={styles.row}>
-              <Text style={styles.item}>{date}</Text>
-              <Text style={styles.item}>{shift_slot}</Text>
-            </View>
-          )
-        }}
-      /> 
-     
-      <Button
-        // onPress={() => router.push("/(tabs)/(profile)/editProfile")}
-        title="Go somewhere"
+        keyExtractor={(item, index) => `${item.user_id}-${item.date}-${index}`}
+        renderItem={({ item }) => (
+          <View style={styles.row}>
+            <Text style={styles.item}>{formatDate(item.date)}</Text>
+            <Text style={styles.item}>{item.shift_slot}</Text>
+          </View>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No shifts available</Text>
+        }
       />
+
     </SafeAreaView>
   );
 }
@@ -81,13 +92,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
   },
   item: {
     flex: 1,
     textAlign: "center",
   },
   title: {
-    fontSize: 36,
+    fontSize: 24,
+    fontWeight: "bold",
     textAlign: "center",
     marginVertical: 20,
   },
@@ -96,25 +110,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 10,
     backgroundColor: "#f0f0f0",
+    borderBottomWidth: 2,
+    borderBottomColor: "#d0d0d0",
   },
   headerItem: {
     flex: 1,
     textAlign: "center",
     fontWeight: "bold",
   },
-  roundButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "grey",
-    position: "absolute",
-    right: 20,
-    bottom: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "black",
-    fontSize: 24,
+  emptyText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#888",
   },
 });

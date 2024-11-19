@@ -2,16 +2,23 @@ import { storageUtil } from "./auth-api";
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
-export async function getShiftList(): Promise<any> {
+export interface ShiftPage {
+  date: string;
+  user_id: number;
+  shift_slot: string;
+}
+
+export async function getShiftList(): Promise<ShiftPage> {
     try {
       const token = await storageUtil.getItem('token');
 
+      // console.log("shift api token is", token);
 
       if (!token) {
         throw new Error('No authentication token found');
       }
       
-      const res = await fetch(apiUrl + '/api/user/shiftList', {
+      const res = await fetch(apiUrl + '/api/user/shiftlist', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -22,8 +29,9 @@ export async function getShiftList(): Promise<any> {
       if (!res.ok) {
         throw new Error('Network response was not ok')
       }
-      const data = (await res.json()).data
-      console.log("shift data: ", data)
+
+      const data = await res.json();
+
       return data
     } catch (error) {
       console.error('Error sending OTP:', error)

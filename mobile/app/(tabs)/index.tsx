@@ -18,6 +18,7 @@ import { Shift, getUserShifts } from "@/api/calendar-api";
 import { useQuery } from "@tanstack/react-query";
 import { MarkedDates } from "react-native-calendars/src/types";
 
+
 const shiftColors = {
   1: "#3498DB", // Light Red
   2: "#E74C3C", // Light Green
@@ -43,7 +44,8 @@ export default function HomeScreen() {
     return data.reduce<MarkedDates>((acc, shift) => {
       const date = shift.date.split("T")[0]; // Extract YYYY-MM-DD from the date string
       const colorIndex = (shift.shift_slot_id % 5) + 1;
-      const color = shiftColors[colorIndex as keyof typeof shiftColors] || "#5f9ea0";
+      const color =
+        shiftColors[colorIndex as keyof typeof shiftColors] || "#5f9ea0";
       acc[date] = {
         periods: [{ startingDay: true, endingDay: true, color }],
       };
@@ -51,13 +53,11 @@ export default function HomeScreen() {
     }, {});
   }, [data]);
 
-
-  
   const handleDayPress = (day: { dateString: string }) => {
     setSelectedDate(day.dateString);
     const shift = data?.find((s) => s.date.startsWith(day.dateString));
     setSelectedShift(shift || null);
-    
+
     Animated.timing(slideAnim, {
       toValue: 0,
       duration: 300,
@@ -90,9 +90,7 @@ export default function HomeScreen() {
     );
   }
 
-  
   return (
-    // <SafeAreaView>
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#0A1423", dark: "#0A1423" }}
       headerImage={
@@ -121,7 +119,6 @@ export default function HomeScreen() {
           }}
           markedDates={markedDates}
         />
-      
       </ThemedView>
 
       <Animated.View
@@ -132,9 +129,7 @@ export default function HomeScreen() {
           },
         ]}
       >
-        <Text style={styles.selectedDateText}>
-          {selectedDate}
-        </Text>
+        <Text style={styles.selectedDateText}>{selectedDate}</Text>
         {selectedShift && (
           <Text style={styles.shiftTimeText}>
             Shift Time: {selectedShift.start_time} - {selectedShift.end_time}
@@ -151,7 +146,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </Animated.View>
     </ParallaxScrollView>
-    // </SafeAreaView>
   );
 }
 
@@ -233,7 +227,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#0A1423",
     borderRadius: 25,
-    marginTop: 15
+    marginTop: 15,
   },
   closeButtonText: {
     color: "#fff",
