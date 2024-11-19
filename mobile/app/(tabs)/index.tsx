@@ -138,7 +138,7 @@ export default function HomeScreen() {
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => router.push("./(apply-sick-leave)")}
+          onPress={() => router.push("./(leave)/applySickLeave")}
           style={styles.sickLeaveButton}
         >
           <Text style={styles.closeButtonText}>Apply Sick Leave</Text>
