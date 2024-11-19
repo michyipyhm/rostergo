@@ -9,6 +9,7 @@ export default function settingsLayout() {
 
       <Stack initialRouteName="index">
         <Stack.Screen
+          
           name="index"
           options={{ headerShown: false, title: "Settings screen" }}
         />

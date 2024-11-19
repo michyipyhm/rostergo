@@ -1,14 +1,21 @@
 import React from 'react';
-import { SafeAreaView, Button, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {Alert, SafeAreaView, Button, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import { mobileLogout } from '@/api/logout-api';
 import { useQuery } from "@tanstack/react-query";
 
 export default function settings() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    localStorage.removeItem('token');
-    router.push('/login');
+    try {
+      await mobileLogout
+      Alert.alert("Success", "Logout successfully");
+      router.push('/login');
+    } catch (error) {
+      Alert.alert("Error");
+      router.push('/login');  
+    }
   }
 
   return (
