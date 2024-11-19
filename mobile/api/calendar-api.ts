@@ -17,7 +17,7 @@ export interface Shift {
 export async function getUserShifts(): Promise<Shift[]> {
   try {
     const token = await storageUtil.getItem('token');
-    console.log("calender token is", token);
+    // console.log("calender token is", token);
     if (!token) {
       throw new Error("No token found");
     }
@@ -45,7 +45,7 @@ export async function getUserShifts(): Promise<Shift[]> {
       };
     });
 
-    console.log("Adjusted User Shifts:", adjustedData);
+    // console.log("Adjusted User Shifts:", adjustedData);
 
     return adjustedData;
 

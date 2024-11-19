@@ -45,7 +45,7 @@ function EmployeeList() {
   return (
     <div className='mainContainer'> 
   
-    <div className={styles.manpowerTable}>
+    <div className={styles.employeeList}>
       <Table striped bordered hover className={styles.table}>
         <thead>
          <tr>

@@ -35,7 +35,7 @@ export default function changePassword() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Change Password</Text>
+      <View style={styles.spacerRow} />
       <TextInput
         style={styles.input}
         placeholder="Current Password"
@@ -60,8 +60,7 @@ export default function changePassword() {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
-
-      <Button onPress={() => router.back()} title="Back" />
+      
     </SafeAreaView>
   );
 }
@@ -94,5 +93,8 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     textAlign: "center",
     fontSize: 16,
+  },
+  spacerRow: {
+    height: 30,
   },
 });

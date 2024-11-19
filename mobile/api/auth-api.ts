@@ -40,7 +40,14 @@ export const storageUtil = {
     } else { // mobile
       return await SecureStore.getItemAsync(key);
     }
-  }
+  },
+  removeItem: async (key: string) => {
+    if (Platform.OS === 'web') {
+      await AsyncStorage.removeItem(key);
+    } else {
+      await SecureStore.deleteItemAsync(key);
+    }
+  },
 };
 
 

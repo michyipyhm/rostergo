@@ -3,12 +3,12 @@ import { useAuthStore } from '../store/auth';
 import { Redirect } from 'expo-router';
 
 export default function CalendarLayout() {
-//   const { isAuthenticated } = useAuthStore();
+  // const { isAuthenticated } = useAuthStore();
 
   // Protect the calendar routes - redirect to login if not authenticated
-//   if (!isAuthenticated) {
-//     return <Redirect href="/(auth)/login" />;
-//   }
+  // if (!isAuthenticated) {
+  //   return <Redirect href="/(auth)/login" />;
+  // }
 
   return (
     <Stack>
