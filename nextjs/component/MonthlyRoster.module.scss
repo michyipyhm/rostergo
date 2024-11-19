@@ -10,13 +10,15 @@
 .selectedMonth{
     display: flex;
     flex-direction: row;
-    gap: 10px
+    gap: 10px;
+    margin-left: 20px;
 }
 
 .tableContainer {
     overflow-x: auto;
     width: 100%;
     background-color: #ffffff;
+    margin-left: 20px;
 }
 
 .rosterTable {
