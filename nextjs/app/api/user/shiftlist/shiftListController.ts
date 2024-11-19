@@ -1,32 +1,32 @@
-import { getUserShifts } from "@/services/user/calendarPageService";
+import { mobileShiftListService } from "@/services/user/shiftListService";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function handleGetShifts(req: NextRequest) {
-  // Verify the token
-
+export async function getShiftList(req: NextRequest) {
   const jwtPayloadString = req.headers.get("x-jwt-payload");
 
   if (!jwtPayloadString) {
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
-  
+
   const jwtPayload = JSON.parse(jwtPayloadString);
 
   const userId = jwtPayload.id;
 
-  // Validate userId
   if (isNaN(userId)) {
     return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
   }
+
   try {
-    const shifts = await getUserShifts(userId);
-    // console.log("Shifts:", shifts);
+    const shifts = await mobileShiftListService.getShiftListById(userId);
+
+    console.log("shift from shift list controller: ", shifts);
+
     return NextResponse.json(shifts);
   } catch (error) {
-    console.error("Error in handleGetShifts:", error);
+    console.log(error);
     return NextResponse.json(
-      { error: "Invalid token or internal server error" },
-      { status: 401 }
+      { error: "Failed to get shift list" },
+      { status: 500 }
     );
   }
 }

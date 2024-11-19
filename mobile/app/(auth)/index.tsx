@@ -82,6 +82,7 @@ export default function verifyMobileNumberScreen() {
   });
 
   return (
+
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>What's your phone number?</Text>
       <View style={styles.inputWrapper}>
@@ -149,6 +150,7 @@ export default function verifyMobileNumberScreen() {
         title="Register"
       />
     </SafeAreaView>
+
   );
 }
 

@@ -22,14 +22,8 @@ export async function createUserResult(
 }
 
 export async function handleMobileRegister(req: NextRequest) {
-  if (req.method !== "POST") {
-    return NextResponse.json(
-      { message: "Method Not Allowed" },
-      { status: 405 }
-    );
-  }
-
   let body;
+  
   try {
     body = await req.json();
   } catch (error) {

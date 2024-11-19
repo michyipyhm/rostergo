@@ -4,21 +4,28 @@ import { SafeAreaView } from "react-native";
 
 export default function shiftLayout() {
   return (
-    <>
-      <SafeAreaView>
-        <Header />
-      </SafeAreaView>
+    <Stack initialRouteName="index">
+      <Stack.Screen
+        name="index"
+        options={{
+          headerTitle: "Shift List Page",
+          headerLargeTitle: true,
+          headerShadowVisible: false,
+          headerLargeTitleShadowVisible: false,
+          headerShown: true,
+          title: "Shift List Screen",
+          headerSearchBarOptions:{
+            placeholder: "Search for shifts",
+hideWhenScrolling: false,
+            // searchBarStyle: { backgroundColor: "white" },
+          }
+        }}
+      />
 
-      <Stack initialRouteName="index">
-        <Stack.Screen
-          name="index"
-          options={{ headerShown: false, title: "Shift List Screen" }}
-        />
-        <Stack.Screen
-          name="shiftDetail"
-          options={{ headerShown: false, title: "Shift Detail Screen" }}
-        />
-      </Stack>
-    </>
+      <Stack.Screen
+        name="shiftDetail"
+        options={{ headerShown: false, title: "Shift Detail Screen" }}
+      />
+    </Stack>
   );
 }
