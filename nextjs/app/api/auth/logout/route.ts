@@ -13,12 +13,8 @@ export async function POST(req: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     try {
-      // Verify the token
-      // const decoded = jwt.verify(token, SECRET_KEY);
+ 
       await jose.jwtVerify(token, SECRET_KEY);
-
-      // Here you could add the token to a blacklist if you want to invalidate it server-side
-      // For example: await addToBlacklist(token);
 
       return NextResponse.json({ message: 'Logged out successfully' }, { status: 200 });
     } catch (error) {

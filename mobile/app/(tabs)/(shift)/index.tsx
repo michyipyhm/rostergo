@@ -1,6 +1,12 @@
 import { useRouter } from "expo-router";
 import React from "react";
-import { View, Text, StyleSheet, SafeAreaView, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import { FlatList } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getShiftList } from "@/api/shift-api";
@@ -9,6 +15,8 @@ interface ShiftPage {
   date: string;
   shift_slot: string;
   user_id: number;
+  start_time: string;
+  end_time: string;
 }
 
 export default function shiftList() {
@@ -47,28 +55,34 @@ export default function shiftList() {
     });
   };
 
+  const formatTime = (timeString: string) => {
+    return timeString.split(":").slice(0, 2).join(":");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Shift List Page</Text>
-      <View style={styles.headerRow}>
-        <Text style={styles.headerItem}>Date:</Text>
-        <Text style={styles.headerItem}>Shift Slot:</Text>
-      </View>
-
-      <FlatList<ShiftPage>
-        data={data}
-        keyExtractor={(item, index) => `${item.user_id}-${item.date}-${index}`}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.item}>{formatDate(item.date)}</Text>
-            <Text style={styles.item}>{item.shift_slot}</Text>
-          </View>
-        )}
-        ListEmptyComponent={
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {data && data.length > 0 ? (
+          data.map((item, index) => (
+            <View
+              key={`${item.user_id}-${item.date}-${index}`}
+              style={styles.row}
+            >
+              <View style={styles.headerRow}>
+                <Text style={styles.item}>{formatDate(item.date)}</Text>
+                <View style={styles.shiftTimeContainer}>
+                  <Text style={styles.shiftItem}>{item.shift_slot}</Text>
+                  <Text style={styles.shiftTimeItem}>
+                    {formatTime(item.start_time)} - {formatTime(item.end_time)}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          ))
+        ) : (
           <Text style={styles.emptyText}>No shifts available</Text>
-        }
-      />
-
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -77,6 +91,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -89,34 +106,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   row: {
-    flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
-  item: {
-    flex: 1,
-    textAlign: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 20,
+    paddingTop: 12,
+    paddingHorizontal: 20,
   },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-    borderBottomWidth: 2,
-    borderBottomColor: "#d0d0d0",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#fff",
+    borderColor: "#fff",
+    borderWidth: 1,
+    borderRadius: 14,
   },
-  headerItem: {
+  item: {
     flex: 1,
     textAlign: "center",
-    fontWeight: "bold",
+    fontSize: 20,
+  },
+  shiftItem: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 18,
+  },
+  shiftTimeItem:{
+    flex: 1,
+    textAlign: "center",
+    fontSize: 15,
+    paddingTop: 5,
+  },
+  shiftTimeContainer: {
+    flex: 1,
+    alignItems: "center",
   },
   emptyText: {
     textAlign: "center",

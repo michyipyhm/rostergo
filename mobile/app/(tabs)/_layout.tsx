@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import React from "react";
 import { Platform, SafeAreaView } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
@@ -7,17 +7,23 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Header from "@/components/Header";
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from "@react-navigation/native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const Stack = createStackNavigator();
+  const pathname = usePathname();
 
   return (
-    <>
-      <SafeAreaView>
-        <Header />
-      </SafeAreaView>
+    <> 
+      {/* {pathname !== "/" && <Header/>} */}
+
+      {/* <Header /> */}
+    
 
       <Tabs
+      initialRouteName="index" backBehavior="history"
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
           headerShown: false,
@@ -25,7 +31,6 @@ export default function TabLayout() {
           tabBarBackground: TabBarBackground,
           tabBarStyle: Platform.select({
             ios: {
-              // Use a transparent background on iOS to show the blur effect
               position: "absolute",
             },
             default: {},

@@ -6,6 +6,8 @@ export interface ShiftPage {
   date: string;
   user_id: number;
   shift_slot: string;
+  start_time: string;
+  end_time: string;
 }
 
 export async function getShiftList(): Promise<ShiftPage> {

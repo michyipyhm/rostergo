@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import EmployeeList from '@/component/EmployeeList'
 import AddEmployeeModal from '@/component/AddEmployee'
+import styles from '@/app/page.module.scss'
 
 
 export default function EmployeeListPage() {
@@ -15,10 +16,12 @@ export default function EmployeeListPage() {
   }
 
   return (
-    <div>
+    <>
+    <div className={styles.addButton}>
        <Button onClick={() => setShowAddModal(true)} className="mb-3">
         Add
       </Button>
+    </div>
 
       <EmployeeList />
 
@@ -27,6 +30,6 @@ export default function EmployeeListPage() {
         onHide={() => setShowAddModal(false)}
         onEmployeeAdded={handleEmployeeAdded}
       />
-    </div>
+    </>
   )
 }

@@ -18,7 +18,6 @@ import { Shift, getUserShifts } from "@/api/calendar-api";
 import { useQuery } from "@tanstack/react-query";
 import { MarkedDates } from "react-native-calendars/src/types";
 
-
 const shiftColors = {
   1: "#3498DB", // Light Red
   2: "#E74C3C", // Light Green
@@ -150,6 +149,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  // container:{
+  //   flex: 1,
+  // },
   reactLogo: {
     height: 250,
     width: 400,
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 4,
   },
   stepContainer: {
     gap: 8,
