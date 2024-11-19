@@ -1,7 +1,7 @@
 import { Tabs, useRouter } from "expo-router";
 import React from "react";
 import { View, Text, StyleSheet, SafeAreaView, Button } from "react-native";
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList } from "react-native-gesture-handler";
 import { useQuery } from "@tanstack/react-query";
 import { getShiftList } from "@/api/shift-api";
 
@@ -30,7 +30,6 @@ export default function shiftList() {
 
   return (
     <SafeAreaView style={styles.container}>
-     
       <Text style={styles.title}>Shift List Page</Text>
       <View style={styles.headerRow}>
         <Text style={styles.headerItem}>Date:</Text>
@@ -39,9 +38,10 @@ export default function shiftList() {
 
       <FlatList
         data={data}
-        keyExtractor={(item, index) => index.toString()} // 假设每个请假请求有唯一的 id
+        keyExtractor={(item) =>
+          item.id ? item.id.toString() : Math.random().toString()
+        } // Fallback to a random key if id is undefined
         renderItem={({ item }) => {
-  
           const date = item.date;
           const shift_slot = item.shift_slot;
 
@@ -50,10 +50,10 @@ export default function shiftList() {
               <Text style={styles.item}>{date}</Text>
               <Text style={styles.item}>{shift_slot}</Text>
             </View>
-          )
+          );
         }}
-      /> 
-     
+      />
+
       <Button
         // onPress={() => router.push("/(tabs)/(profile)/editProfile")}
         title="Go somewhere"

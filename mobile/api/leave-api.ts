@@ -3,6 +3,7 @@ import { storageUtil } from "./auth-api";
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
+///////////////get all leave requests//////////////////
 export async function getAllLeaves(): Promise<any> {
   try {
     // 從 SecureStore 獲取存儲的令牌
@@ -27,10 +28,11 @@ export async function getAllLeaves(): Promise<any> {
   }
 }
 
-export async function getLeaveDetail(): Promise<any> {
+///////////////get leave detail//////////////////
+export async function getLeaveDetail(leaveId: number): Promise<any> {
   try {
     const token = await storageUtil.getItem("token");
-    const res = await fetch(apiUrl + "/api/user/leaverequestsdetail", {
+    const res = await fetch(apiUrl + `/api/user/leaverequestsdetail/${leaveId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -48,6 +50,7 @@ export async function getLeaveDetail(): Promise<any> {
     throw error;
   }
 }
+
 ///////////////Apply for leave//////////////////
 
 interface LeaveApplicationData {
@@ -170,37 +173,13 @@ export async function applySickLeave(
   }
 }
 
-// export async function fetchShiftSlots(): Promise<any> {
-//   try {
-//     const res = await fetch(apiUrl + '/api/applySickLeave', {
-//       method: 'GET',
-//     })
+///////////////delete data for leaverequest//////////////////
 
-//     if (!res.ok) {
-//       throw new Error('Network response was not ok')
-//     }
-//     const data = (await res.json()).data
-//     // console.log("data: ", data)
-//     return data
-//   } catch (error) {
-//     console.error('Error sending OTP:', error)
-//     throw error
-//   }
-// }
-
-interface ShiftSlot {
-  date: string;
-  shift_slot_id: number;
-  start_time: string;
-  end_time: string;
-  title: string;
-}
-
-export async function fetchShiftSlots(userId: string): Promise<ShiftSlot[]> {
+export async function deleteLeaveRequest(leaveId: number): Promise<void> {
   try {
     const token = await storageUtil.getItem("token");
-    const response = await fetch(`${apiUrl}/api/fetchShiftSlots/${userId}`, {
-      method: "GET",
+    const response = await fetch(`${apiUrl}/api/user/leaverequests/${leaveId}`, {
+      method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -208,13 +187,10 @@ export async function fetchShiftSlots(userId: string): Promise<ShiftSlot[]> {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch shift slots");
+      throw new Error("Failed to delete leave request");
     }
-
-    const data = await response.json();
-    return data.data;
   } catch (error) {
-    console.error("Error fetching shift slots:", error);
+    console.error("Error deleting leave request:", error);
     throw error;
   }
 }

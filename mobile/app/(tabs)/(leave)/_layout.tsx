@@ -22,6 +22,10 @@ export default function leaveLayout() {
           name="applyLeave"
           options={{ headerShown: false, title: "Apply for Leave Screen" }}
         />
+         <Stack.Screen
+          name="applySickLeave"
+          options={{ headerShown: false, title: "Apply for Sick Screen" }}
+        />
       </Stack>
     </>
   );
