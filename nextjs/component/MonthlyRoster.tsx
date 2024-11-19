@@ -256,15 +256,15 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
 
     // Close EditWindow
     const closeEditRoster = () => {
-        setShowEditRoster(false);
-        setSelectedDay(null);
-        setSelectedMemberId(null);
-        setSelectedMonth("");
-        setSelectedShift(null); // 重置 shift
-        setSelectedShiftRequest(null); // 重置 shiftRequest
-        setSelectedLeaveRequest(null); // 重置 leaveRequest
+        setShowEditRoster(false)
+        setSelectedDay(null)
+        setSelectedMemberId(null)
+        setSelectedMonth("")
+        setSelectedShift(null)
+        setSelectedShiftRequest(null)
+        setSelectedLeaveRequest(null)
         router.refresh()
-    };
+    }
 
     // Generate weekday labels for each day of the month
     const weekdays = Array.from({ length: daysInMonth }, (_, i) => {
