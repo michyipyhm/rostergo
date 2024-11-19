@@ -1,15 +1,33 @@
-import { Tabs, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
-import { View, Text, StyleSheet, SafeAreaView, Button } from "react-native";
-import { FlatList } from 'react-native-gesture-handler';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
+import { FlatList } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getShiftList } from "@/api/shift-api";
 
+interface ShiftPage {
+  date: string;
+  shift_slot: string;
+  user_id: number;
+  start_time: string;
+  end_time: string;
+}
+
 export default function shiftList() {
   const router = useRouter();
-  const { data, isLoading, error } = useQuery({
+
+  const { data, isLoading, error } = useQuery<ShiftPage[], Error>({
     queryKey: ["getShiftList"],
-    queryFn: getShiftList,
+    queryFn: async () => {
+      const result = await getShiftList();
+      return Array.isArray(result) ? result : [result];
+    },
   });
 
   if (isLoading) {
@@ -28,36 +46,43 @@ export default function shiftList() {
     );
   }
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (timeString: string) => {
+    return timeString.split(":").slice(0, 2).join(":");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-     
-      <Text style={styles.title}>Shift List Page</Text>
-      <View style={styles.headerRow}>
-        <Text style={styles.headerItem}>Date:</Text>
-        <Text style={styles.headerItem}>Shift Slot:</Text>
-      </View>
-
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => index.toString()} // 假设每个请假请求有唯一的 id
-        renderItem={({ item }) => {
-  
-          const date = item.date;
-          const shift_slot = item.shift_slot;
-
-          return (
-            <View style={styles.row}>
-              <Text style={styles.item}>{date}</Text>
-              <Text style={styles.item}>{shift_slot}</Text>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {data && data.length > 0 ? (
+          data.map((item, index) => (
+            <View
+              key={`${item.user_id}-${item.date}-${index}`}
+              style={styles.row}
+            >
+              <View style={styles.headerRow}>
+                <Text style={styles.item}>{formatDate(item.date)}</Text>
+                <View style={styles.shiftTimeContainer}>
+                  <Text style={styles.shiftItem}>{item.shift_slot}</Text>
+                  <Text style={styles.shiftTimeItem}>
+                    {formatTime(item.start_time)} - {formatTime(item.end_time)}
+                  </Text>
+                </View>
+              </View>
             </View>
-          )
-        }}
-      /> 
-     
-      <Button
-        // onPress={() => router.push("/(tabs)/(profile)/editProfile")}
-        title="Go somewhere"
-      />
+          ))
+        ) : (
+          <Text style={styles.emptyText}>No shifts available</Text>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -66,6 +91,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -78,43 +106,44 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   row: {
-    flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
-  },
-  item: {
-    flex: 1,
-    textAlign: "center",
-  },
-  title: {
-    fontSize: 36,
-    textAlign: "center",
-    marginVertical: 20,
+    paddingTop: 12,
+    paddingHorizontal: 20,
   },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
-    backgroundColor: "#f0f0f0",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#fff",
+    borderColor: "#fff",
+    borderWidth: 1,
+    borderRadius: 14,
   },
-  headerItem: {
+  item: {
     flex: 1,
     textAlign: "center",
-    fontWeight: "bold",
+    fontSize: 20,
   },
-  roundButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "grey",
-    position: "absolute",
-    right: 20,
-    bottom: 20,
-    justifyContent: "center",
+  shiftItem: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 18,
+  },
+  shiftTimeItem:{
+    flex: 1,
+    textAlign: "center",
+    fontSize: 15,
+    paddingTop: 5,
+  },
+  shiftTimeContainer: {
+    flex: 1,
     alignItems: "center",
   },
-  buttonText: {
-    color: "black",
-    fontSize: 24,
+  emptyText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#888",
   },
 });

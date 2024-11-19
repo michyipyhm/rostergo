@@ -21,6 +21,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setPhoneNumber: (phone) => set({ phoneNumber: phone }),
   setVerified: (verified) => set({ isVerified: verified }),
+
+  
   token: null,
   userId: null,
   setAuth: (token, userId) => set({ token, userId }),

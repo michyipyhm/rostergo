@@ -1,4 +1,6 @@
+
 import { pgClient } from "@/lib/pgClient";
+
 
 type LeaveRequest = {
   id: number;
@@ -19,8 +21,8 @@ type User = {
 type ShiftSlot = {
   id: number;
   title: string;
-  start_time: Date;
-  end_time: Date;
+  start_time: Date | null;
+  end_time: Date | null;
 };
 
 type LeaveType = {
@@ -30,16 +32,23 @@ type LeaveType = {
 
 type LeaveRequestDetail = LeaveRequest & {
   user: User;
-  shift_slot: ShiftSlot;
+  shift_slot: ShiftSlot | null;
   leave_type: LeaveType;
 };
 
 export async function getLeaveRequestDetailByUserId(
-  userId: number
-): Promise<LeaveRequestDetail[]> {
+  id: number
+): Promise<LeaveRequestDetail> {
   const query = `
     SELECT 
-      lr.*, 
+      lr.id, 
+      lr.user_id, 
+      lr.shift_slot_id, 
+      lr.leave_type_id, 
+      lr.start_date + INTERVAL '1 day' AS start_date,
+      lr.end_date + INTERVAL '1 day' AS end_date,
+      lr.duration, 
+      lr.status,
       u.id AS user_id, u.nickname AS user_nickname,
       lt.id AS leave_type_id, lt.name AS leave_type_name,
       ss.id AS shift_slot_id, ss.title AS shift_slot_title, 
@@ -48,11 +57,11 @@ export async function getLeaveRequestDetailByUserId(
     JOIN users u ON lr.user_id = u.id
     JOIN leave_types lt ON lr.leave_type_id = lt.id
     LEFT JOIN shift_slots ss ON lr.shift_slot_id = ss.id
-    WHERE lr.user_id = $1
+    WHERE lr.id = $1
   `;
 
   try {
-    const result = await pgClient.query(query, [userId]);
+    const result = await pgClient.query(query, [id]);
 
     return result.rows.map((row) => ({
       id: row.id,
@@ -77,9 +86,39 @@ export async function getLeaveRequestDetailByUserId(
         id: row.leave_type_id,
         name: row.leave_type_name,
       },
-    }));
+    }))[0];
   } catch (error) {
     console.error("error", error);
     throw new Error("error");
+  }
+}
+
+
+// export async function deleteLeaveRequest(leaveId: number): Promise<{ affectedRows: number }> {
+//   const query = `DELETE FROM leave_requests WHERE id = $1`;
+//   try {
+//     const result = await pgClient.query(query, [leaveId]);
+//     return { affectedRows: result.rowCount };
+//   } catch (error) {
+//     console.error("Error deleting leave request:", error);
+//     throw new Error("Failed to delete leave request");
+//   }
+// }
+
+export async function deleteLeaveRequest(leaveId: number, userId: string) {
+  try {
+    const result = await pgClient.query(
+      'DELETE FROM leave_requests WHERE id = $1 AND user_id = $2 RETURNING *',
+      [leaveId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      return null;
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error('Database error:', error);
+    throw new Error('Failed to delete leave request');
   }
 }

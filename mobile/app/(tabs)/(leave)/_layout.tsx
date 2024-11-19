@@ -5,9 +5,6 @@ import { SafeAreaView } from "react-native";
 export default function leaveLayout() {
   return (
     <>
-      <SafeAreaView>
-        <Header />
-      </SafeAreaView>
 
       <Stack initialRouteName="index">
         <Stack.Screen
@@ -21,6 +18,10 @@ export default function leaveLayout() {
         <Stack.Screen
           name="applyLeave"
           options={{ headerShown: false, title: "Apply for Leave Screen" }}
+        />
+         <Stack.Screen
+          name="applySickLeave"
+          options={{ headerShown: false, title: "Apply for Sick Screen" }}
         />
       </Stack>
     </>

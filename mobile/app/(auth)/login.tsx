@@ -16,18 +16,20 @@ export default function Login() {
   const router = useRouter();
   const [nickname, setNickname] = useState("ft1");
   const [password, setPassword] = useState("123123");
-  const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
+
+  
 
   const handleLogin = async () => {
-    console.log(apiUrl);
     // Here you would typically handle the login logic
 
     if (nickname && password) {
       const data = await login(nickname, password);
-      console.log(data);
+
+      const alertName = data.payload.nickname;
+
       router.navigate("/(tabs)");
 
-      Alert.alert("Login Successful", `Welcome, ${data}!`);
+      Alert.alert("Login Successful", `Welcome, ${alertName}!`);
     } else {
       Alert.alert("Error", "Please enter both username and password.");
     }
