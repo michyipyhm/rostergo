@@ -49,17 +49,8 @@ export default function Profile() {
         <InfoItem label="Branch" value={profile.branch} />
         <InfoItem label="Position" value={profile.position} />
         <InfoItem label="Grade" value={profile.grade} />
-        <InfoItem label="AL Quota" value={`${profile.annual_leave} days`} />
+        <InfoItem label="AL Quota" value={`${profile.annual_leave} day(s)`} />
         <InfoItem label="Join Date" value={formattedJoinDate} />
-
-        {/* <InfoItem label="Nickname" value="hi" />
-        <InfoItem label="Gender" value="male" />
-        <InfoItem label="Phone" value="1234" />
-        <InfoItem label="Branch" value="1" />
-        <InfoItem label="Position" value="sales"/>
-        <InfoItem label="Grade" value="senior" />
-        <InfoItem label="AL Quota" value=" 14 days"/>
-        <InfoItem label="Join Date" value="2024-11-01" /> */}
         
         <TouchableOpacity
           style={styles.payslipsButton}
@@ -114,7 +105,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   payslipsButton: {
-    marginTop: 24,
+    marginTop: 30,
     backgroundColor: '#f0f0f0',
     padding: 12,
     borderRadius: 8,

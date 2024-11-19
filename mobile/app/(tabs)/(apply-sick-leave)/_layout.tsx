@@ -15,10 +15,6 @@ export default function settingsLayout() {
           options={{ headerShown: false, title: "Apple Sick Leave screen" }}
         />
 
-        {/* <Stack.Screen
-          name="editProfile"
-          options={{ headerShown: false, title: "Edit Profile" }}
-        /> */}
       </Stack>
     </>
   );
