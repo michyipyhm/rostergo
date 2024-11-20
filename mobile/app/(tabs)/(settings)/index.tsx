@@ -1,7 +1,8 @@
 import React from 'react';
 import {Alert, SafeAreaView, Button, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { mobileLogout } from '@/api/logout-api';
+// import { mobileLogout } from '@/api/logout-api';
+import { logout } from '@/api/auth-api'
 import { useQuery } from "@tanstack/react-query";
 
 export default function settings() {
@@ -9,9 +10,12 @@ export default function settings() {
 
   const handleLogout = async () => {
     try {
-      await mobileLogout
+      await logout
       Alert.alert("Success", "Logout successfully");
-      router.push('/login');
+      router.push({
+        pathname: '/login',
+        params: { justLoggedOut: 'true' }
+      });
     } catch (error) {
       Alert.alert("Error");
       router.push('/login');  
