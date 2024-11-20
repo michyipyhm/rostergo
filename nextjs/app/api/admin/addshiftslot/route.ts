@@ -6,13 +6,13 @@ import { Payload } from "@/lib/models";
 export async function POST(req: NextRequest) {
     
   try {
-    const { title, short_title, start_time, end_time } = await req.json()
+    const { title, short_title, start_time, end_time, work_hour } = await req.json()
 
     const token = req.headers.get('Authorization')?.split(' ')[1]
     const payload = jwtDecode<Payload>(token)
     const branch_id = payload.branch_id
 
-    await shiftSlotService.addShiftSlot(branch_id, title, short_title, start_time, end_time)
+    await shiftSlotService.addShiftSlot(branch_id, title, short_title, start_time, end_time, work_hour)
 
     return NextResponse.json(
       { success: true, message: "Shift Slot added successfully" },
