@@ -7,7 +7,7 @@ class AdminLoginService {
 
   async authenticateAdmin(nickname: string, password: string) {
     try {
-      const sql = `SELECT * from users where nickname = $1 AND admin = true`
+      const sql = `SELECT * from users where nickname = $1 AND admin = true AND status = 'active'`
       const result = await pgClient.query(sql, [nickname])
 
       if (result.rows.length === 0) {

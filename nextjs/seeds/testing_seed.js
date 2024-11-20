@@ -306,6 +306,15 @@ exports.seed = async function (knex) {
       date: "2024-11-04",
       shift_slot_id: 5,
       user_id: 2,
+    },
+    {
+      date: "2024-10-29",
+      shift_slot_id: 3,
+      user_id: 4,
+      checkin_time: "09:11:16",
+      checkout_time: "11:02:49",
+      over_time_approve: false,
+      status: "check out",
     }
   ]);
 };

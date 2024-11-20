@@ -8,7 +8,7 @@ async function generateJWT(payload: any) {
   return await new jose.SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("12h")
+    .setExpirationTime("24h")
     .sign(SECRET_KEY);
 }
 

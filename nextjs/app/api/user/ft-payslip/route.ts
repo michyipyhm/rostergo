@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const payslipData = await payslipsService.getPayslipsByUserId(userId);
+    const payslipData = await payslipsService.getPayslipsByFTid(userId);
 
     // Check if data was found
     if (!payslipData) {
