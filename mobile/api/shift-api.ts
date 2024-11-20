@@ -14,8 +14,6 @@ export async function getShiftList(): Promise<ShiftPage> {
     try {
       const token = await storageUtil.getItem('token');
 
-      // console.log("shift api token is", token);
-
       if (!token) {
         throw new Error('No authentication token found');
       }
