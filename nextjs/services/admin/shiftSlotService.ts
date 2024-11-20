@@ -30,7 +30,7 @@ class ShiftSlotService {
     }
   }
 
-  async updateShiftSlot(id: number, branch_id: number, title: string, short_title: string, start_time: string, end_time: string) {
+  async updateShiftSlot(id: number, branch_id: number, title: string, short_title: string, start_time: string, end_time: string, work_hour: number) {
     try {
 
       const checkShiftSlot_sql = `
@@ -61,10 +61,11 @@ class ShiftSlotService {
           SET title = $1,
               short_title = $2,
               start_time = $3,
-              end_time = $4
-          WHERE id = $5
+              end_time = $4,
+              work_hour = $5
+          WHERE id = $6
       `
-      await pgClient.query(updateShiftSlot_sql, [title, short_title, start_time, end_time, id])
+      await pgClient.query(updateShiftSlot_sql, [title, short_title, start_time, end_time, work_hour, id])
 
       return {
         success: true,

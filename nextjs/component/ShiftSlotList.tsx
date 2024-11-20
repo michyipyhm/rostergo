@@ -187,9 +187,9 @@ function ShiftSlotList() {
                             id={currentShiftSlot.id}
                             title={currentShiftSlot.title}
                             shortTitle={currentShiftSlot.short_title}
-                            startTime={currentLeaveType.start_time}
-                            endTime={currentLeaveType.end_time}
-                            workHour={currentLeaveType.work_hour}
+                            startTime={currentShiftSlot.start_time}
+                            endTime={currentShiftSlot.end_time}
+                            workHour={currentShiftSlot.work_hour}
                         />
                     ) : null}
                     {showEditLeaveType && currentLeaveType ? (
