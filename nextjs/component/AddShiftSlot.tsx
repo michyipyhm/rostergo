@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import styles from './EditRoster.module.scss';
 
 interface AddShiftSlotProps {
     onClose: () => void;

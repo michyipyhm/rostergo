@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
-import styles from './EditRoster.module.scss';
+import React, { useState } from 'react'
+import { Button, Form, Modal } from 'react-bootstrap'
 
 interface AddLeaveTypeProps {
     onClose: () => void
