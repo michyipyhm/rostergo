@@ -73,6 +73,7 @@ exports.seed = async function (knex) {
       short_title: "AA",
       start_time: "09:00:00",
       end_time: "12:00:00",
+      work_hour: 3,
     },
     {
       branch_id: 1,
@@ -80,6 +81,7 @@ exports.seed = async function (knex) {
       short_title: "B",
       start_time: "12:00:00",
       end_time: "15:00:00",
+      work_hour: 3,
     },
     {
       branch_id: 1,
@@ -87,6 +89,7 @@ exports.seed = async function (knex) {
       short_title: "C",
       start_time: "09:00:00",
       end_time: "11:00:00",
+      work_hour: 2,
     },
     {
       branch_id: 1,
@@ -94,6 +97,7 @@ exports.seed = async function (knex) {
       short_title: "D",
       start_time: "11:00:00",
       end_time: "13:00:00",
+      work_hour: 2,
     },
     {
       branch_id: 1,
@@ -101,6 +105,7 @@ exports.seed = async function (knex) {
       short_title: "E",
       start_time: "13:00:00",
       end_time: "15:00:00",
+      work_hour: 3,
     },
   ]);
 

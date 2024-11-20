@@ -146,7 +146,7 @@ class MonthlyRosterService {
         UPDATE shift_requests
         SET status = 'approve'
         WHERE id = $1
-      `;
+      `
       const update_shift_request_disapprove_sql = `
         UPDATE shift_requests
         SET status = 'disapprove'
@@ -182,7 +182,7 @@ class MonthlyRosterService {
       return {
         success: true,
         message: "Updated successfully",
-      };
+      }
     } catch (error) {
       console.error("Database query error:", error);
       throw new Error("Database error");
