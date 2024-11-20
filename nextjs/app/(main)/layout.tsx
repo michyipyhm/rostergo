@@ -95,7 +95,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <li><Link href="/roster">Monthly Roster</Link></li>
             <li><Link href="/employee">Employee</Link></li>
             <li><Link href="/branch">Branch</Link></li>
-            <li><Link href="/shift-slot">Shift Slot</Link></li>  
+            <li><Link href="/shiftslot">Shift Slot</Link></li>  
           </ul>
         </nav>
       

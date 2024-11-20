@@ -2,14 +2,14 @@ import { storageUtil } from './auth-api';
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
-export async function getPayslips(): Promise<any> {
+export async function getPayslip(monthString: string): Promise<any> {
   try {
     const token = await storageUtil.getItem('token');
     if (!token) {
       throw new Error('No authentication token found');
     }
 
-    const res = await fetch(apiUrl + '/api/user/payslips', {
+    const res = await fetch(apiUrl + '/api/user/payslip', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -22,7 +22,9 @@ export async function getPayslips(): Promise<any> {
     }
 
     const { data } = await res.json();
+    console.log(data)
     return data;
+    
   } catch (error) {
     console.error('Error fetching payslipData:', error);
     throw error;

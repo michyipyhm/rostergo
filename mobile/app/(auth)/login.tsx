@@ -9,16 +9,15 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { login } from "@/api/auth-api";
+import { useRouter} from "expo-router";
+import { login} from "@/api/auth-api";
 
 export default function Login() {
   const router = useRouter();
   const [nickname, setNickname] = useState("ft1");
   const [password, setPassword] = useState("123123");
 
-  
-
+ 
   const handleLogin = async () => {
     // Here you would typically handle the login logic
 
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#000",
     textAlign: "center",
-    marginTop: 100,
+    marginTop: 20,
     marginBottom: 10,
   },
   subtitle: {

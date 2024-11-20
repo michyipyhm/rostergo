@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 import { FlatList } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getShiftList } from "@/api/shift-api";
+import { MarkedDates } from "react-native-calendars/src/types";
 
 interface ShiftPage {
   date: string;
@@ -17,11 +18,27 @@ interface ShiftPage {
   user_id: number;
   start_time: string;
   end_time: string;
+  shift_slot_id: number;
+
 }
+
+const shiftColors: { [key: number]: string } = {
+  1: '#3498DB', // Shift A
+  2: '#E74C3C', // Shift B
+  3: '#2ECC71', // Shift C
+  4: '#F39C12', // Shift D
+  5: '#9B59B6', // Shift E
+};
+
+
+
+const getShiftColor = (shiftSlotId: number) => {
+  return shiftColors[shiftSlotId] || '#CCCCCC'; // Default to light grey if no match
+};
+
 
 export default function shiftList() {
   const router = useRouter();
-
   const { data, isLoading, error } = useQuery<ShiftPage[], Error>({
     queryKey: ["getShiftList"],
     queryFn: async () => {
@@ -69,6 +86,8 @@ export default function shiftList() {
               style={styles.row}
             >
               <View style={styles.headerRow}>
+              <View style={[styles.shiftMarker, { backgroundColor: getShiftColor(data && data.length > 0 ? item.shift_slot_id : 1) }]} />
+
                 <Text style={styles.item}>{formatDate(item.date)}</Text>
                 <View style={styles.shiftTimeContainer}>
                   <Text style={styles.shiftItem}>{item.shift_slot}</Text>
@@ -83,6 +102,7 @@ export default function shiftList() {
           <Text style={styles.emptyText}>No shifts available</Text>
         )}
       </ScrollView>
+      
     </SafeAreaView>
   );
 }
@@ -108,21 +128,26 @@ const styles = StyleSheet.create({
   row: {
     justifyContent: "space-between",
     paddingTop: 12,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 20,
+    padding: 18,
     backgroundColor: "#fff",
     borderColor: "#fff",
     borderWidth: 1,
     borderRadius: 14,
     shadowColor: '#000',
-    shadowOffset: { width: 1, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+  },
+  shiftMarker: {
+    width: 6,
+    height: '100%',
+    borderRadius: 14,
   },
   item: {
     flex: 1,

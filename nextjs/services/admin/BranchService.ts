@@ -37,8 +37,11 @@ class BranchService {
         FROM grades
       `
       const grade = await pgClient.query(grades_sql)
-
-      return position.rows
+      return {
+        positions: position.rows,
+        grades: grade.rows
+      }
+      return  grade.rows
     } catch (error) {
       console.error("Database query error for positions")
       throw new Error("Database error")
@@ -94,7 +97,7 @@ class BranchService {
     }
   }
 
-  async updatePosition(id: number, name: string, grade_id: string, type: string, part_time_hour_wage: number, full_time_wage: number, weekend_restDay: boolean, restDay_per_week: number, restDay_countBy: string) {
+  async updatePosition(id: number, name: string, grade_id: number, type: string, part_time_hour_wage: number, full_time_wage: number, weekend_restDay: boolean, restDay_per_week: number, restDay_countBy: string) {
     try {
       const checkPosition_sql = `
       SELECT
@@ -123,9 +126,9 @@ class BranchService {
               type = $3,
               part_time_hour_wage = $4,
               full_time_wage = $5,
-              weekend_restDay = $6,
-              restDay_per_week = $7,
-              restDay_countBy = $8
+              "weekend_restDay" = $6,
+              "restDay_per_week" = $7,
+              "restDay_countBy" = $8
           WHERE id = $9
           `
         await pgClient.query(changePositionRepeatName_sql, [`${name}(2)`, grade_id, type, part_time_hour_wage, full_time_wage, weekend_restDay, restDay_per_week, restDay_countBy, id])
@@ -137,9 +140,9 @@ class BranchService {
               type = $3,
               part_time_hour_wage = $4,
               full_time_wage = $5,
-              weekend_restDay = $6,
-              restDay_per_week = $7,
-              restDay_countBy = $8
+              "weekend_restDay" = $6,
+              "restDay_per_week" = $7,
+              "restDay_countBy" = $8
           WHERE id = $9
           `
         await pgClient.query(changePositionsName_sql, [name, grade_id, type, part_time_hour_wage, full_time_wage, weekend_restDay, restDay_per_week, restDay_countBy, id])
@@ -155,6 +158,76 @@ class BranchService {
       throw new Error("Database error")
     }
   }
+
+  async addGrade(name: string, annualLeaveQuota: number) {
+    try {
+
+      const checkName_sql = `
+        SELECT name
+        FROM grades
+        WHERE name = $1
+        `
+      const checkName_result = await pgClient.query(checkName_sql, [name])
+
+      if (checkName_result.rows.length > 0 && checkName_result.rows[0].name === name) {
+        const addGradeRepeatName_sql = `
+          INSERT INTO grades (name, annual_leave_quota)
+          VALUES ($1, $2);
+          `
+        await pgClient.query(addGradeRepeatName_sql, [`${name}(2)`, annualLeaveQuota])
+      } else {
+        const addGradeName_sql = `
+          INSERT INTO grades (name, annual_leave_quota)
+          VALUES ($1, $2);
+          `
+        await pgClient.query(addGradeName_sql, [name, annualLeaveQuota])
+      }
+
+      return {
+        success: true,
+        message: "Add new grade successfully",
+      }
+    } catch (error) {
+      console.error("Database query error for grade adding")
+      throw new Error("Database error")
+    }
+  }
+
+  async addPosition(name: string, grade_id: number, type: string, part_time_hour_wage: number, full_time_wage: number, weekend_restDay: boolean, restDay_per_week: number, restDay_countBy: string) {
+    try {
+      const checkName_sql = `
+      SELECT name
+      FROM positions
+      WHERE name = $1
+      `
+      const checkName_result = await pgClient.query(checkName_sql, [name])
+
+      if (checkName_result.rows.length > 0 && checkName_result.rows[0].name === name) {
+        const addPositionRepeatName_sql = `
+          INSERT INTO positions (name, grade_id, type, part_time_hour_wage, full_time_wage, "weekend_restDay", "restDay_per_week", "restDay_countBy")
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+          `
+        await pgClient.query(addPositionRepeatName_sql, [`${name}(2)`, grade_id, type, part_time_hour_wage, full_time_wage, weekend_restDay, restDay_per_week, restDay_countBy])
+      } else {
+        const addGradePositionsName_sql = `
+          INSERT INTO positions (name, grade_id, type, part_time_hour_wage, full_time_wage, "weekend_restDay", "restDay_per_week", "restDay_countBy")
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+          `
+        await pgClient.query(addGradePositionsName_sql, [`${name}(2)`, grade_id, type, part_time_hour_wage, full_time_wage, weekend_restDay, restDay_per_week, restDay_countBy])
+      }
+
+      return {
+        success: true,
+        message: "Added new position successfully",
+      }
+
+    } catch (error) {
+      console.error("Database query error for position adding")
+      throw new Error("Database error")
+    }
+  }
+
+
 
 }
 

@@ -43,6 +43,8 @@ export default function Profile() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
+      <View style={styles.content}>
+
         <InfoItem label="Nickname" value={profile.nickname} />
         <InfoItem label="Gender" value={profile.gender} />
         <InfoItem label="Phone" value={profile.phone} />
@@ -58,6 +60,7 @@ export default function Profile() {
         >
           <Text style={styles.payslipsButtonText}>Payslips</Text>
         </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -66,8 +69,8 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 16,
+    // backgroundColor: '#f5f5f5',
+    // padding: 16,
   },
   centerContainer: {
     flex: 1,
@@ -75,21 +78,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
+    backgroundColor: "#fff",
+    margin: 16,
+    borderRadius: 18,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  content: {
+    padding: 16,
   },
   infoRow: {
     flexDirection: 'row',
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
@@ -103,18 +106,29 @@ const styles = StyleSheet.create({
     flex: 2,
     fontSize: 16,
     color: '#666',
+    fontWeight: '500',
   },
   payslipsButton: {
-    marginTop: 30,
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: '#0A1423',
+    paddingVertical: 14,
+    borderRadius: 25,
+    marginHorizontal: 16,
+    marginTop: 22,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   payslipsButtonText: {
+    alignItems: 'center',
+    color: '#fff',
     fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
+    fontWeight: '700',
   },
   errorText: {
     color: 'red',

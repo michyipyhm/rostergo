@@ -12,11 +12,12 @@ class MobileLoginService {
           users.id,
           users.password,
           users.nickname, 
-          users.admin, 
+          users.admin,
+          users.status,
           positions.type
         FROM users
         JOIN positions ON users.position_id = positions.id
-        WHERE users.nickname = $1 AND users.admin = false
+        WHERE users.nickname = $1 AND users.admin = false AND users.status = 'active'
       `;
   
       const result = await pgClient.query(sql, [nickname]);

@@ -155,7 +155,8 @@ export async function login(nickname: string, password: string): Promise<any> {
     // Store the token using SecureStore instead of localStorage
     try {
       await storageUtil.setItem('token', token);
-      console.log('Token saved successfully.');
+      await storageUtil.setItem('userPayload', JSON.stringify(data.payload));
+      console.log('Token and user data saved successfully.');
     } catch (secureStoreError) {
       console.error('Error storing token in SecureStore:', secureStoreError);
       // You might want to handle this error differently depending on your app's requirements
@@ -164,5 +165,36 @@ export async function login(nickname: string, password: string): Promise<any> {
   } catch (error) {
     console.error('Error during login:', error);
     throw error;
+  }
+}
+
+export async function logout(): Promise<void> {
+  try {
+    await storageUtil.removeItem('token');
+    await storageUtil.removeItem('userPayload');
+    console.log('Token and user data removed successfully.');
+  } catch (error) {
+    console.error('Error during logout:', error);
+    throw error;
+  }
+}
+
+export async function checkAuth(): Promise<boolean> {
+  try {
+    const token = await storageUtil.getItem('token');
+    return !!token;
+  } catch (error) {
+    console.error('Error checking auth:', error);
+    return false;
+  }
+}
+
+export async function getUserData(): Promise<any | null> {
+  try {
+    const userPayload = await storageUtil.getItem('userPayload');
+    return userPayload ? JSON.parse(userPayload) : null;
+  } catch (error) {
+    console.error('Error getting user data:', error);
+    return null;
   }
 }

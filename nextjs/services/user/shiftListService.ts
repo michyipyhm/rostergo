@@ -10,8 +10,9 @@ class MobileShiftListService {
       shifts.user_id as user_id,
       shifts.date as date,
       shift_slots.title as shift_slot,
-       shift_slots.start_time as start_time,
-      shift_slots.end_time as end_time
+      shift_slots.start_time as start_time,
+      shift_slots.end_time as end_time,      
+      shift_slots.id as shift_slot_id
     FROM shifts
     JOIN shift_slots ON shifts.shift_slot_id = shift_slots.id
     WHERE shifts.user_id = $1
@@ -22,8 +23,8 @@ class MobileShiftListService {
 
       return result.rows;
     } catch (error) {
-      console.log("cannot get employees:", error);
-      throw new Error("Failed to retrieve employees");
+      console.log("cannot get shifts by Id:", error);
+      throw new Error("Failed to retrieve shifts by Id");
     }
   }
 }

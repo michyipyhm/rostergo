@@ -7,9 +7,9 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { useRouter } from "expo-router";
+
 import { useAuthStore } from "../store/auth";
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   OtpResponse,
@@ -18,12 +18,15 @@ import {
   VerifyOtpResponse,
 } from "@/api/auth-api";
 import { X } from "lucide-react-native";
+import { checkAuth, getUserData } from "@/api/auth-api";
+import { useRouter, useLocalSearchParams} from "expo-router";
 
 export default function verifyMobileNumberScreen() {
   const router = useRouter();
   const { phoneNumber, setPhoneNumber, setVerified } = useAuthStore();
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const { justLoggedOut } = useLocalSearchParams();
 
   const handleSendOtp = () => {
     if (phoneNumber.length === 8) {
@@ -80,6 +83,22 @@ export default function verifyMobileNumberScreen() {
       Alert.alert("Error", "Failed to verify OTP. Please try again.");
     },
   });
+
+  useEffect(() => {
+    if (!justLoggedOut) {
+      checkAuthStatus();
+    }
+  }, [justLoggedOut]);
+
+  const checkAuthStatus = async () => {
+    const isAuthenticated = await checkAuth();
+    if (isAuthenticated) {
+      const userData = await getUserData();
+      if (userData) {
+        router.replace("/(tabs)");
+      }
+    }
+  };
 
   return (
 
