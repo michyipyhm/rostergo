@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform, Image, Alert } from 'react-native'
+import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform, Image, Alert, SafeAreaView } from 'react-native'
 import { Calendar, ChevronDown, Upload } from 'lucide-react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import * as ImagePicker from 'expo-image-picker'
@@ -143,11 +143,10 @@ export default function ApplySickLeave() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+
+    <ScrollView >
       <View style={styles.card}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Apply Sick Leave</Text>
-        </View>
         <View style={styles.content}>
           <View style={styles.formGroup}>
             <Text style={styles.label}>Leave Type:</Text>
@@ -250,28 +249,24 @@ export default function ApplySickLeave() {
         </View>
       </View>
     </ScrollView>
+    </SafeAreaView>
+
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e6ffff',
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     margin: 16,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  header: {
-    backgroundColor: '#e6e6e6',
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    borderRadius: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
   content: {
     padding: 16,
@@ -376,15 +371,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   applyButton: {
-    backgroundColor: '#90EE90',
-    padding: 16,
-    borderRadius: 4,
     alignItems: 'center',
+    backgroundColor: '#0A1423',
+    paddingVertical: 14,
+    borderRadius: 25,
+    marginHorizontal: 16,
+    marginVertical: 6,
   },
   applyButtonText: {
-    color: '#000',
-    fontSize: 18,
-    fontWeight: 'bold',
+    alignItems: 'center',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
   },
 })
 

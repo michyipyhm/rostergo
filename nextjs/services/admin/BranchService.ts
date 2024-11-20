@@ -37,8 +37,11 @@ class BranchService {
         FROM grades
       `
       const grade = await pgClient.query(grades_sql)
-
-      return position.rows
+      return {
+        positions: position.rows,
+        grades: grade.rows
+      }
+      return  grade.rows
     } catch (error) {
       console.error("Database query error for positions")
       throw new Error("Database error")
@@ -94,7 +97,7 @@ class BranchService {
     }
   }
 
-  async updatePosition(id: number, name: string, grade_id: string, type: string, part_time_hour_wage: number, full_time_wage: number, weekend_restDay: boolean, restDay_per_week: number, restDay_countBy: string) {
+  async updatePosition(id: number, name: string, grade_id: number, type: string, part_time_hour_wage: number, full_time_wage: number, weekend_restDay: boolean, restDay_per_week: number, restDay_countBy: string) {
     try {
       const checkPosition_sql = `
       SELECT
@@ -123,9 +126,9 @@ class BranchService {
               type = $3,
               part_time_hour_wage = $4,
               full_time_wage = $5,
-              weekend_restDay = $6,
-              restDay_per_week = $7,
-              restDay_countBy = $8
+              "weekend_restDay" = $6,
+              "restDay_per_week" = $7,
+              "restDay_countBy" = $8
           WHERE id = $9
           `
         await pgClient.query(changePositionRepeatName_sql, [`${name}(2)`, grade_id, type, part_time_hour_wage, full_time_wage, weekend_restDay, restDay_per_week, restDay_countBy, id])
@@ -137,9 +140,9 @@ class BranchService {
               type = $3,
               part_time_hour_wage = $4,
               full_time_wage = $5,
-              weekend_restDay = $6,
-              restDay_per_week = $7,
-              restDay_countBy = $8
+              "weekend_restDay" = $6,
+              "restDay_per_week" = $7,
+              "restDay_countBy" = $8
           WHERE id = $9
           `
         await pgClient.query(changePositionsName_sql, [name, grade_id, type, part_time_hour_wage, full_time_wage, weekend_restDay, restDay_per_week, restDay_countBy, id])

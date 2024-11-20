@@ -112,9 +112,6 @@ export default function LeaveRequestDetail() {
 
     <ScrollView>
       <View style={styles.card}>
-        {/* <View style={styles.header}>
-          <Text style={styles.title}>Leave Request Detail</Text>
-        </View> */}
         <View style={styles.content}>
           <LeaveRequestItem 
             item={data} 
@@ -320,13 +317,11 @@ function LeaveRequestItem({ item, onDelete, onUpdate }: { item: LeaveRequestItem
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#e6ffff',
   },
   card: {
     backgroundColor: '#fff',
     margin: 16,
-    borderRadius: 14,
-    // overflow: 'hidden',
+    borderRadius: 18,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.2,
@@ -394,24 +389,27 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   saveButton: {
-    backgroundColor: '#90EE90',
-    padding: 10,
-    borderRadius: 4,
+    backgroundColor: '#0a1321',
+    color: '#fff',
+    padding: 12,
+    borderRadius: 25,
     flex: 1,
-    marginRight: 8,
+    marginHorizontal: 16,
     alignItems: 'center',
   },
   deleteButton: {
-    backgroundColor: '#FF6347',
-    padding: 10,
-    borderRadius: 4,
+    backgroundColor: '#0a1321',
+    marginHorizontal: 16,
+    padding: 12,
+    borderRadius: 25,
     flex: 1,
-    marginLeft: 8,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'black',
-    fontWeight: 'bold',
+    alignItems: 'center',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   dropdownContainer: {
     flex: 2,
