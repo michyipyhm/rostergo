@@ -2,7 +2,7 @@ import { storageUtil } from './auth-api';
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
-export async function getFtPayslip(): Promise<any> {
+export async function getFtPayslip(monthString: string): Promise<any> {
   try {
     const token = await storageUtil.getItem('token');
     if (!token) {
@@ -22,7 +22,7 @@ export async function getFtPayslip(): Promise<any> {
     }
 
     const { data } = await res.json();
-    console.log(data)
+    console.log({data})
     return data;
     
   } catch (error) {

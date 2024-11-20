@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Platform, Modal } from 'react-native';
-import { format, addMonths } from 'date-fns';
-import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView} from 'react-native';
+import { format, subMonths } from 'date-fns';
 import { useQuery } from "@tanstack/react-query";
 import { getPtPayslip } from '@/api/pt-payslip-api';
+import { getFtPayslip } from '@/api/ft-payslip-api';
 
 
 export default function Payslip() {
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [isModalVisible, setModalVisible] = useState(false);
+
   const { data: payslip, isLoading, error } = useQuery({
-    queryKey: ["payslip"],
-    queryFn: getPtPayslip,
+    queryKey: ["payslip", format(selectedMonth, 'yyyy-MM')],
+    // queryFn: () => getFtPayslip(format(selectedMonth, 'yyyy-MM')),
+    queryFn: () => getPtPayslip(format(selectedMonth, 'yyyy-MM')),
   });
+
+  const months = Array.from({ length: 6 }, (_, i) => subMonths(new Date(), i));
 
   if (isLoading) {
     return (
@@ -32,16 +37,85 @@ export default function Payslip() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Payslip</Text>
+    <Text style={styles.title}>Payslip</Text>
+    
+    <TouchableOpacity style={styles.monthSelector} onPress={() => setModalVisible(true)}>
+      <Text style={styles.monthSelectorText}>
+        {selectedMonth ? format(selectedMonth, 'MMMM yyyy') : 'Select a month'}
+      </Text>
+    </TouchableOpacity>
+
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Month</Text>
+            <ScrollView>
+              {months.map((month) => (
+                <TouchableOpacity
+                  key={month.toISOString()}
+                  style={styles.monthOption}
+                  onPress={() => {
+                    setSelectedMonth(month);
+                    setModalVisible(false);
+                  }}
+                >
+                  <Text style={[
+                    styles.monthOptionText,
+                    selectedMonth.getMonth() === month.getMonth() && 
+                    selectedMonth.getFullYear() === month.getFullYear() && 
+                    styles.selectedMonthText
+                  ]}>
+                    {format(month, 'MMMM yyyy')}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       <View style={styles.content}>
         <InfoRow label="Staff No:" value={payslip.id} />
         <InfoRow label="Name:" value={payslip.nickname} />
         <InfoRow label="Employee Type:" value={payslip.employee_type} />
         <View style={styles.spacerRow} />
+        <InfoRow label="Salary Period:" value={format(selectedMonth, 'MMM-yyyy')} />
+
+
+        {/* <InfoRow 
+          label="Basic Salary:" 
+          value={`$${payslip.ft_wage.toLocaleString()}`} 
+        />
+        <InfoRow 
+          label="--Employee MPF Contribution:" 
+          value={`-$${payslip.ft_wage*0.05}`} 
+        />
+        <View style={styles.spacerRow} />
+        <InfoRow 
+          label="Net Pay Salary:" 
+          value={`$${payslip.ft_wage*0.95}`} 
+        /> */}
+
+
         <InfoRow 
           label="Basic Salary:" 
-          value={payslip.pt_wage} 
+          value={payslip.pt_wage*payslip.work_hour} 
         />
+        <InfoRow 
+          label="--Employee MPF Contribution:" 
+          value={0}
+        />
+        <View style={styles.spacerRow} />
+        <InfoRow 
+          label="Net Pay Salary:" 
+          value={payslip.pt_wage*payslip.work_hour} 
+        />
+
       </View>
     </SafeAreaView>
   );
@@ -98,5 +172,52 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     fontSize: 16,
+  },
+  monthSelector: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+    backgroundColor: 'white',
+    marginBottom: 20,
+  },
+  monthSelectorText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    maxHeight: '80%',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  monthOption: {
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  monthOptionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  selectedMonthText: {
+    color: '#007AFF',
+    fontWeight: '600',
   },
 });

@@ -21,10 +21,10 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const payslipData = await payslipsService.getPayslipsByPTid(userId);
+    const data = await payslipsService.getPayslipsByPTid(userId);
 
     // Check if data was found
-    if (!payslipData) {
+    if (!data) {
       return NextResponse.json(
         { error: "No payslipData found for this userId" },
         { status: 404 }
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Return the fetched data
-    return NextResponse.json({ payslipData });
+    return NextResponse.json({ data });
   } catch (error) {
     console.error("Error fetching payslipData", error);
     return NextResponse.json(
