@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView} from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { format, subMonths } from 'date-fns';
 import { useQuery } from "@tanstack/react-query";
-import { getPtPayslip } from '@/api/pt-payslip-api';
-import { getFtPayslip } from '@/api/ft-payslip-api';
+import { getPayslip } from '@/api/payslip-api';
 
+interface PayslipData {
+  id: number;
+  nickname: string;
+  employee_type: 'Full Time' | 'Part Time';
+  ft_wage?: number;
+  pt_wage?: number;
+  work_hour?: number;
+}
 
 export default function Payslip() {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const { data: payslip, isLoading, error } = useQuery({
+  const { data: payslip, isLoading, error } = useQuery<PayslipData>({
     queryKey: ["payslip", format(selectedMonth, 'yyyy-MM')],
-    // queryFn: () => getFtPayslip(format(selectedMonth, 'yyyy-MM')),
-    queryFn: () => getPtPayslip(format(selectedMonth, 'yyyy-MM')),
+    queryFn: () => getPayslip(format(selectedMonth, 'yyyy-MM')),
   });
 
   const months = Array.from({ length: 6 }, (_, i) => subMonths(new Date(), i));
@@ -34,16 +40,23 @@ export default function Payslip() {
     );
   }
 
+  if (!payslip) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text>No payslip data available</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-    <Text style={styles.title}>Payslip</Text>
-    
-    <TouchableOpacity style={styles.monthSelector} onPress={() => setModalVisible(true)}>
-      <Text style={styles.monthSelectorText}>
-        {selectedMonth ? format(selectedMonth, 'MMMM yyyy') : 'Select a month'}
-      </Text>
-    </TouchableOpacity>
+      <Text style={styles.title}>Payslip</Text>
+      
+      <TouchableOpacity style={styles.monthSelector} onPress={() => setModalVisible(true)}>
+        <Text style={styles.monthSelectorText}>
+          {format(selectedMonth, 'MMMM yyyy')}
+        </Text>
+      </TouchableOpacity>
 
       <Modal
         visible={isModalVisible}
@@ -86,36 +99,39 @@ export default function Payslip() {
         <View style={styles.spacerRow} />
         <InfoRow label="Salary Period:" value={format(selectedMonth, 'MMM-yyyy')} />
 
-
-        {/* <InfoRow 
-          label="Basic Salary:" 
-          value={`$${payslip.ft_wage.toLocaleString()}`} 
-        />
-        <InfoRow 
-          label="--Employee MPF Contribution:" 
-          value={`-$${payslip.ft_wage*0.05}`} 
-        />
-        <View style={styles.spacerRow} />
-        <InfoRow 
-          label="Net Pay Salary:" 
-          value={`$${payslip.ft_wage*0.95}`} 
-        /> */}
-
-
-        <InfoRow 
-          label="Basic Salary:" 
-          value={payslip.pt_wage*payslip.work_hour} 
-        />
-        <InfoRow 
-          label="--Employee MPF Contribution:" 
-          value={0}
-        />
-        <View style={styles.spacerRow} />
-        <InfoRow 
-          label="Net Pay Salary:" 
-          value={payslip.pt_wage*payslip.work_hour} 
-        />
-
+        {payslip.employee_type === 'Full Time' ? (
+          <>
+            <InfoRow 
+              label="Basic Salary:" 
+              value={`$${payslip.ft_wage?.toFixed(2).toLocaleString() ?? 'N/A'}`} 
+            />
+            <InfoRow 
+              label="Employee MPF Contribution:" 
+              value={`-$${((payslip.ft_wage ?? 0) * 0.05).toFixed(2)}`} 
+            />
+            <View style={styles.spacerRow} />
+            <InfoRow 
+              label="Net Pay Salary:" 
+              value={`$${((payslip.ft_wage ?? 0) * 0.95).toFixed(2)}`} 
+            />
+          </>
+        ) : (
+          <>
+            <InfoRow 
+              label="Basic Salary:" 
+              value={`$${((payslip.pt_wage ?? 0) * (payslip.work_hour ?? 0)).toFixed(2)}`}
+            />
+            <InfoRow 
+              label="Employee MPF Contribution:" 
+              value="$0.00"
+            />
+            <View style={styles.spacerRow} />
+            <InfoRow 
+              label="Net Pay Salary:" 
+              value={`$${((payslip.pt_wage ?? 0) * (payslip.work_hour ?? 0)).toFixed(2)}`}
+            />
+          </>
+        )}
       </View>
     </SafeAreaView>
   );

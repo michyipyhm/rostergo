@@ -5,19 +5,31 @@ import { SafeAreaView } from "react-native";
 export default function settingsLayout() {
   return (
     <>
-
-
       <Stack initialRouteName="index">
         <Stack.Screen
-          
           name="index"
-          options={{ headerShown: false, title: "Settings screen" }}
+          options={{
+            headerTitle: "Settings",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerShown: true,
+            title: "Settings Screen",
+          }}
         />
 
-        {/* <Stack.Screen
-          name="editProfile"
-          options={{ headerShown: false, title: "Edit Profile" }}
-        /> */}
+        <Stack.Screen
+          name="changePassword"
+          options={{
+            headerTitle: "Change Password",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerShown: true,
+            title: "Change Password Screen",
+          }}
+        />
+        
       </Stack>
     </>
   );

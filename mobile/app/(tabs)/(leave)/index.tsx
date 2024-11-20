@@ -144,6 +144,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 25,
     marginRight: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
   },
   detailButtonText: {
     color: '#fff',

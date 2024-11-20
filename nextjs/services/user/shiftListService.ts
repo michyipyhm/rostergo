@@ -11,7 +11,8 @@ class MobileShiftListService {
       shifts.date as date,
       shift_slots.title as shift_slot,
       shift_slots.start_time as start_time,
-      shift_slots.end_time as end_time
+      shift_slots.end_time as end_time,      
+      shift_slots.id as shift_slot_id
     FROM shifts
     JOIN shift_slots ON shifts.shift_slot_id = shift_slots.id
     WHERE shifts.user_id = $1
