@@ -9,7 +9,12 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
+<<<<<<< HEAD
+// import { mobileLogout } from '@/api/logout-api';
+import { logout } from '@/api/auth-api'
+=======
 import { mobileLogout } from "@/api/logout-api";
+>>>>>>> 7a98f1a4817873dcd0dbaf3c7f834edc59445feb
 import { useQuery } from "@tanstack/react-query";
 
 export default function settings() {
@@ -17,9 +22,18 @@ export default function settings() {
 
   const handleLogout = async () => {
     try {
+<<<<<<< HEAD
+      await logout
+      Alert.alert("Success", "Logout successfully");
+      router.push({
+        pathname: '/login',
+        params: { justLoggedOut: 'true' }
+      });
+=======
       await mobileLogout;
       Alert.alert("Success", "Logout successfully");
       router.push("/login");
+>>>>>>> 7a98f1a4817873dcd0dbaf3c7f834edc59445feb
     } catch (error) {
       Alert.alert("Error");
       router.push("/login");
