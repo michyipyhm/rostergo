@@ -4,8 +4,10 @@ import { Calendar, ChevronDown, Upload } from 'lucide-react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import * as ImagePicker from 'expo-image-picker'
 import { useRouter, useLocalSearchParams } from 'expo-router'
+import { applySickLeave } from '@/api/leave-api'
 
 interface ShiftSlot {
+  id: number,
   name: string
   time: string
 }
@@ -13,7 +15,7 @@ interface ShiftSlot {
 interface SickLeaveData {
   startDate: string
   endDate: string
-  shiftSlot: string
+  shiftSlot: number
   duration: string
   proof?: string
 }
@@ -21,28 +23,30 @@ interface SickLeaveData {
 export default function ApplySickLeave() {
   const router = useRouter()
   const { selectedDate } = useLocalSearchParams<{ selectedDate: string }>();
+  console.log({selectedDate})
   const [startDate, setStartDate] = useState(new Date(selectedDate || Date.now()))
   const [endDate, setEndDate] = useState(new Date(selectedDate || Date.now()))
   const [startDateString, setStartDateString] = useState(startDate.toISOString().split('T')[0])
   const [endDateString, setEndDateString] = useState(endDate.toISOString().split('T')[0])
   const [showStartDatePicker, setShowStartDatePicker] = useState(false)
   const [showEndDatePicker, setShowEndDatePicker] = useState(false)
-  const [shiftSlot, setShiftSlot] = useState('Shift A')
+  const [shiftSlot, setShiftSlot] = useState(1)
   const [showShiftSlotDropdown, setShowShiftSlotDropdown] = useState(false)
-  const [duration, setDuration] = useState('Half day (AM)')
+  const [duration, setDuration] = useState('Half day(AM)')
   const [showDurationDropdown, setShowDurationDropdown] = useState(false)
   const [image, setImage] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const shiftSlots: ShiftSlot[] = [
-    { name: 'Shift A', time: '09:00 - 12:00' },
-    { name: 'Shift B', time: '12:00 - 15:00' },
-    { name: 'Shift C', time: '09:00 - 11:00' },
-    { name: 'Shift D', time: '11:00 - 13:00' },
-    { name: 'Shift E', time: '13:00 - 15:00' },
+    { id:1, name: 'Shift A', time: '09:00 - 12:00' },
+    { id:2, name: 'Shift B', time: '12:00 - 15:00' },
+    { id:3, name: 'Shift C', time: '09:00 - 11:00' },
+    { id:4, name: 'Shift D', time: '11:00 - 13:00' },
+    { id:5, name: 'Shift E', time: '13:00 - 15:00' },
   ]
-  const durations = ['Full Day', 'Half day (AM)', 'Half day (PM)']
+
+  const durations = ['Full Day', 'Half day(AM)', 'Half day(PM)']
 
   const onChangeStartDate = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || startDate
@@ -90,7 +94,25 @@ export default function ApplySickLeave() {
     }
   }
 
-  const renderDropdown = (items: string[], selectedValue: string, onSelect: (item: string) => void) => (
+  const rendeShiftSlotDropdown = (items: ShiftSlot[], onSelect: (item: number) => void) => (
+    <View style={styles.dropdownList}>
+      {items.map((item) => (
+        <TouchableOpacity
+          key={item.id}
+          style={styles.dropdownItem}
+          onPress={() => {
+            onSelect(item.id)
+            setShowShiftSlotDropdown(false)
+            setShowDurationDropdown(false)
+          }}
+        >
+          <Text style={styles.dropdownItemText}>{item.name + ' (' + item.time + ')'}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  )
+
+  const renderDropdown = (items: string[], onSelect: (item: string) => void) => (
     <View style={styles.dropdownList}>
       {items.map((item) => (
         <TouchableOpacity
@@ -119,7 +141,7 @@ export default function ApplySickLeave() {
     setIsSubmitting(true)
 
     const sickLeaveData: SickLeaveData = {
-      startDate: startDateString,
+      startDate: selectedDate ? selectedDate : startDateString,
       endDate: endDateString,
       shiftSlot,
       duration,
@@ -127,16 +149,19 @@ export default function ApplySickLeave() {
     }
 
     try {
-      const result = await submitSickLeave(sickLeaveData)
+      const result = await applySickLeave(sickLeaveData)
       if (result.success) {
-        Alert.alert('Success', 'Sick leave application submitted successfully')
-        router.push('/')
+        window.alert("Sick leave application submitted successfully")
+        // Alert.alert('Success', 'Sick leave application submitted successfully')
+        router.replace("/(tabs)/(leave)")
       } else {
-        Alert.alert('Error', 'Failed to submit sick leave application')
+        window.alert("Failed to submit sick leave application")
       }
     } catch (error) {
       console.error('Error submitting sick leave:', error)
-      Alert.alert('Error', 'An unexpected error occurred')
+      // Alert.alert('Error', 'An unexpected error occurred')
+      window.alert("An unexpected error occurred")
+
     } finally {
       setIsSubmitting(false)
     }
@@ -160,14 +185,16 @@ export default function ApplySickLeave() {
               onPress={() => setShowShiftSlotDropdown(!showShiftSlotDropdown)}
             >
               <Text style={styles.dropdownText}>
-                {shiftSlot} ({shiftSlots.find(slot => slot.name === shiftSlot)?.time})
+                {shiftSlots.find(slot => slot.id === shiftSlot)?.name} ({shiftSlots.find(slot => slot.id === shiftSlot)?.time})
               </Text>
               <ChevronDown color="#000" size={20} />
             </TouchableOpacity>
-            {showShiftSlotDropdown && renderDropdown(
-              shiftSlots.map(slot => slot.name),
-              shiftSlot,
-              setShiftSlot
+            {showShiftSlotDropdown && rendeShiftSlotDropdown(
+              shiftSlots,
+             (id: number) => { 
+              console.log({id}); 
+              setShiftSlot(id) 
+            }
             )}
           </View>
 
@@ -176,7 +203,7 @@ export default function ApplySickLeave() {
             <View style={styles.dateInputContainer}>
               <TextInput
                 style={[styles.dateInput, { color: '#666' }]}
-                value={startDateString}
+                value={selectedDate  ? selectedDate : startDateString}
                 editable={false}
               />
             </View>
@@ -220,7 +247,7 @@ export default function ApplySickLeave() {
               <Text style={styles.dropdownText}>{duration}</Text>
               <ChevronDown color="#000" size={20} />
             </TouchableOpacity>
-            {showDurationDropdown && renderDropdown(durations, duration, setDuration)}
+            {showDurationDropdown && renderDropdown(durations, setDuration)}
           </View>
 
           <View style={styles.proofGroup}>
@@ -392,12 +419,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 })
-
-// Mock function for demonstration purposes
-function submitSickLeave(data: SickLeaveData): Promise<{ success: boolean }> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true })
-    }, 1000)
-  })
-}
