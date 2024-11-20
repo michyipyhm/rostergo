@@ -18,12 +18,16 @@ import { Shift, getUserShifts } from "@/api/calendar-api";
 import { useQuery } from "@tanstack/react-query";
 import { MarkedDates } from "react-native-calendars/src/types";
 
-const shiftColors = {
+const shiftColors: { [key: number]: string } = {
   1: "#3498DB", // Light Red
   2: "#E74C3C", // Light Green
   3: "#2ECC71", // Light Blue
   4: "#F39C12", // Light Yellow
   5: "#9B59B6", // Light Purple
+};
+
+const getShiftColor = (shiftSlotId: number) => {
+  return shiftColors[shiftSlotId] || '#CCCCCC'; // Default to light grey if no match
 };
 
 export default function HomeScreen() {
@@ -43,8 +47,7 @@ export default function HomeScreen() {
     return data.reduce<MarkedDates>((acc, shift) => {
       const date = shift.date.split("T")[0]; // Extract YYYY-MM-DD from the date string
       const colorIndex = (shift.shift_slot_id % 5) + 1;
-      const color =
-        shiftColors[colorIndex as keyof typeof shiftColors] || "#5f9ea0";
+      const color = getShiftColor(shift.shift_slot_id);
       acc[date] = {
         periods: [{ startingDay: true, endingDay: true, color }],
       };
@@ -71,6 +74,10 @@ export default function HomeScreen() {
       duration: 300,
       useNativeDriver: true,
     }).start();
+  };
+
+  const formatTime = (timeString: string) => {
+    return timeString.split(":").slice(0, 2).join(":");
   };
 
   if (isLoading) {
@@ -131,7 +138,7 @@ export default function HomeScreen() {
         <Text style={styles.selectedDateText}>{selectedDate}</Text>
         {selectedShift && (
           <Text style={styles.shiftTimeText}>
-            Shift Time: {selectedShift.start_time} - {selectedShift.end_time}
+            Shift Time: {formatTime(selectedShift.start_time)} - {formatTime(selectedShift.end_time)}
           </Text>
         )}
         <TouchableOpacity onPress={closeSlideView} style={styles.closeButton}>
@@ -149,14 +156,10 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  // container:{
-  //   flex: 1,
-  // },
   reactLogo: {
     height: 250,
     width: 400,
     bottom: 0,
-    // left: 65,
     position: "absolute",
   },
   loadingContainer: {
@@ -218,6 +221,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#0A1423",
     borderRadius: 25,
     marginTop: 12,
+    paddingHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
   },
   sickLeaveButton: {
     padding: 12,
@@ -225,10 +236,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#0A1423",
     borderRadius: 25,
     marginTop: 15,
+    paddingHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
   },
   closeButtonText: {
     color: "#fff",
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
   },
 });

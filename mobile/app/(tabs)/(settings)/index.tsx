@@ -1,8 +1,20 @@
-import React from 'react';
-import {Alert, SafeAreaView, Button, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
+import {
+  Alert,
+  SafeAreaView,
+  Button,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useRouter } from "expo-router";
+<<<<<<< HEAD
 // import { mobileLogout } from '@/api/logout-api';
 import { logout } from '@/api/auth-api'
+=======
+import { mobileLogout } from "@/api/logout-api";
+>>>>>>> 7a98f1a4817873dcd0dbaf3c7f834edc59445feb
 import { useQuery } from "@tanstack/react-query";
 
 export default function settings() {
@@ -10,32 +22,38 @@ export default function settings() {
 
   const handleLogout = async () => {
     try {
+<<<<<<< HEAD
       await logout
       Alert.alert("Success", "Logout successfully");
       router.push({
         pathname: '/login',
         params: { justLoggedOut: 'true' }
       });
+=======
+      await mobileLogout;
+      Alert.alert("Success", "Logout successfully");
+      router.push("/login");
+>>>>>>> 7a98f1a4817873dcd0dbaf3c7f834edc59445feb
     } catch (error) {
       Alert.alert("Error");
-      router.push('/login');  
+      router.push("/login");
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/changePassword")}
+        >
+          <Text style={styles.buttonText}>Change Password</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push('/changePassword')}
-      >
-        <Text style={styles.buttonText}>Change Password</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
-
+        <TouchableOpacity style={styles.button} onPress={handleLogout}>
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -44,29 +62,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f0f0f0",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  input: {
-    backgroundColor: "#ffffff",
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 10,
+  buttonContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
   button: {
-    backgroundColor: "#000000",
-    padding: 15,
-    borderRadius: 5,
-    marginTop: 30,
+    alignItems: "center",
+    backgroundColor: "#0A1423",
+    paddingVertical: 16,
+    borderRadius: 25,
+    marginHorizontal: 16,
+    marginVertical: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   buttonText: {
-    color: "#ffffff",
-    textAlign: "center",
+    alignItems: "center",
+    color: "#fff",
     fontSize: 16,
+    fontWeight: "700",
   },
 });

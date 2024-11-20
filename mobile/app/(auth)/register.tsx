@@ -163,12 +163,12 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "700",
     marginBottom: 32,
     color: "#000",
     textAlign: "center",
-    marginTop: 40,
+    marginTop: 32,
   },
   inputWrapper: {
     marginBottom: 24,
@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
   genderButtonText: {
     fontSize: 16,
     color: '#666',
+    fontWeight: '500',
   },
   genderButtonTextActive: {
     color: '#fff',
