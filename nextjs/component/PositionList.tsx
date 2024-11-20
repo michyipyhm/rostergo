@@ -5,26 +5,13 @@ import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap"
 import EditGrade from "./EditGrade";
 import EditPosition from "./EditPosition";
 import { useRouter } from "next/navigation";
-import { EditPositionProps } from '@/lib/models';
-
-interface PositionData {
-    id: number
-    name: string
-    grade_id: number
-    grade_name: string
-    type: string
-    part_time_hour_wage: number
-    full_time_wage: number
-    weekend_restDay: boolean
-    restDay_per_week: number
-    restDay_countBy: string
-    annual_leave_quota: number
-}
+import { EditPositionProps, GradeData, PositionData } from '@/lib/models';
 
 function PositionList() {
     const router = useRouter()
 
     const [positionData, setPositionData] = useState<PositionData[] | null>(null);
+    const [grades, setGrades] = useState<GradeData[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const [showEditPosition, setShowEditPosition] = useState(false)
@@ -53,8 +40,10 @@ function PositionList() {
                     );
                 }
 
-                const data: PositionData[] = await response.json();
-                setPositionData(data);
+                const result = await response.json()
+                const data: PositionData[] = result.positions
+                setPositionData(data)
+                setGrades(result.grades)
             } catch (err: any) {
                 console.error("Error fetching position data:", err.message);
                 setError(err.message || "Failed to fetch position data.");
@@ -87,8 +76,8 @@ function PositionList() {
             weekendRestDay: position.weekend_restDay,
             restDayPerWeek: position.restDay_per_week,
             restDayCountBy: position.restDay_countBy,
+            grades: grades,
         })
-        console.log(position)
         setShowEditPosition(true)
     }
 
@@ -150,8 +139,8 @@ function PositionList() {
                     <Col><strong>Type</strong></Col>
                     <Col><strong>Part Time Salary<br />(per hour)</strong></Col>
                     <Col><strong>Full Time Salary</strong></Col>
-                    <Col><strong>Fixed Rest day<br />(weekends and holidays)</strong></Col>
-                    <Col><strong>Non-fixed Rest day<br />(per week)</strong></Col>
+                    <Col><strong>Fixed Rest day<br />(Weekends and Holidays)</strong></Col>
+                    <Col><strong>Non-fixed Rest day number<br />(per week)</strong></Col>
                     <Col><strong>Non-fixed Rest day count by</strong></Col>
                     <Col><strong>Action</strong></Col>
                 </Row>

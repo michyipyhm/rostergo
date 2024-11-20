@@ -160,16 +160,36 @@ export interface Payload {
   branch_id: number;
 }
 
+export interface PositionData {
+  id: number
+  name: string
+  grade_id: number
+  grade_name: string
+  type: string
+  part_time_hour_wage: number
+  full_time_wage: number
+  weekend_restDay: boolean
+  restDay_per_week: number
+  restDay_countBy: string
+  annual_leave_quota: number
+}
+
+export interface GradeData {
+  id: number;
+  name: string;
+}
+
 export interface EditPositionProps {
   onClose: () => void;
   id: number;
   name: string;
-  gradeId: number | null;
+  gradeId: number;
   gradeName: string
   type: string;
-  partTimeWage: number | null;
-  fullTimeWage: number | null;
+  partTimeWage: number;
+  fullTimeWage: number;
   weekendRestDay: boolean;
-  restDayPerWeek: number | null;
-  restDayCountBy: string | null;
-} 
+  restDayPerWeek: number;
+  restDayCountBy: string;
+  grades: GradeData[]
+}
