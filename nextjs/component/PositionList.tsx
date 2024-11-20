@@ -175,11 +175,16 @@ function PositionList() {
                         </Row>
                     </ListGroupItem>
                 ))
+                
             ) : (
                 
                 <div>No position data found.</div>
             
             )}
+            </ListGroup>
+            </div>
+
+            <div>
             {showEditPosition && currentPosition ? (
                 <EditPosition {...currentPosition} />
             ) : null}
@@ -191,8 +196,6 @@ function PositionList() {
                     annualLeaveQuota={currentGrade.annual_leave_quota}
                 />
             ) : null}
-        </ListGroup>
-
         </div>
      </> 
     );
