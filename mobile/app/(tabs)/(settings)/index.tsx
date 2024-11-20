@@ -9,7 +9,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
-// import { mobileLogout } from '@/api/logout-api';
 import { logout } from '@/api/auth-api'
 import { useQuery } from "@tanstack/react-query";
 
