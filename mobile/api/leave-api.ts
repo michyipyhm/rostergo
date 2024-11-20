@@ -78,7 +78,7 @@ export async function applySickLeave(leaveData: SickLeaveRequest): Promise<any> 
     }
 
     const responseData = await response.json();
-    return responseData.data;
+    return responseData;
   } catch (error) {
     console.error("Error applying for sick leave:", error);
     throw error;
