@@ -71,10 +71,10 @@ class ShiftSlotService {
         success: true,
         message: "Updated successfully",
       }
-    } catch (error) {
-      console.error("Database query error for Shift Slots")
-      throw new Error("Database error")
-    }
+    } catch (error: any) {
+      console.error("Database query error for Shift Slots:", error.message);
+      throw new Error(error.message || "Database error")
+  }
   }
 
   async updateLeaveType(id: number, name: string, short_name: string, quota: number) {
@@ -119,7 +119,7 @@ class ShiftSlotService {
 
     } catch (error) {
       console.error("Database query error for Leave Types")
-      throw new Error("Database error")
+      throw new Error(error.message || "Database error")
     }
   }
 
@@ -149,7 +149,7 @@ class ShiftSlotService {
       }
     } catch (error) {
       console.error("Database query error for Shift Slot adding")
-      throw new Error("Database error")
+      throw new Error(error.message || "Database error")
     }
   }
 
@@ -180,7 +180,7 @@ class ShiftSlotService {
 
     } catch (error) {
       console.error("Database query error for Leave Types")
-      throw new Error("Database error")
+      throw new Error(error.message || "Database error")
     }
   }
 

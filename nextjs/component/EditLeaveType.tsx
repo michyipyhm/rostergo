@@ -10,14 +10,29 @@ interface EditLeaveTypeProps {
     quota: number
 }
 
-function EditGrade({ onClose, id, name, shortName, quota }: EditLeaveTypeProps) {
+function EditLeaveType({ onClose, id, name, shortName, quota }: EditLeaveTypeProps) {
+
+    const [editedLeaveTypeName, setEditedLeaveTypeName] = useState<string>(name)
+    const [editedShortName, setEditedShortName] = useState<string>(shortName)
+    const [editedQuota, setEditedQuota] = useState<number>(quota)
 
     const handleSave = async () => {
 
         try {
+
+            if (!editedLeaveTypeName.trim()) {
+                alert('Please enter a valid Shift Slot Title.');
+                return;
+            }
+
+            if (!editedShortName.trim()) {
+                alert('Please enter a valid Short Title.');
+                return;
+            }
+
             const token = localStorage.getItem('token')
 
-            const response = await fetch(`/api/admin/updategrade`, {
+            const response = await fetch(`/api/admin/updateleavetype`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,21 +40,24 @@ function EditGrade({ onClose, id, name, shortName, quota }: EditLeaveTypeProps) 
                 },
                 body: JSON.stringify({
                     id: id,
-                    name: editedGradeName,
-                    annualLeaveQuota: editedAnnualLeaveQuota,
+                    name: editedLeaveTypeName,
+                    short_name: editedShortName,
+                    quota: editedQuota,
                 }),
             });
 
             if (!response.ok) {
-                throw new Error("Failed to update")
+                const errorData = await response.json()
+                throw new Error(errorData.message || "Failed to update LeaveType.")
             }
 
             const result = await response.json();
             alert(result.message)
             onClose()
-            window.location.href = '/branch'
+            window.location.href = '/shiftslot'
         } catch (error) {
-            console.error('Error updating grade:', error)
+            console.error('Error updating LeaveType:', error)
+            alert(error.message || "Error updating LeaveType. Please try again.")
         }
     }
 
@@ -58,12 +76,30 @@ function EditGrade({ onClose, id, name, shortName, quota }: EditLeaveTypeProps) 
                             onChange={(e) => setEditedLeaveTypeName(e.target.value)}
                         />
                     </Form.Group>
-                    <Form.Group controlId="annualLeaveQuota" className="mt-3">
+                    <Form.Group controlId="leaveTypeShortName">
+                        <Form.Label>Leave Type Short Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={editedShortName}
+                            onChange={(e) => {
+                                const input = e.target.value.toUpperCase().replace(/[^A-Z]/g, "")
+                                setEditedShortName(input.slice(0, 2))
+                            }}
+                            placeholder="Enter 2 English letters"
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="Quota" className="mt-3">
                         <Form.Label>Annual Leave Quota</Form.Label>
                         <Form.Control
-                            type="number"
-                            value={editedAnnualLeaveQuota}
-                            onChange={(e) => setEditedAnnualLeaveQuota(Number(e.target.value))}
+                            type="text"
+                            value={editedQuota !== null ? editedQuota : ''}
+                            onChange={(e) => {
+                                const input = e.target.value;
+                                if (/^\d*$/.test(input)) {
+                                    setEditedQuota(input === '' ? null : Number(input));
+                                }
+                            }}
+                            placeholder="Leave blank if not applicable"
                         />
                     </Form.Group>
                 </Form>
@@ -80,4 +116,4 @@ function EditGrade({ onClose, id, name, shortName, quota }: EditLeaveTypeProps) 
     )
 }
 
-export default EditGrade;
+export default EditLeaveType;
