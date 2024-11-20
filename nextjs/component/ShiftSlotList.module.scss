@@ -1,0 +1,46 @@
+.gradeList {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 4px black;
+    width: 35%;
+    height: 100%;
+    gap: 20px;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.positionList {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 4px black;
+    width: 95%;
+    height: 100%;
+    gap: 20px;
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.headerRow {
+    font-weight: bold;
+    padding: 10px 15px;
+    margin-top: -15px;
+}
+
+.appBtn{
+    margin-right: 5px;
+}
+
+.titleAddBtn {
+    display: flex;
+    flex-direction: row;
+}
+
+.addBtn {
+    margin-left: 10px;
+    height: 90%;
+}

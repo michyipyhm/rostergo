@@ -54,33 +54,49 @@ export async function DELETE(req: NextRequest, { params } : { params: Params }) 
     );
   }
 }
+export async function PUT(req: NextRequest, { params }: { params: Params }) {
+  const { leaveId } = await params; // Directly destructuring from params
+  const body = await req.json(); // Parse the JSON body
+  
+  const jwtPayloadString = req.headers.get("x-jwt-payload");
 
-export async function PUT(req: NextRequest, { params } : { params: Params }) {
-  const { leaveId } = await params; 
-  const userId = req.headers.get('userId');
-  const body = await req.json();
+  if (!jwtPayloadString) {
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+  }
+  
+  const jwtPayload = JSON.parse(jwtPayloadString);
+
+  const userId = jwtPayload.id;
+
   try {
-    console.log(leaveId)
+    console.log({ leaveId });
+    console.log(body);
     
+    // Ensure leaveId and userId are valid
+    if (!leaveId || !userId) {
+      return NextResponse.json(
+        { error: "Missing leaveId or userId" },
+        { status: 400 }
+      );
+    }
+
     const data = await updateLeaveRequest(Number(leaveId), userId, body);
 
+    // Check if data was returned
     if (!data) {
       return NextResponse.json(
-        { error: "No data found for the specified userId" },
+        { error: "No data found for the specified leaveId and userId" },
         { status: 404 }
       );
     }
 
-    // Return the fetched data
+    // Return the updated data
     return NextResponse.json({ data });
   } catch (error) {
-    console.error("Error fetching leave requests:", error);
+    console.error("Error updating leave request:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
     );
   }
 }
-
-
-

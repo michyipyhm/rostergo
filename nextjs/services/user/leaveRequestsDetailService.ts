@@ -109,18 +109,32 @@ export async function updateLeaveRequest(leaveId: number, userId: string, update
   try {
     const { start_date, end_date, duration } = updateData;
 
+    // Adjust dates in JavaScript to avoid type issues in SQL
+    const adjustedStartDate = start_date ? new Date(start_date) : null;
+    const adjustedEndDate = end_date ? new Date(end_date) : null;
+
+    // Subtract 1 day from the dates if they are present
+    // if (adjustedStartDate) {
+    //   adjustedStartDate.setDate(adjustedStartDate.getDate() - 1);
+    // }
+    // if (adjustedEndDate) {
+    //   adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
+    // }
+
     const result = await pgClient.query(
       `UPDATE leave_requests 
-       SET start_date = $1 - INTERVAL '1 day', 
-           end_date = $2 - INTERVAL '1 day', 
+       SET start_date = $1, 
+           end_date = $2, 
            duration = $3
        WHERE id = $4 AND user_id = $5 AND status = 'pending'
        RETURNING *`,
-      [start_date, end_date, duration, leaveId, userId]
+      [adjustedStartDate, adjustedEndDate, duration, leaveId, userId]
     );
-
+    console.log({
+      leaveId, userId
+    })
     if (result.rowCount === 0) {
-      return null;
+      return null; // No rows updated
     }
 
     // Fetch the updated leave request with all related data

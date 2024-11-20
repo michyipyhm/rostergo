@@ -145,7 +145,19 @@ export default function HomeScreen() {
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => router.push("./(leave)/applySickLeave")}
+          onPress={() => {
+            Animated.timing(slideAnim, {
+              toValue: 300, // Slide back to off-screen
+              duration: 300,
+              useNativeDriver: true,
+            }).start();
+            router.push({
+              pathname: "./(leave)/applySickLeave",
+              params: {
+                selectedDate: selectedDate,
+              }
+            })}
+          }
           style={styles.sickLeaveButton}
         >
           <Text style={styles.closeButtonText}>Apply Sick Leave</Text>

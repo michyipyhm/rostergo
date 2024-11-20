@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from './PositionList.module.scss';
+import styles from './ShiftSlotList.module.scss';
 import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap"
 import { useRouter } from "next/navigation";
 import EditShiftSlot from "./EditShiftSlot";
@@ -93,11 +93,11 @@ function ShiftSlotList() {
                 <div className={styles.titleAddBtn}>
                     <h2>Shift Slot List</h2>
                     <Button
-                        variant="primary"
-                        className={styles.addNewBtn}
+                        
+                        className={styles.addBtn}
                         onClick={handleAddShiftSlot}
                     >
-                        Add New
+                        Add
                     </Button>
                 </div>
                 <ListGroup>
@@ -142,11 +142,11 @@ function ShiftSlotList() {
                 <div className={styles.titleAddBtn}>
                     <h2>Leave Type List</h2>
                     <Button
-                        variant="primary"
-                        className={styles.addNewBtn}
+                    
+                        className={styles.addBtn}
                         onClick={handleAddLeaveType}
                     >
-                        Add New
+                        Add
                     </Button>
                 </div>
                 <ListGroup>
