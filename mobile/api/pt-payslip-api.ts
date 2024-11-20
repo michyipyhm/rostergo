@@ -2,7 +2,7 @@ import { storageUtil } from './auth-api';
 
 const apiUrl = process.env.EXPO_PUBLIC_SERVER_HOST;
 
-export async function getPtPayslip(): Promise<any> {
+export async function getPtPayslip(monthString: string): Promise<any> {
   try {
     const token = await storageUtil.getItem('token');
     if (!token) {
