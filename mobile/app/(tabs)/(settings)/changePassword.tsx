@@ -37,7 +37,7 @@ export default function changePassword() {
     <SafeAreaView style={styles.container}>
             <View style={styles.contentContainer}>
 
-      {/* <View style={styles.spacerRow} /> */}
+      <View style={styles.spacerRow} >
       <View style={styles.inputWrapper}>
 
       <TextInput
@@ -70,6 +70,7 @@ export default function changePassword() {
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
       </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -83,6 +84,9 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     // justifyContent: "center",
+  },
+  spacerRow:{
+
   },
   inputWrapper: {
     flexDirection: "row",
