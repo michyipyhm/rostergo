@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
         }
 
-        const result = await monthlyRosterService.editDailyShiftSlot(id, month, day, shift_slot);
+        const result = await monthlyRosterService.editDailyShiftSlot(id, month, day, shift_slot)
 
         return NextResponse.json({ message: result.message }, { status: 200 });
     } catch (error) {

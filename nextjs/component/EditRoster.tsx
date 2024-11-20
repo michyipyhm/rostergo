@@ -46,13 +46,13 @@ function EditRoster({ day, memberId, nickname, month, shift, shiftRequest, leave
             }
 
             const result = await response.json();
-            alert(result.message || "Shift updated successfully.");
+            alert(result.message)
             onClose()
         } catch (error) {
             console.error("Error saving shift:", error);
             alert("Error saving shift. Please try again.");
         }
-    };
+    }
 
     return (
         <Modal show onHide={onClose}>

@@ -1,9 +1,8 @@
 "use client"
-import React from "react";
-import styles from './LeaveRequest.module.scss';
-
-import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap";
-import { useRouter } from "next/navigation";
+import React from "react"
+import styles from './LeaveRequest.module.scss'
+import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap"
+import { useRouter } from "next/navigation"
 
 interface LeaveRequest {
     id: number
@@ -70,7 +69,7 @@ function LeaveRequest(props : LeaveRequestProps) {
         } catch (error) {
             console.error("Error updating leave request:", error)
         }
-    };
+    }
 
     return (
         <div className={styles.explainCard}>

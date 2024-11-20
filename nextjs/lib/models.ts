@@ -152,3 +152,24 @@ export interface MonthlyRosterData {
   leaveRequests: LeaveRequest[],
   shift_slots: Shift_slots[]
 }
+
+export interface Payload {
+  id: number;
+  nickname: string;
+  admin: boolean;
+  branch_id: number;
+}
+
+export interface EditPositionProps {
+  onClose: () => void;
+  id: number;
+  name: string;
+  gradeId: number | null;
+  gradeName: string
+  type: string;
+  partTimeWage: number | null;
+  fullTimeWage: number | null;
+  weekendRestDay: boolean;
+  restDayPerWeek: number | null;
+  restDayCountBy: string | null;
+} 

@@ -46,12 +46,15 @@ a {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  width: 98%;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .firstSection {
   display: flex;
-  width: 25%;
+  width: 30%;
   gap: 3%
 } 
 
@@ -59,7 +62,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 40%;
+  width: 50%;
   gap: 3%;
 }
 
