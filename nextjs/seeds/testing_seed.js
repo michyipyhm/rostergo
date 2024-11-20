@@ -73,6 +73,7 @@ exports.seed = async function (knex) {
       short_title: "AA",
       start_time: "09:00:00",
       end_time: "12:00:00",
+      work_hour: 3,
     },
     {
       branch_id: 1,
@@ -80,6 +81,7 @@ exports.seed = async function (knex) {
       short_title: "B",
       start_time: "12:00:00",
       end_time: "15:00:00",
+      work_hour: 3,
     },
     {
       branch_id: 1,
@@ -87,6 +89,7 @@ exports.seed = async function (knex) {
       short_title: "C",
       start_time: "09:00:00",
       end_time: "11:00:00",
+      work_hour: 2,
     },
     {
       branch_id: 1,
@@ -94,6 +97,7 @@ exports.seed = async function (knex) {
       short_title: "D",
       start_time: "11:00:00",
       end_time: "13:00:00",
+      work_hour: 2,
     },
     {
       branch_id: 1,
@@ -101,6 +105,7 @@ exports.seed = async function (knex) {
       short_title: "E",
       start_time: "13:00:00",
       end_time: "15:00:00",
+      work_hour: 3,
     },
   ]);
 
@@ -301,6 +306,15 @@ exports.seed = async function (knex) {
       date: "2024-11-04",
       shift_slot_id: 5,
       user_id: 2,
+    },
+    {
+      date: "2024-10-29",
+      shift_slot_id: 3,
+      user_id: 4,
+      checkin_time: "09:11:16",
+      checkout_time: "11:02:49",
+      over_time_approve: false,
+      status: "check out",
     }
   ]);
 };

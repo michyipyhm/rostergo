@@ -5,23 +5,58 @@ import { SafeAreaView } from "react-native";
 export default function leaveLayout() {
   return (
     <>
-
       <Stack initialRouteName="index">
+        
         <Stack.Screen
           name="index"
-          options={{ headerShown: false, title: "Leave Request Lsit Screen" }}
+          options={{
+            headerTitle: "Leave Request",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerShown: true,
+            title: "Leave Request Screen",
+            headerSearchBarOptions: {
+              placeholder: "Search for leave",
+              hideWhenScrolling: false,
+            },
+          }}
         />
+
         <Stack.Screen
           name="leaveDetail"
-          options={{ headerShown: false, title: "Leave Detail Screen" }}
+          options={{
+            headerTitle: "Leave Detail",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerShown: true,
+            title: "Leave Detail Screen",
+          }}
         />
+
         <Stack.Screen
           name="applyLeave"
-          options={{ headerShown: false, title: "Apply for Leave Screen" }}
+          options={{
+            headerTitle: "Apply leave",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerShown: true,
+            title: "Apply Leave Screen",
+          }}
         />
-         <Stack.Screen
+
+        <Stack.Screen
           name="applySickLeave"
-          options={{ headerShown: false, title: "Apply for Sick Screen" }}
+          options={{
+            headerTitle: "Apply Sick leave",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerShown: true,
+            title: "Apply Sick Leave Screen",
+          }}
         />
       </Stack>
     </>

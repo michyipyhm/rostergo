@@ -194,3 +194,44 @@ export async function deleteLeaveRequest(leaveId: number): Promise<void> {
     throw error;
   }
 }
+
+///////////////update data for leaverequest//////////////////
+
+interface LeaveRequestItem {
+  id: string;
+  status: string;
+  message: string;
+  start_date: Date;
+  end_date: Date;
+  duration: string;
+}
+
+export async function updateLeaveRequest(data: { id: number } & Partial<LeaveRequestItem>): Promise<LeaveRequestItem> {
+  try {
+    const token = await storageUtil.getItem("token");
+    const response = await fetch(`${apiUrl}/api/leave-requests/${data.id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        start_date: data.start_date,
+        end_date: data.end_date,
+        duration: data.duration,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to update leave request");
+    }
+
+    const responseData = await response.json();
+    console.log('Update response:', responseData);
+    return responseData.data;
+  } catch (error) {
+    console.error("Error updating leave request:", error);
+    throw error;
+  }
+}

@@ -95,8 +95,10 @@ function PositionList() {
     }
 
     return (
-        <div>
-            <div><h1>Grade</h1></div>
+        <>
+        <div className={styles.gradeList}>
+            <div><h2>Grades</h2></div>
+        <ListGroup>
             <ListGroupItem className={styles.headerRow}>
                 <Row>
                     <Col><strong>Name</strong></Col>
@@ -130,8 +132,12 @@ function PositionList() {
                 <div>No grade data found.</div>
             )
             }
+            </ListGroup>
+            </div>
 
-            <div><h1>Positions</h1></div>
+        <div className={styles.positionList}>
+            <div><h2>Positions</h2></div>
+            <ListGroup>
             <ListGroupItem className={styles.headerRow}>
                 <Row>
                     <Col><strong>Name</strong></Col>
@@ -170,7 +176,9 @@ function PositionList() {
                     </ListGroupItem>
                 ))
             ) : (
+                
                 <div>No position data found.</div>
+            
             )}
             {showEditPosition && currentPosition ? (
                 <EditPosition {...currentPosition} />
@@ -183,9 +191,13 @@ function PositionList() {
                     annualLeaveQuota={currentGrade.annual_leave_quota}
                 />
             ) : null}
+        </ListGroup>
 
         </div>
+     </> 
     );
+  
 }
+
 
 export default PositionList;
