@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getLeaveDetail, deleteLeaveRequest } from '@/api/leave-api';
+import { getLeaveDetail, deleteLeaveRequest, updateLeaveRequest } from '@/api/leave-api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Calendar, ChevronDown } from 'lucide-react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -43,12 +43,23 @@ export default function LeaveRequestDetail() {
   const deleteMutation = useMutation({
     mutationFn: deleteLeaveRequest,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['getAllLeaves'] });
+      queryClient.invalidateQueries({ queryKey: ['getAllLeaves', leaveId] });
       Alert.alert('Success', 'Leave request deleted successfully');
       router.replace('/(tabs)/(leave)');
     },
     onError: (error) => {
       Alert.alert('Error', `Failed to delete leave request: ${error}`);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: updateLeaveRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['getLeaveDetail', leaveId] });
+      Alert.alert('Success', 'Leave request updated successfully');
+    },
+    onError: (error) => {
+      Alert.alert('Error', `Failed to update leave request: ${error}`);
     },
   });
 
@@ -103,14 +114,18 @@ export default function LeaveRequestDetail() {
           <Text style={styles.title}>Leave Request Detail</Text>
         </View>
         <View style={styles.content}>
-          <LeaveRequestItem item={data} onDelete={handleDelete} />
+          <LeaveRequestItem 
+            item={data} 
+            onDelete={handleDelete} 
+            onUpdate={(updatedData) => updateMutation.mutate({ id: leaveId!, ...updatedData })}
+          />
         </View>
       </View>
     </ScrollView>
   );
 }
 
-function LeaveRequestItem({ item, onDelete }: { item: LeaveRequestItem; onDelete: () => void }) {
+function LeaveRequestItem({ item, onDelete, onUpdate }: { item: LeaveRequestItem; onDelete: () => void; onUpdate: (data: Partial<LeaveRequestItem>) => void }) {
   const [startDate, setStartDate] = useState(new Date(item.start_date));
   const [endDate, setEndDate] = useState(new Date(item.end_date));
   const [startDateString, setStartDateString] = useState(startDate.toISOString().split('T')[0]);
@@ -143,6 +158,15 @@ function LeaveRequestItem({ item, onDelete }: { item: LeaveRequestItem; onDelete
 
   const handleEndDateInput = (text: string) => {
     setEndDateString(text);
+  };
+
+  const handleSave = () => {
+    const updatedData = {
+      start_date: startDateString,
+      end_date: endDateString,
+      duration: duration,
+    };
+    onUpdate(updatedData);
   };
 
   const validateStartDate = () => {
@@ -277,7 +301,7 @@ function LeaveRequestItem({ item, onDelete }: { item: LeaveRequestItem; onDelete
       </View>
       {status.toLowerCase() === 'pending' && (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.saveButton} onPress={() => console.log('Save pressed')}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>

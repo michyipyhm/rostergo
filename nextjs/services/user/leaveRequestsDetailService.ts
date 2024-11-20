@@ -94,31 +94,39 @@ export async function getLeaveRequestDetailByUserId(
 }
 
 
-// export async function deleteLeaveRequest(leaveId: number): Promise<{ affectedRows: number }> {
-//   const query = `DELETE FROM leave_requests WHERE id = $1`;
-//   try {
-//     const result = await pgClient.query(query, [leaveId]);
-//     return { affectedRows: result.rowCount };
-//   } catch (error) {
-//     console.error("Error deleting leave request:", error);
-//     throw new Error("Failed to delete leave request");
-//   }
-// }
-
-export async function deleteLeaveRequest(leaveId: number, userId: string) {
+export async function deleteLeaveRequest(leaveId: number): Promise<{ affectedRows: number }> {
+  const query = `DELETE FROM leave_requests WHERE id = $1`;
   try {
+    const result = await pgClient.query(query, [leaveId]);
+    return { affectedRows: result.rowCount };
+  } catch (error) {
+    console.error("Error deleting leave request:", error);
+    throw new Error("Failed to delete leave request");
+  }
+}
+
+export async function updateLeaveRequest(leaveId: number, userId: string, updateData: Partial<LeaveRequest>) {
+  try {
+    const { start_date, end_date, duration } = updateData;
+
     const result = await pgClient.query(
-      'DELETE FROM leave_requests WHERE id = $1 AND user_id = $2 RETURNING *',
-      [leaveId, userId]
+      `UPDATE leave_requests 
+       SET start_date = $1 - INTERVAL '1 day', 
+           end_date = $2 - INTERVAL '1 day', 
+           duration = $3
+       WHERE id = $4 AND user_id = $5 AND status = 'pending'
+       RETURNING *`,
+      [start_date, end_date, duration, leaveId, userId]
     );
 
     if (result.rowCount === 0) {
       return null;
     }
 
-    return result.rows[0];
+    // Fetch the updated leave request with all related data
+    return await getLeaveRequestDetailByUserId(leaveId);
   } catch (error) {
     console.error('Database error:', error);
-    throw new Error('Failed to delete leave request');
+    throw new Error('Failed to update leave request');
   }
 }
