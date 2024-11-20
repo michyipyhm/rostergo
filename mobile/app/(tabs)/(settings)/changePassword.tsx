@@ -35,7 +35,11 @@ export default function changePassword() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.spacerRow} />
+            <View style={styles.contentContainer}>
+
+      {/* <View style={styles.spacerRow} /> */}
+      <View style={styles.inputWrapper}>
+
       <TextInput
         style={styles.input}
         placeholder="Current Password"
@@ -43,6 +47,8 @@ export default function changePassword() {
         value={currentPassword}
         onChangeText={setCurrentPassword}
       />
+      </View>
+      <View style={styles.inputWrapper}>
       <TextInput
         style={styles.input}
         placeholder="New Password"
@@ -50,6 +56,8 @@ export default function changePassword() {
         value={newPassword}
         onChangeText={setNewPassword}
       />
+      </View>
+      <View style={styles.inputWrapper}>
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
@@ -57,10 +65,11 @@ export default function changePassword() {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
+      </View>
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
-      
+      </View>
     </SafeAreaView>
   );
 }
@@ -71,17 +80,26 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f0f0f0",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+  contentContainer: {
+    flex: 1,
+    // justifyContent: "center",
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E1E1E1",
+    paddingBottom: 5,
+    marginBottom: 16,
+    marginRight: 25,
+    marginLeft: 25,
   },
   input: {
-    backgroundColor: "#ffffff",
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 10,
+    flex: 1,
+    fontSize: 16,
+    color: "#000",
+    padding: 0,
+    height: 40,
   },
   button: {
     backgroundColor: "#4CAF50",
@@ -94,7 +112,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
-  spacerRow: {
-    height: 30,
-  },
+  
 });
