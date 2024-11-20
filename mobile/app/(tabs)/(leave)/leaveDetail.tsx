@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Platform, Alert, SafeAreaView } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getLeaveDetail, deleteLeaveRequest, updateLeaveRequest } from '@/api/leave-api';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -108,11 +108,13 @@ export default function LeaveRequestDetail() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+
+    <ScrollView>
       <View style={styles.card}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Text style={styles.title}>Leave Request Detail</Text>
-        </View>
+        </View> */}
         <View style={styles.content}>
           <LeaveRequestItem 
             item={data} 
@@ -122,6 +124,8 @@ export default function LeaveRequestDetail() {
         </View>
       </View>
     </ScrollView>
+    </SafeAreaView>
+
   );
 }
 
@@ -316,23 +320,20 @@ function LeaveRequestItem({ item, onDelete, onUpdate }: { item: LeaveRequestItem
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e6ffff',
+    // backgroundColor: '#e6ffff',
   },
   card: {
     backgroundColor: '#fff',
     margin: 16,
-    borderRadius: 8,
-    overflow: 'hidden',
+    borderRadius: 14,
+    // overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
-  header: {
-    backgroundColor: '#e6e6e6',
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
+ 
   content: {
     padding: 16,
   },

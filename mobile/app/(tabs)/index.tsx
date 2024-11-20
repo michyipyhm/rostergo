@@ -212,11 +212,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 25,
   },
-  // shiftTimeText: {
-  //   fontSize: 18,
-  //   textAlign: "center",
-  //   marginBottom: 25,
-  // },
   closeButton: {
     padding: 12,
     alignSelf: "center",

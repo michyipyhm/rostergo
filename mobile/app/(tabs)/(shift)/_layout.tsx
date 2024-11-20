@@ -14,11 +14,10 @@ export default function shiftLayout() {
           headerLargeTitleShadowVisible: false,
           headerShown: true,
           title: "Shift List Screen",
-          headerSearchBarOptions:{
+          headerSearchBarOptions: {
             placeholder: "Search for shifts",
-hideWhenScrolling: false,
-            // searchBarStyle: { backgroundColor: "white" },
-          }
+            hideWhenScrolling: false,
+          },
         }}
       />
 
