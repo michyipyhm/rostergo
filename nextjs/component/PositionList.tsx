@@ -4,18 +4,21 @@ import styles from './PositionList.module.scss';
 import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap"
 import EditGrade from "./EditGrade";
 import EditPosition from "./EditPosition";
+import AddPosition from "./AddPosition";
+import AddGrade from "./AddGrade";
 import { useRouter } from "next/navigation";
 import { EditPositionProps, GradeData, PositionData } from '@/lib/models';
 
 function PositionList() {
-    const router = useRouter()
-
-    const [positionData, setPositionData] = useState<PositionData[] | null>(null);
-    const [grades, setGrades] = useState<GradeData[] | null>(null);
+    const [positionData, setPositionData] = useState<PositionData[] | null>(null)
+    const [grades, setGrades] = useState<GradeData[] | null>(null)
+    const [gradeData, setGradeData] = useState([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const [showEditPosition, setShowEditPosition] = useState(false)
     const [showEditGrade, setShowEditGrade] = useState(false)
+    const [showAddPosition, setShowAddPosition] = useState(false)
+    const [showAddGrade, setShowAddGrade] = useState(false)
     const [currentGrade, setCurrentGrade] = useState<{ grade_id: number, grade_name: string, annual_leave_quota: number } | null>(null)
     const [currentPosition, setCurrentPosition] = useState<EditPositionProps | null>(null)
 
@@ -42,8 +45,10 @@ function PositionList() {
 
                 const result = await response.json()
                 const data: PositionData[] = result.positions
+                const data_2 = result.grades
                 setPositionData(data)
-                setGrades(result.grades)
+                setGrades(data_2)
+                setGradeData(data_2)
             } catch (err: any) {
                 console.error("Error fetching position data:", err.message);
                 setError(err.message || "Failed to fetch position data.");
@@ -86,117 +91,155 @@ function PositionList() {
         setShowEditGrade(true)
     }
 
+    const handleAddPosition = () => {
+        setShowAddPosition(true)
+    }
+
+    const handleAddGrade = () => {
+        setShowAddGrade(true)
+    }
+
     const closeEdit = () => {
         setShowEditPosition(false)
+        setShowAddPosition(false)
         setShowEditGrade(false)
+        setShowAddGrade(false)
         setCurrentGrade(null)
         setCurrentPosition(null)
-        router.refresh()
     }
 
     return (
         <>
-        <div className={styles.gradeList}>
-            <div><h2>Grades</h2></div>
-        <ListGroup>
-            <ListGroupItem className={styles.headerRow}>
-                <Row>
-                    <Col><strong>Name</strong></Col>
-                    <Col><strong>Annual Leave Quota</strong></Col>
-                    <Col><strong>Action</strong></Col>
-                </Row>
-            </ListGroupItem>
-            {positionData ? (
-                positionData.map((position) => (
-                    <ListGroupItem key={position.grade_id}>
+            <div className={styles.gradeList}>
+                <div className={styles.titleAddBtn}>
+                    <h2>Grades</h2>
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={handleAddGrade}
+                        className={styles.addNewBtn}
+                    >
+                        Add New
+                    </Button>
+                </div>
+
+                <ListGroup>
+                    <ListGroupItem className={styles.headerRow}>
                         <Row>
-                            <Col>{position.grade_name}</Col>
-                            <Col>{position.annual_leave_quota}</Col>
-                            <Col>
-                                <Button
-                                    variant="outline-success"
-                                    className={styles.appBtn}
-                                    onClick={() => handleEditGrade({
-                                        grade_id: position.grade_id,
-                                        grade_name: position.grade_name,
-                                        annual_leave_quota: position.annual_leave_quota
-                                    })}
-                                >
-                                    Edit
-                                </Button>
-                            </Col>
+                            <Col><strong>Name</strong></Col>
+                            <Col><strong>Annual Leave Quota</strong></Col>
+                            <Col><strong>Action</strong></Col>
                         </Row>
                     </ListGroupItem>
-                ))
-            ) : (
-                <div>No grade data found.</div>
-            )
-            }
-            </ListGroup>
+                    {gradeData ? (
+                        gradeData.map((grade) => (
+                            <ListGroupItem key={grade.id}>
+                                <Row>
+                                    <Col>{grade.name}</Col>
+                                    <Col>{grade.annual_leave_quota}</Col>
+                                    <Col>
+                                        <Button
+                                            variant="outline-success"
+                                            className={styles.appBtn}
+                                            onClick={() => handleEditGrade({
+                                                grade_id: grade.id,
+                                                grade_name: grade.name,
+                                                annual_leave_quota: grade.annual_leave_quota
+                                            })}
+                                        >
+                                            Edit
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </ListGroupItem>
+                        ))
+                    ) : (
+                        <div>No grade data found.</div>
+                    )
+                    }
+                </ListGroup>
             </div>
 
-        <div className={styles.positionList}>
-            <div><h2>Positions</h2></div>
-            <ListGroup>
-            <ListGroupItem className={styles.headerRow}>
-                <Row>
-                    <Col><strong>Name</strong></Col>
-                    <Col><strong>Grade</strong></Col>
-                    <Col><strong>Type</strong></Col>
-                    <Col><strong>Part Time Salary<br />(per hour)</strong></Col>
-                    <Col><strong>Full Time Salary</strong></Col>
-                    <Col><strong>Fixed Rest day<br />(Weekends and Holidays)</strong></Col>
-                    <Col><strong>Non-fixed Rest day number<br />(per week)</strong></Col>
-                    <Col><strong>Non-fixed Rest day count by</strong></Col>
-                    <Col><strong>Action</strong></Col>
-                </Row>
-            </ListGroupItem>
-            {positionData ? (
-                positionData.map((position) => (
-                    <ListGroupItem key={position.id}>
+            <div className={styles.positionList}>
+                <div className={styles.titleAddBtn}>
+                    <h2>Positions</h2>
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={handleAddPosition}
+                        className={styles.addNewBtn}
+                    >
+                        Add New
+                    </Button>
+                </div>
+                <ListGroup>
+                    <ListGroupItem className={styles.headerRow}>
                         <Row>
-                            <Col>{position.name}</Col>
-                            <Col>{position.grade_name}</Col>
-                            <Col>{position.type}</Col>
-                            <Col>{position.part_time_hour_wage != null ? `$${position.part_time_hour_wage}` : "N/A"}</Col>
-                            <Col>{position.full_time_wage != null ? `$${position.full_time_wage}` : "N/A"}</Col>
-                            <Col>{position.weekend_restDay ? "Yes" : "No"}</Col>
-                            <Col>{position.restDay_per_week != null ? position.restDay_per_week : "N/A"}</Col>
-                            <Col>{position.restDay_countBy != null ? position.restDay_countBy : "N/A"}</Col>
-                            <Col>
-                                <Button
-                                    variant="outline-success"
-                                    className={styles.appBtn}
-                                    onClick={() => handleEditPosition(position)}
-                                >
-                                    Edit
-                                </Button>
-                            </Col>
+                            <Col><strong>Name</strong></Col>
+                            <Col><strong>Grade</strong></Col>
+                            <Col><strong>Type</strong></Col>
+                            <Col><strong>Part Time Salary<br />(per hour)</strong></Col>
+                            <Col><strong>Full Time Salary</strong></Col>
+                            <Col><strong>Fixed Rest day<br />(Weekends and Holidays)</strong></Col>
+                            <Col><strong>Non-fixed Rest day number<br />(per week)</strong></Col>
+                            <Col><strong>Non-fixed Rest day count by</strong></Col>
+                            <Col><strong>Action</strong></Col>
                         </Row>
                     </ListGroupItem>
-                ))
-            ) : (
-                
-                <div>No position data found.</div>
-            
-            )}
-            {showEditPosition && currentPosition ? (
-                <EditPosition {...currentPosition} />
-            ) : null}
-            {showEditGrade && currentGrade ? (
-                <EditGrade
-                    onClose={closeEdit}
-                    id={currentGrade.grade_id}
-                    name={currentGrade.grade_name}
-                    annualLeaveQuota={currentGrade.annual_leave_quota}
-                />
-            ) : null}
-        </ListGroup>
+                    {positionData ? (
+                        positionData.map((position) => (
+                            <ListGroupItem key={position.id}>
+                                <Row>
+                                    <Col>{position.name}</Col>
+                                    <Col>{position.grade_name}</Col>
+                                    <Col>{position.type}</Col>
+                                    <Col>{position.part_time_hour_wage != null ? `$${position.part_time_hour_wage}` : "N/A"}</Col>
+                                    <Col>{position.full_time_wage != null ? `$${position.full_time_wage}` : "N/A"}</Col>
+                                    <Col>{position.weekend_restDay ? "Yes" : "No"}</Col>
+                                    <Col>{position.restDay_per_week != null ? position.restDay_per_week : "N/A"}</Col>
+                                    <Col>{position.restDay_countBy != null ? position.restDay_countBy : "N/A"}</Col>
+                                    <Col>
+                                        <Button
+                                            variant="outline-success"
+                                            className={styles.appBtn}
+                                            onClick={() => handleEditPosition(position)}
+                                        >
+                                            Edit
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </ListGroupItem>
+                        ))
+                    ) : (
 
-        </div>
-     </> 
+                        <div>No position data found.</div>
+
+                    )}
+                    {showEditPosition && currentPosition ? (
+                        <EditPosition {...currentPosition} />
+                    ) : null}
+                    {showEditGrade && currentGrade ? (
+                        <EditGrade
+                            onClose={closeEdit}
+                            id={currentGrade.grade_id}
+                            name={currentGrade.grade_name}
+                            annualLeaveQuota={currentGrade.annual_leave_quota}
+                        />
+                    ) : null}
+                    {showAddGrade ? (
+                        <AddGrade onClose={closeEdit} />
+                    ) : null}
+                    {showAddPosition ? (
+                        <AddPosition
+                            onClose={closeEdit}
+                            grades={grades}
+                        />
+                    ) : null}
+                </ListGroup>
+            </div>
+        </>
     );
-  
+
 }
 
 

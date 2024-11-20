@@ -12,8 +12,6 @@ export default function Branch() {
             <div>
                 <PositionList />
             </div>
-            <div>
-            </div>
         </div>
     );
 }

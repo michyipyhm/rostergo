@@ -1,109 +1,104 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Form, Modal, Spinner } from 'react-bootstrap';
 import styles from './EditRoster.module.scss';
-import { EditPositionProps } from '@/lib/models';
+import { GradeData } from '@/lib/models';
 
-function EditPosition({
-    onClose,
-    id,
-    name,
-    gradeId,
-    type,
-    partTimeWage,
-    fullTimeWage,
-    weekendRestDay,
-    restDayPerWeek,
-    restDayCountBy,
-    grades,
-}: EditPositionProps) {
+interface AddPositionProps {
+    onClose: () => void
+    grades: GradeData[]
+}
 
-    const [editedName, setEditedName] = useState<string>(name)
-    const [editedGradeId, setEditedGradeId] = useState<number | null>(gradeId)
-    const [editedType, setEditedType] = useState<string>(type)
-    const [editedPartTimeWage, setEditedPartTimeWage] = useState<number>(partTimeWage)
-    const [editedFullTimeWage, setEditedFullTimeWage] = useState<number>(fullTimeWage)
-    const [editedWeekendRestDay, setEditedWeekendRestDay] = useState<boolean>(weekendRestDay)
-    const [editedRestDayPerWeek, setEditedRestDayPerWeek] = useState<number>(restDayPerWeek)
-    const [editedRestDayCountBy, setEditedRestDayCountBy] = useState<string>(restDayCountBy)
+function AddPosition({ onClose, grades }: AddPositionProps) {
 
-    useEffect(() => {
-
-        if (editedType === 'Part Time') {
-            setEditedFullTimeWage(null)
-            setEditedWeekendRestDay(false)
-            setEditedRestDayPerWeek(null)
-            setEditedRestDayCountBy(null)
-        } else if (editedType === 'Full Time') {
-            setEditedPartTimeWage(null)
-        }
-    }, [editedType])
-
-    useEffect(() => {
-
-        if (editedWeekendRestDay) {
-            setEditedRestDayPerWeek(null)
-            setEditedRestDayCountBy(null)
-        }
-    }, [editedWeekendRestDay]);
+    const [editedName, setEditedName] = useState<string>('');
+    const [editedGradeId, setEditedGradeId] = useState<number | ''>('');
+    const [editedType, setEditedType] = useState<string>('Full Time');
+    const [editedPartTimeWage, setEditedPartTimeWage] = useState<number | ''>('');
+    const [editedFullTimeWage, setEditedFullTimeWage] = useState<number | ''>('');
+    const [editedWeekendRestDay, setEditedWeekendRestDay] = useState<boolean>(false);
+    const [editedRestDayPerWeek, setEditedRestDayPerWeek] = useState<number | ''>('');
+    const [editedRestDayCountBy, setEditedRestDayCountBy] = useState<string | ''>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleSave = async () => {
 
-        if (editedType === "Part Time" && (editedPartTimeWage === null || editedPartTimeWage <= 0)) {
-            alert("Please enter a valid Part Time Salary.");
+        if (!editedName) {
+            alert('Please enter a position name.');
             return;
         }
-
-        if (editedType === "Full Time" && (editedFullTimeWage === null || editedFullTimeWage <= 0)) {
-            alert("Please enter a valid Full Time Salary.");
+        if (!editedGradeId) {
+            alert('Please select a grade.');
             return;
         }
-
-        if (weekendRestDay === false && (restDayPerWeek === null || restDayCountBy === null)) {
-            alert("Please choose the Non-fixed Rest day number and count by which day");
+        if (editedType === 'Part Time' && (editedPartTimeWage === '' || editedPartTimeWage <= 0)) {
+            alert('Please enter a valid Part Time Salary.');
+            return;
+        }
+        if (editedType === 'Full Time' && (editedFullTimeWage === '' || editedFullTimeWage <= 0)) {
+            alert('Please enter a valid Full Time Salary.');
+            return;
+        }
+        if (!editedWeekendRestDay && (editedRestDayPerWeek === '' || !editedRestDayCountBy)) {
+            alert('Please specify the Non-fixed Rest Day details.');
             return;
         }
 
         try {
+            setLoading(true)
 
             const token = localStorage.getItem('token')
 
-            const response = await fetch("/api/admin/updateposition", {
+            const print = {
+                name: editedName,
+                grade_id: editedGradeId,
+                type: editedType,
+                part_time_hour_wage: editedPartTimeWage || null,
+                full_time_wage: editedFullTimeWage || null,
+                weekend_restDay: editedWeekendRestDay,
+                restDay_per_week: editedRestDayPerWeek || null,
+                restDay_countBy: editedRestDayCountBy || null,
+            }
+
+            console.log(print)
+
+            const response = await fetch("/api/admin/addposition", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    id: id,
                     name: editedName,
                     grade_id: editedGradeId,
                     type: editedType,
-                    part_time_hour_wage: editedPartTimeWage,
-                    full_time_wage: editedFullTimeWage,
+                    part_time_hour_wage: editedPartTimeWage || null,
+                    full_time_wage: editedFullTimeWage || null,
                     weekend_restDay: editedWeekendRestDay,
-                    restDay_per_week: editedRestDayPerWeek,
-                    restDay_countBy: editedRestDayCountBy,
+                    restDay_per_week: editedRestDayPerWeek || null,
+                    restDay_countBy: editedRestDayCountBy || null,
                 }),
             });
 
             if (!response.ok) {
-                throw new Error("Failed to save the position.");
+                throw new Error("Failed to add new position.")
             }
 
-            const result = await response.json();
+            const result = await response.json()
             alert(result.message)
             onClose()
             window.location.href = '/branch'
         } catch (error) {
-            console.error("Error saving position:", error);
-            alert("Error saving position. Please try again.");
+            console.error("Error adding position:", error)
+            alert("Error adding position. Please try again.")
+        } finally {
+            setLoading(false)
         }
-    };
+    }
 
     return (
         <Modal show onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit Position</Modal.Title>
+                <Modal.Title>Add Position</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -113,6 +108,7 @@ function EditPosition({
                             type="text"
                             value={editedName}
                             onChange={(e) => setEditedName(e.target.value)}
+                            placeholder="Enter position name"
                         />
                     </Form.Group>
 
@@ -123,6 +119,7 @@ function EditPosition({
                             value={editedGradeId}
                             onChange={(e) => setEditedGradeId(Number(e.target.value))}
                         >
+                            <option value="">-- Select Grade --</option>
                             {grades && grades.map((grade) => (
                                 <option key={grade.id} value={grade.id}>
                                     {grade.name}
@@ -147,8 +144,8 @@ function EditPosition({
                         <Form.Label><strong>Part Time Salary (per hour):</strong></Form.Label>
                         <Form.Control
                             type="number"
-                            value={editedPartTimeWage !== null ? editedPartTimeWage : ""}
-                            onChange={(e) => setEditedPartTimeWage(e.target.value === "" ? null : Number(e.target.value))}
+                            value={editedPartTimeWage !== null ? editedPartTimeWage : ''}
+                            onChange={(e) => setEditedPartTimeWage(e.target.value === '' ? null : Number(e.target.value))}
                             disabled={editedType === "Full Time"}
                         />
                     </Form.Group>
@@ -157,8 +154,8 @@ function EditPosition({
                         <Form.Label><strong>Full Time Salary:</strong></Form.Label>
                         <Form.Control
                             type="number"
-                            value={editedFullTimeWage !== null ? editedFullTimeWage : ""}
-                            onChange={(e) => setEditedFullTimeWage(e.target.value === "" ? null : Number(e.target.value))}
+                            value={editedFullTimeWage !== null ? editedFullTimeWage : ''}
+                            onChange={(e) => setEditedFullTimeWage(e.target.value === '' ? null : Number(e.target.value))}
                             disabled={editedType === "Part Time"}
                         />
                     </Form.Group>
@@ -169,7 +166,6 @@ function EditPosition({
                             as="select"
                             value={editedWeekendRestDay ? 'Yes' : 'No'}
                             onChange={(e) => setEditedWeekendRestDay(e.target.value === 'Yes')}
-                            disabled={editedType === "Part Time"}
                         >
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
@@ -180,9 +176,9 @@ function EditPosition({
                         <Form.Label><strong>Non-fixed Rest Day (per week):</strong></Form.Label>
                         <Form.Control
                             type="number"
-                            value={editedRestDayPerWeek !== null ? editedRestDayPerWeek : ""}
-                            onChange={(e) => setEditedRestDayPerWeek(e.target.value === "" ? null : Number(e.target.value))}
-                            disabled={editedWeekendRestDay || editedType === "Part Time"}
+                            value={editedRestDayPerWeek !== null ? editedRestDayPerWeek : ''}
+                            onChange={(e) => setEditedRestDayPerWeek(e.target.value === '' ? null : Number(e.target.value))}
+                            disabled={editedWeekendRestDay}
                         />
                     </Form.Group>
 
@@ -190,9 +186,9 @@ function EditPosition({
                         <Form.Label><strong>Non-fixed Rest Day Count By:</strong></Form.Label>
                         <Form.Control
                             as="select"
-                            value={editedRestDayCountBy || ""}
-                            onChange={(e) => setEditedRestDayCountBy(e.target.value === "" ? null : e.target.value)}
-                            disabled={editedWeekendRestDay || editedType === "Part Time"}
+                            value={editedRestDayCountBy || ''}
+                            onChange={(e) => setEditedRestDayCountBy(e.target.value || null)}
+                            disabled={editedWeekendRestDay}
                         >
                             <option value="">-- Select Day --</option>
                             <option value="Sunday">Sunday</option>
@@ -207,15 +203,15 @@ function EditPosition({
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" onClick={handleSave}>
-                    Save
+                <Button variant="primary" onClick={handleSave} disabled={loading}>
+                    {loading ? <Spinner animation="border" size="sm" /> : 'Save'}
                 </Button>
-                <Button variant="secondary" onClick={onClose}>
+                <Button variant="secondary" onClick={onClose} disabled={loading}>
                     Close
                 </Button>
             </Modal.Footer>
         </Modal>
-    );
+    )
 }
 
-export default EditPosition;
+export default AddPosition;
