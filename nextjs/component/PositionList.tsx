@@ -109,7 +109,7 @@ function PositionList() {
     }
 
     return (
-        <>
+        <div>
             <div className={styles.gradeList}>
                 <div className={styles.titleAddBtn}>
                     <h2>Grades</h2>
@@ -237,7 +237,7 @@ function PositionList() {
                     ) : null}
                 </ListGroup>
             </div>
-        </>
+        </div>
     );
 
 }
