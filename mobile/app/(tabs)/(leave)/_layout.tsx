@@ -6,6 +6,7 @@ export default function leaveLayout() {
   return (
     <>
       <Stack initialRouteName="index">
+        
         <Stack.Screen
           name="index"
           options={{
@@ -46,14 +47,17 @@ export default function leaveLayout() {
           }}
         />
 
-        {/* <Stack.Screen
-          name="applyLeave"
-          options={{ headerShown: false, title: "Apply for Leave Screen" }}
-        /> */}
-        {/* <Stack.Screen
+        <Stack.Screen
           name="applySickLeave"
-          options={{ headerShown: false, title: "Apply for Sick Screen" }}
-        /> */}
+          options={{
+            headerTitle: "Apply Sick leave",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerShown: true,
+            title: "Apply Sick Leave Screen",
+          }}
+        />
       </Stack>
     </>
   );

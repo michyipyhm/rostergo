@@ -6,9 +6,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import Header from "@/components/Header";
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from "@react-navigation/native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -84,6 +82,28 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
+      
+
+      {/* <Stack
+        initialRouteName="index"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{ title: "Verify Screen" }}
+        />
+        <Stack.Screen
+          name="register"
+          options={{ title: "Register Screen" }}
+        />
+        <Stack.Screen
+          name="login"
+          options={{ title: "Login Screen" }}
+        />
+      </Stack> */}
+      
     </>
   );
 }

@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   detailButtonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
   },
   loadingContainer: {
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     left: 340,
     width: 40,
     height: 40,
+    backgroundColor: '#0A1423',
     borderRadius: 28,
     borderColor: '#0A1423',
     borderWidth: 1,
@@ -178,14 +179,14 @@ const styles = StyleSheet.create({
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: {
-      width: 1,
-      height: 3,
+      width: 0,
+      height: 2,
     },
     shadowOpacity: 0.5,
     shadowRadius: 3.84,
   },
   applyButtonText: {
-    color: '#0A1423',
+    color: '#fff',
     fontSize: 28,
     // fontWeight: 'bold',
   },
