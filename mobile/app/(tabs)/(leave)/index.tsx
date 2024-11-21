@@ -51,7 +51,7 @@ export default function LeaveRequestList() {
     <SafeAreaView style={styles.container}>
 
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
-      {/* <View style={styles.card}> */}
+      
        
         <View style={styles.content}>
           <FlatList
@@ -84,7 +84,7 @@ export default function LeaveRequestList() {
               );
             }}
           />
-        {/* </View> */}
+       
       </View>
     </ScrollView>
      <TouchableOpacity

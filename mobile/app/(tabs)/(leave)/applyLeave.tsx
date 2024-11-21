@@ -11,37 +11,31 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
-import { ChevronDown, Calendar, Upload } from "lucide-react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { submitLeaveApplication } from "@/api/leave-api";
+import { applyLeave, getLeaveTypes } from "@/api/leave-api";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-interface ShiftSlot {
-  name: string;
-  time: string;
-}
-
 interface LeaveData {
-  leaveType: string;
+  leaveType: number;
   startDate: string;
   endDate: string;
-  shiftSlot?: string;
-  duration?: string;
   proof?: string;
+}
+
+interface LeaveType {
+  id: number;
+  name: string;
 }
 
 export default function LeaveApplicationForm() {
   const router = useRouter();
-  const [leaveType, setLeaveType] = useState("");
-  const [shiftSlot, setShiftSlot] = useState("");
+  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const [leaveType, setLeaveType] = useState<number>(2);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [duration, setDuration] = useState("");
   const [showLeaveTypeDropdown, setShowLeaveTypeDropdown] = useState(false);
-  const [showShiftSlotDropdown, setShowShiftSlotDropdown] = useState(false);
-  const [showDurationDropdown, setShowDurationDropdown] = useState(false);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [image, setImage] = useState<string | null>(null);
@@ -52,49 +46,37 @@ export default function LeaveApplicationForm() {
   const [endDateString, setEndDateString] = useState(
     endDate.toISOString().split("T")[0]
   );
-  const [isMultiDayLeave, setIsMultiDayLeave] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const leaveTypes = ["Annual Leave", "Personal Leave"];
-  const shiftSlots: ShiftSlot[] = [
-    { name: "Shift A", time: "09:00 - 12:00" },
-    { name: "Shift B", time: "12:00 - 15:00" },
-    { name: "Shift C", time: "09:00 - 11:00" },
-    { name: "Shift D", time: "11:00 - 13:00" },
-    { name: "Shift E", time: "13:00 - 15:00" },
-  ];
-  const durations = ["Full Day", "Half day (AM)", "Half day (PM)"];
-
   useEffect(() => {
-    const start = new Date(startDateString);
-    const end = new Date(endDateString);
-    const isMultiDay = start.getTime() !== end.getTime();
-    setIsMultiDayLeave(isMultiDay);
+    fetchLeaveTypes();
+  }, []);
 
-    if (isMultiDay) {
-      setShiftSlot("");
-      setDuration("");
+  const fetchLeaveTypes = async () => {
+    try {
+      const types = await getLeaveTypes();
+      setLeaveTypes(types);
+    } catch (error) {
+      console.error("Error fetching leave types:", error);
+      Alert.alert("Error", "Failed to fetch leave types. Please try again.");
     }
-  }, [startDateString, endDateString]);
+  };
 
   const renderDropdown = (
-    items: string[],
-    selectedValue: string,
-    onSelect: (item: string) => void
+    items: LeaveType[],
+    onSelect: (item: number) => void
   ) => (
     <View style={styles.dropdownList}>
       {items.map((item) => (
         <TouchableOpacity
-          key={item}
+          key={item.id}
           style={styles.dropdownItem}
           onPress={() => {
-            onSelect(item);
+            onSelect(item.id);
             setShowLeaveTypeDropdown(false);
-            setShowShiftSlotDropdown(false);
-            setShowDurationDropdown(false);
           }}
         >
-          <Text style={styles.dropdownItemText}>{item}</Text>
+          <Text style={styles.dropdownItemText}>{item.name}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -105,25 +87,27 @@ export default function LeaveApplicationForm() {
     setShowStartDatePicker(Platform.OS === "ios");
     setStartDate(currentDate);
     setStartDateString(currentDate.toISOString().split("T")[0]);
+
+    // Ensure end date is not earlier than start date
+    if (currentDate > endDate) {
+      setEndDate(currentDate);
+      setEndDateString(currentDate.toISOString().split("T")[0]);
+    }
   };
 
   const onChangeEndDate = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || endDate;
     setShowEndDatePicker(Platform.OS === "ios");
-    setEndDate(currentDate);
-    setEndDateString(currentDate.toISOString().split("T")[0]);
-  };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    // Prevent end date from being earlier than start date
+    if (currentDate >= startDate) {
+      setEndDate(currentDate);
+      setEndDateString(currentDate.toISOString().split("T")[0]);
+    } else {
+      Alert.alert(
+        "Invalid date range",
+        "End date cannot be earlier than start date. Please select a valid end date."
+      );
     }
   };
 
@@ -139,15 +123,13 @@ export default function LeaveApplicationForm() {
     const date = new Date(startDateString);
     if (isNaN(date.getTime())) {
       Alert.alert(
-        "Invalid start date. Please enter a valid date in YYYY-MM-DD format."
+        "Invalid start date",
+        "Please enter a valid date in YYYY-MM-DD format."
       );
       setStartDateString(startDate.toISOString().split("T")[0]);
     } else {
       setStartDate(date);
       if (date > endDate) {
-        Alert.alert(
-          "Start date cannot be later than end date. End date has been adjusted."
-        );
         setEndDate(date);
         setEndDateString(date.toISOString().split("T")[0]);
       }
@@ -158,61 +140,71 @@ export default function LeaveApplicationForm() {
     const date = new Date(endDateString);
     if (isNaN(date.getTime())) {
       Alert.alert(
-        "Invalid end date. Please enter a valid date in YYYY-MM-DD format."
+        "Invalid end date",
+        "Please enter a valid date in YYYY-MM-DD format."
       );
       setEndDateString(endDate.toISOString().split("T")[0]);
     } else {
-      setEndDate(date);
       if (date < startDate) {
         Alert.alert(
-          "End date cannot be earlier than start date. Start date has been adjusted."
+          "Invalid date range",
+          "End date cannot be earlier than start date. Please select a valid end date."
         );
-        setStartDate(date);
-        setStartDateString(date.toISOString().split("T")[0]);
+        setEndDate(startDate);
+        setEndDateString(startDateString);
+      } else {
+        setEndDate(date);
       }
     }
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
   const handleSubmit = async () => {
     if (isSubmitting) return;
-
-    if (
-      !leaveType ||
-      !startDateString ||
-      !endDateString ||
-      (!isMultiDayLeave && (!shiftSlot || !duration))
-    ) {
-      Alert.alert("Please fill in all required fields");
+  
+    if (!leaveType || !startDateString || !endDateString) {
+      window.alert("Please fill in all required fields");
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     const leaveData: LeaveData = {
       leaveType,
       startDate: startDateString,
       endDate: endDateString,
-      shiftSlot: isMultiDayLeave ? undefined : shiftSlot,
-      duration: isMultiDayLeave ? undefined : duration,
       proof: image ? image : undefined,
     };
-
+  
     try {
-      const result = await submitLeaveApplication(leaveData);
-
-      if (result && typeof result.success === "boolean") {
-        Alert.alert("Success", result.message);
-        router.push("/");
+      const result = await applyLeave(leaveData);
+  
+      if (result.success) {
+        window.alert("Success: Apply Leave"); // Note: window.alert only takes one argument
+        router.push("/(tabs)/(leave)");
       } else {
-        Alert.alert("Error", "Unexpected response format.");
+        window.alert("Error: Unexpected response format.");
       }
     } catch (error) {
       console.error("Error submitting leave application:", error);
-      Alert.alert("Error", "An unexpected error occurred. Please try again.");
+      window.alert("Error: An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // const leaveTypeStrings = leaveTypes.map(leaveType => leaveType.name);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -226,48 +218,13 @@ export default function LeaveApplicationForm() {
                 onPress={() => setShowLeaveTypeDropdown(!showLeaveTypeDropdown)}
               >
                 <Text style={styles.dropdownText}>
-                  {leaveType || "Select leave type"}
+                  {leaveTypes.find((item) => item.id === leaveType)?.name ||
+                    "Select leave type"}
                 </Text>
                 <MaterialIcons name="navigate-next" size={20} color="black" />
               </TouchableOpacity>
               {showLeaveTypeDropdown &&
-                renderDropdown(leaveTypes, leaveType, setLeaveType)}
-            </View>
-
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>Shift Slot:</Text>
-              {isMultiDayLeave ? (
-                <Text style={styles.disabledText}>N/A</Text>
-              ) : (
-                <>
-                  <TouchableOpacity
-                    style={styles.dropdown}
-                    onPress={() =>
-                      setShowShiftSlotDropdown(!showShiftSlotDropdown)
-                    }
-                  >
-                    <Text style={styles.dropdownText}>
-                      {shiftSlot || "Select shift slot"}
-                    </Text>
-                    <MaterialIcons
-                      name="navigate-next"
-                      size={20}
-                      color="black"
-                    />
-                  </TouchableOpacity>
-                  {showShiftSlotDropdown &&
-                    renderDropdown(
-                      shiftSlots.map((slot) => slot.name),
-                      shiftSlot,
-                      setShiftSlot
-                    )}
-                  {shiftSlot && (
-                    <Text style={styles.shiftTime}>
-                      {shiftSlots.find((slot) => slot.name === shiftSlot)?.time}
-                    </Text>
-                  )}
-                </>
-              )}
+                renderDropdown(leaveTypes, (id: number) => setLeaveType(id))}
             </View>
 
             <View style={styles.formGroup}>
@@ -284,7 +241,11 @@ export default function LeaveApplicationForm() {
                   style={styles.calendarIcon}
                   onPress={() => setShowStartDatePicker(true)}
                 >
-                  {/* <MaterialIcons name="navigate-next" size={20} color="black" />             */}
+                  <MaterialIcons
+                    name="calendar-today"
+                    size={20}
+                    color="black"
+                  />
                 </TouchableOpacity>
               </View>
               {showStartDatePicker && (
@@ -312,7 +273,11 @@ export default function LeaveApplicationForm() {
                   style={styles.calendarIcon}
                   onPress={() => setShowEndDatePicker(true)}
                 >
-                  {/* <MaterialIcons name="navigate-next" size={20} color="black" />             */}
+                  <MaterialIcons
+                    name="calendar-today"
+                    size={20}
+                    color="black"
+                  />
                 </TouchableOpacity>
               </View>
               {showEndDatePicker && (
@@ -327,34 +292,7 @@ export default function LeaveApplicationForm() {
             </View>
 
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Duration:</Text>
-              {isMultiDayLeave ? (
-                <Text style={styles.disabledText}>N/A</Text>
-              ) : (
-                <>
-                  <TouchableOpacity
-                    style={styles.dropdown}
-                    onPress={() =>
-                      setShowDurationDropdown(!showDurationDropdown)
-                    }
-                  >
-                    <Text style={styles.dropdownText}>
-                      {duration || "Select duration"}
-                    </Text>
-                    <MaterialIcons
-                      name="navigate-next"
-                      size={20}
-                      color="black"
-                    />
-                  </TouchableOpacity>
-                  {showDurationDropdown &&
-                    renderDropdown(durations, duration, setDuration)}
-                </>
-              )}
-            </View>
-
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>Proof(if needed):</Text>
+              <Text style={styles.label}>Proof (if needed):</Text>
               <TouchableOpacity
                 style={styles.uploadButton}
                 onPress={pickImage}
@@ -365,7 +303,9 @@ export default function LeaveApplicationForm() {
                     styles.uploadButtonText,
                     !uploading && styles.uploadButtonTextIdle,
                   ]}
-                >{uploading ? "Uploading..." : "Upload here"}</Text>
+                >
+                  {uploading ? "Uploading..." : "Upload here"}
+                </Text>
               </TouchableOpacity>
               {image && (
                 <Image source={{ uri: image }} style={styles.imagePreview} />
@@ -479,10 +419,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 
-
   applyButton: {
-    alignItems: 'center',
-    backgroundColor: '#0A1423',
+    alignItems: "center",
+    backgroundColor: "#0A1423",
     paddingVertical: 14,
     borderRadius: 25,
     marginHorizontal: 16,
@@ -496,10 +435,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   applyButtonText: {
-    alignItems: 'center',
-    color: '#fff',
+    alignItems: "center",
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 
   shiftTime: {

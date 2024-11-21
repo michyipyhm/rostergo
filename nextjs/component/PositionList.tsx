@@ -109,17 +109,16 @@ function PositionList() {
     }
 
     return (
-        <>
+        <div>
             <div className={styles.gradeList}>
                 <div className={styles.titleAddBtn}>
                     <h2>Grades</h2>
                     <Button
-                        variant="primary"
-                        size="sm"
+                      
                         onClick={handleAddGrade}
-                        className={styles.addNewBtn}
+                        className={styles.addBtn}
                     >
-                        Add New
+                        Add
                     </Button>
                 </div>
 
@@ -162,14 +161,12 @@ function PositionList() {
 
             <div className={styles.positionList}>
                 <div className={styles.titleAddBtn}>
-                    <h2>Positions</h2>
+                    <h2 className={styles.h}> Positions</h2>
                     <Button
-                        variant="primary"
-                        size="sm"
                         onClick={handleAddPosition}
-                        className={styles.addNewBtn}
+                        className={styles.addBtn}
                     >
-                        Add New
+                        Add
                     </Button>
                 </div>
                 <ListGroup>
@@ -237,7 +234,7 @@ function PositionList() {
                     ) : null}
                 </ListGroup>
             </div>
-        </>
+        </div>
     );
 
 }

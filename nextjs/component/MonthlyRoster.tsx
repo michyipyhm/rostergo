@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, notFound, useRouter } from "next/navigation";
 import styles from './MonthlyRoster.module.scss';
 import { MonthlyRosterData } from "@/lib/models";
@@ -9,7 +9,7 @@ import EditRoster from './EditRoster';
 function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
 
     const router = useRouter()
-
+    const tooltipRef = useRef<HTMLDivElement | null>(null);
     const { users, shifts, shiftRequests, leaveRequests, shift_slots } = data
 
     const params = useParams()
@@ -24,6 +24,12 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
     const [selectedShift, setSelectedShift] = useState<string | null>(null);
     const [selectedShiftRequest, setSelectedShiftRequest] = useState<string | null>(null);
     const [selectedLeaveRequest, setSelectedLeaveRequest] = useState<string | null>(null);
+    const [hoveredDay, setHoveredDay] = useState<number | null>(null);
+    const [hoveredData, setHoveredData] = useState<React.ReactNode>(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [hoveredShiftData, setHoveredShiftData] = useState<React.ReactNode>(null);
+
+    const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({});
 
     const shiftOptions = shift_slots.map((slot) => slot.short_title)
 
@@ -272,6 +278,84 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
         return date.toLocaleString("en-US", { weekday: "short" });
     });
 
+    // move the mouse in the cell of member's day, show the statistics
+    const handleCellMouseEnter = (day: number, memberId: number, event: React.MouseEvent) => {
+        const member = staff.find((m) => m.id === memberId)
+        const shift = shiftsStatus[memberId]?.[day - 1] || "";
+        const shiftRequestPending = shiftRequestsPending[memberId]?.[day - 1] || "";
+        const leaveRequestConfirmed = leaveRequestsConfirmed[memberId]?.[day - 1] || "";
+        const leaveRequestPending = leaveRequestsPending[memberId]?.[day - 1] || "";
+
+        //preview every staff' day
+        const hoveredDetails = (
+            <div>
+                Staff: <strong>{member?.name}</strong><br />
+                <div>Shift: <strong>{shift || ""}</strong></div>
+                <div>Leave Confirmed: <strong>{leaveRequestConfirmed || ""}</strong></div>
+                <div>Shift Requests: <strong>{shiftRequestPending || ""}</strong></div>
+                <div>Leave Requests: <strong>{leaveRequestPending || ""}</strong></div>
+            </div>
+        )
+        setHoveredDay(day);
+        setHoveredData(hoveredDetails);
+        setMousePosition({ x: event.clientX, y: event.clientY })
+    };
+
+    // move the mouse in the cell of day, show the statistics
+    const calculateShiftStats = (day: number) => {
+        const stats = shifts.reduce((acc: Record<string, number>, shift) => {
+            const shiftDay = new Date(shift.date).getDate();
+            if (shiftDay === day) {
+                acc[shift.slot_short_title] = (acc[shift.slot_short_title] || 0) + 1;
+            }
+            return acc;
+        }, {});
+
+        return (
+            <div>
+                {Object.entries(stats).map(([shift, count]) => (
+                    <div key={shift}>
+                        {shift}: <strong>{count}</strong>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    const handleMouseEnter = (day: number, event: React.MouseEvent) => {
+        setHoveredDay(day)
+        setHoveredShiftData(calculateShiftStats(day))
+        setMousePosition({ x: event.clientX, y: event.clientY })
+    };
+
+    // calculate the Tooltip distance from mouse
+    useEffect(() => {
+        if (tooltipRef.current) {
+            const tooltipElement = tooltipRef.current;
+            const tooltipWidth = tooltipElement.offsetWidth;
+            const tooltipHeight = tooltipElement.offsetHeight;
+
+            setTooltipStyle({
+                left: Math.max(
+                    mousePosition.x - tooltipWidth - 10,
+                    10
+                ) + "px",
+                top: Math.max(
+                    mousePosition.y - (tooltipHeight * 1) / 10,
+                    10
+                ) + "px",
+            });
+        }
+    }, [mousePosition]);
+
+    // when mouse leave the cell reset
+    const handleCellMouseLeave = () => {
+        setHoveredDay(null);
+        setHoveredData(null);
+        setHoveredShiftData(null)
+    };
+
+
     return (
         <div>
             <div className={styles.selectedMonth}>
@@ -301,7 +385,12 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                 const isWeekend = date.getDay() === 0 || date.getDay() === 6;
                                 const isHoliday = publicHolidays.has(i + 1);
                                 return (
-                                    <th key={i + 1} className={`${isWeekend ? styles.weekend : ""} ${isHoliday ? styles.holiday : ""}`}>
+                                    <th
+                                        key={i + 1}
+                                        className={`${isWeekend ? styles.weekend : ""} ${isHoliday ? styles.holiday : ""}`}
+                                        onMouseEnter={(e) => handleMouseEnter(i + 1, e)}
+                                        onMouseLeave={handleCellMouseLeave}
+                                    >
                                         {i + 1}
                                     </th>
                                 );
@@ -354,6 +443,8 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                                             key={i + 1}
                                             onClick={() => handleCellClick(i + 1, member.id, member.name)}
                                             className={cellClassName}
+                                            onMouseEnter={(e) => handleCellMouseEnter(i + 1, member.id, e)}
+                                            onMouseLeave={handleCellMouseLeave}
                                         >
                                             {showTheDay}
                                         </td>
@@ -363,6 +454,26 @@ function MonthlyRosterForm({ data }: { data: MonthlyRosterData }) {
                         ))}
                     </tbody>
                 </table>
+                {hoveredDay !== null && hoveredData && (
+                    <div
+                        ref={tooltipRef}
+                        className={styles.tooltipMemberDay}
+                        style={tooltipStyle}
+                    >
+                        <strong>Day{hoveredDay}</strong>
+                        {hoveredData}
+                    </div>
+                )}
+                {hoveredDay !== null && hoveredShiftData && (
+                    <div
+                        ref={tooltipRef}
+                        className={styles.tooltipDay}
+                        style={tooltipStyle}
+                    >
+                        <strong>Day {hoveredDay} of statistics</strong>
+                        {hoveredShiftData}
+                    </div>
+                )}
             </div>
             {showEditRoster && selectedDay !== null && selectedMemberId !== null && (
                 <EditRoster
