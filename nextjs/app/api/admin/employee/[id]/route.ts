@@ -48,6 +48,7 @@ export async function PUT(
 
   try {
     const body = await request.json();
+    console.log(body)
     const updatedEmployee = await adminEmployeeService.updateEmployee(
       id, body );
     if (!updatedEmployee) {

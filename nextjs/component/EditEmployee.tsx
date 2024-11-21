@@ -37,8 +37,10 @@ export default function EditEmployee({ id }: { id: string }) {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
-        
-        const data = await response.json()
+        const editPageData =  await response.json()
+        const data = editPageData[0]
+        const positionData = editPageData[1]
+        console.log("editPageData:",positionData)
         
         setEmployee(data)
       } catch (err) {
