@@ -1,7 +1,7 @@
-export function formatYYYYMMDD(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toISOString().split('T')[0];
-}
+// export function formatYYYYMMDD(dateString: string): string {
+//   const date = new Date(dateString);
+//   return date.toISOString().split('T')[0];
+// }
 
 export function formatYYYYMMDDHHMM(dateString: string): string {
   const date = new Date(dateString);
@@ -12,4 +12,11 @@ export function formatYYYYMMDDHHMM(dateString: string): string {
   const min = String(date.getMinutes()).padStart(2, '0');
   
   return `${yyyy}-${mm}-${dd}, ${hh}:${min}`;
+}
+
+export function formatYYYYMMDD(dateString: string | null): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+  return date.toISOString().split('T')[0];
 }

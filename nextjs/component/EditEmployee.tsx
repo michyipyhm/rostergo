@@ -94,10 +94,10 @@ export default function EditEmployee({ id }: { id: string }) {
   }
 
   const handleResignDateChange = (date: Date | null) => {
-    if (employee) {
+    if (date && employee) {
       setEmployee({
         ...employee,
-        resign_date: date ? formatYYYYMMDD(date.toISOString()) : null
+        resign_date: formatYYYYMMDD(date.toISOString())
       });
     }
   };
@@ -212,6 +212,7 @@ export default function EditEmployee({ id }: { id: string }) {
               onChange={handleResignDateChange}
               dateFormat="yyyy-MM-dd"
               className="form-control"
+              isClearable
             />
           ) : (
               <Form.Control
