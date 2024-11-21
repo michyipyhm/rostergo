@@ -27,7 +27,7 @@ export default function leaveLayout() {
           name="leaveDetail"
           options={{
             headerTitle: "Leave Detail",
-            headerLargeTitle: false,
+            headerLargeTitle: true,
             headerShadowVisible: false,
             headerLargeTitleShadowVisible: false,
             headerShown: true,
