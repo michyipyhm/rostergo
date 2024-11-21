@@ -113,14 +113,6 @@ export async function updateLeaveRequest(leaveId: number, userId: string, update
     const adjustedStartDate = start_date ? new Date(start_date) : null;
     const adjustedEndDate = end_date ? new Date(end_date) : null;
 
-    // Subtract 1 day from the dates if they are present
-    // if (adjustedStartDate) {
-    //   adjustedStartDate.setDate(adjustedStartDate.getDate() - 1);
-    // }
-    // if (adjustedEndDate) {
-    //   adjustedEndDate.setDate(adjustedEndDate.getDate() - 1);
-    // }
-
     const result = await pgClient.query(
       `UPDATE leave_requests 
        SET start_date = $1, 

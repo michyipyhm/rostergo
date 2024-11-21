@@ -146,7 +146,7 @@ interface SickLeaveRequest {
 export async function deleteLeaveRequest(leaveId: number): Promise<void> {
   try {
     const token = await storageUtil.getItem("token");
-    const response = await fetch(`${apiUrl}/api/user/leaverequests/${leaveId}`, {
+    const response = await fetch(`${apiUrl}/api/user/leaverequestsdetail/${leaveId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
