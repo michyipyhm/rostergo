@@ -68,9 +68,16 @@ export default function Payslip() {
       <View style={styles.card}>
         <View style={styles.header}>
           <Text style={styles.netPayLabel}>NET PAY</Text>
-          <Text style={styles.netPayAmount}>
-            ${((payslip.ft_wage ?? 0) * 0.95).toFixed(2)}
-          </Text>
+
+          {payslip.employee_type === "Full Time" ? (
+            <Text style={styles.netPayAmount}>
+              ${((payslip.ft_wage ?? 0) * 0.95).toFixed(2)}
+            </Text>
+          ) : (
+            <Text style={styles.netPayAmount}>
+              ${((payslip.pt_wage ?? 0) * (payslip.work_hour ?? 0)).toFixed(2)}
+            </Text>
+          )}
 
           <TouchableOpacity style={styles.emailButton}>
             <Text style={styles.emailButtonText}>Email payslip</Text>
@@ -146,10 +153,6 @@ export default function Payslip() {
                 label="Employee MPF Contribution:"
                 value={`-$${((payslip.ft_wage ?? 0) * 0.05).toFixed(2)}`}
               />
-              {/* <InfoRow
-                label="Net Pay Salary:"
-                value={`$${((payslip.ft_wage ?? 0) * 0.95).toFixed(2)}`}
-              /> */}
             </>
           ) : (
             <>
@@ -160,16 +163,9 @@ export default function Payslip() {
                 ).toFixed(2)}`}
               />
               <InfoRow label="Employee MPF Contribution:" value="$0.00" />
-              {/* <InfoRow
-                label="Net Pay Salary:"
-                value={`$${(
-                  (payslip.pt_wage ?? 0) * (payslip.work_hour ?? 0)
-                ).toFixed(2)}`}
-              /> */}
             </>
           )}
         </View>
-        {/* </View> */}
       </View>
     </SafeAreaView>
   );
@@ -285,7 +281,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     backgroundColor: "white",
     marginBottom: 20,
-
   },
   monthSelectorText: {
     fontSize: 16,
