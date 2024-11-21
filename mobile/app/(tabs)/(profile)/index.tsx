@@ -95,15 +95,15 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    justifyContent: "space-between",
+
   },
   label: {
-    flex: 1,
     fontSize: 16,
     color: '#333',
     fontWeight: '500',
   },
   value: {
-    flex: 2,
     fontSize: 16,
     color: '#666',
     fontWeight: '500',

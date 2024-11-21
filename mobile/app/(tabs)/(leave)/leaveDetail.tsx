@@ -616,6 +616,11 @@ export default function LeaveRequestDetail() {
       Alert.alert("Warning", "Leave request ID is undefined", [
         { text: "OK", onPress: () => router.replace("/(tabs)/(leave)") },
       ]);
+      window.alert("Leave request ID is undefined");
+      router.replace("/(tabs)/(leave)");
+      // Alert.alert("Warning", "Leave request ID is undefined", [
+      //   { text: "OK", onPress: () => router.replace("/(tabs)/(leave)") },
+      // ]);
     }
     console.log({ leaveId });
   }, [leaveId, router]);
@@ -639,6 +644,11 @@ export default function LeaveRequestDetail() {
       Alert.alert("Success", "Leave request deleted successfully", [
         { text: "OK", onPress: () => router.replace("/(tabs)/(leave)") },
       ]);
+      // Alert.alert("Success", "Leave request deleted successfully", [
+      //   { text: "OK", onPress: () => router.replace("/(tabs)/(leave)") },
+      // ]);
+      window.alert("Leave request deleted successfully");
+      router.replace("/(tabs)/(leave)");
     },
     onError: (error) => {
       Alert.alert("Error", `Failed to delete leave request: ${error}`);
@@ -653,6 +663,14 @@ export default function LeaveRequestDetail() {
       Alert.alert("Success", "Leave request updated successfully", [
         { text: "OK", onPress: () => router.replace("/(tabs)/(leave)") },
       ]);
+      queryClient.invalidateQueries({
+        queryKey: ["getAllLeaves", "getLeaveDetail"],
+      });
+      window.alert("Leave request deleted successfully");
+      router.replace("/(tabs)/(leave)");
+      // Alert.alert("Success", "Leave request updated successfully", [
+      //   { text: "OK", onPress: () => router.replace("/(tabs)/(leave)") },
+      // ]);
     },
     onError: (error) => {
       Alert.alert("Error", `Failed to update leave request: ${error}`);
@@ -722,6 +740,21 @@ export default function LeaveRequestDetail() {
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    <ScrollView style={styles.container}>
+      <View style={styles.card}>
+        <View style={styles.content}>
+          <LeaveRequestItem
+            item={data}
+            onDelete={handleDelete}
+            onUpdate={(updaetdData) =>
+              leaveId !== null
+                ? updateMutation.mutate({ id: leaveId, ...updaetdData })
+                : null
+            }
+          />
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -733,6 +766,11 @@ function LeaveRequestItem({
   item: LeaveRequestItem;
   onDelete: () => void;
   onUpdate: (data: { start_date: string; end_date: string; duration: string }) => void;
+  onUpdate: (data: {
+    start_date: string;
+    end_date: string;
+    duration: string;
+  }) => void;
 }) {
   const [startDate, setStartDate] = useState(new Date(item.start_date));
   const [endDate, setEndDate] = useState(new Date(item.end_date));
@@ -776,6 +814,11 @@ function LeaveRequestItem({
 
   const handleSave = () => {
     const updatedData: { start_date: string; end_date: string; duration: string } = {
+    const updatedData: {
+      start_date: string;
+      end_date: string;
+      duration: string;
+    } = {
       start_date: startDateString,
       end_date: endDateString,
       duration: duration,
@@ -823,17 +866,21 @@ function LeaveRequestItem({
 
   const formatDate = (inputDate: DateType): string => {
     let dateToFormat: Date;
-    if (typeof inputDate === 'string') {
+    if (typeof inputDate === "string") {
       dateToFormat = new Date(inputDate);
     } else {
       dateToFormat = inputDate;
     }
 
     if (isNaN(dateToFormat.getTime())) {
-      return 'Invalid Date';
+      return "Invalid Date";
     }
     const adjustedDate = new Date(dateToFormat.getTime() - dateToFormat.getTimezoneOffset() * 60000);
     return adjustedDate.toISOString().split('T')[0];
+    const adjustedDate = new Date(
+      dateToFormat.getTime() - dateToFormat.getTimezoneOffset() * 60000
+    );
+    return adjustedDate.toISOString().split("T")[0];
   };
 
   const renderDropdown = (
@@ -860,6 +907,12 @@ function LeaveRequestItem({
   return (
     <ScrollView contentContainerStyle={styles.itemContainer}>
       <View style={styles.itemContainer}>
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Leave Type:</Text>
+          <Text style={styles.value}>{leaveType}</Text>
+        </View>
+    <SafeAreaView style={styles.itemContainer}>
+      <ScrollView>
         <View style={styles.formGroup}>
           <Text style={styles.label}>Leave Type:</Text>
           <Text style={styles.value}>{leaveType}</Text>
@@ -894,6 +947,33 @@ function LeaveRequestItem({
             />
           )}
         </View>
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Start Date:</Text>
+          <View style={styles.dateInputContainer}>
+            <TextInput
+              style={styles.dateInput}
+              value={formatDate(startDateString)}
+              onChangeText={handleStartDateInput}
+              onBlur={validateStartDate}
+              placeholder="YYYY-MM-DD"
+            />
+            <TouchableOpacity
+              style={styles.calendarIcon}
+              onPress={() => setShowStartDatePicker(true)}
+            >
+              <Calendar color="#000" size={20} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {showStartDatePicker && (
+          <DateTimePicker
+            testID="startDatePicker"
+            value={startDate}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            onChange={onChangeStartDate}
+          />
+        )}
 
         <View style={styles.dateInputWrapper}>
           <View style={styles.formGroup}>
@@ -939,6 +1019,47 @@ function LeaveRequestItem({
               renderDropdown(durationOptions, duration, setDuration)}
           </View>
         </View>
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>End Date:</Text>
+          <View style={styles.dateInputContainer}>
+            <TextInput
+              style={styles.dateInput}
+              value={endDateString}
+              onChangeText={handleEndDateInput}
+              onBlur={validateEndDate}
+              placeholder="YYYY-MM-DD"
+            />
+            <TouchableOpacity
+              style={styles.calendarIcon}
+              onPress={() => setShowEndDatePicker(true)}
+            >
+              <Calendar color="#000" size={20} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {showEndDatePicker && (
+          <DateTimePicker
+            testID="endDatePicker"
+            value={endDate}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            onChange={onChangeEndDate}
+          />
+        )}
+        <View style={[styles.formGroup, styles.durationContainer]}>
+          <Text style={styles.label}>Duration:</Text>
+          <View style={styles.dropdownContainer}>
+            <TouchableOpacity
+              style={styles.dropdown}
+              onPress={() => setShowDurationDropdown(!showDurationDropdown)}
+            >
+              <Text style={styles.dropdownText}>{duration}</Text>
+              <ChevronDown color="#000" size={20} />
+            </TouchableOpacity>
+            {showDurationDropdown &&
+              renderDropdown(durationOptions, duration, setDuration)}
+          </View>
+        </View>
 
         <View style={styles.formGroup}>
           <Text style={styles.label}>Status:</Text>
@@ -956,6 +1077,22 @@ function LeaveRequestItem({
         )}
       </View>
     </ScrollView>
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Status:</Text>
+          <Text style={styles.value}>{status}</Text>
+        </View>
+        {status.toLowerCase() === "pending" && (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+              <Text style={styles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

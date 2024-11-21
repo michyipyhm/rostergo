@@ -71,10 +71,10 @@ class ShiftSlotService {
         success: true,
         message: "Updated successfully",
       }
-    } catch (error) {
-      console.error("Database query error for Shift Slots")
-      throw new Error("Database error")
-    }
+    } catch (error: any) {
+      console.error("Database query error for Shift Slots:", error.message);
+      throw new Error(error.message || "Database error")
+  }
   }
 
   async updateLeaveType(id: number, name: string, short_name: string, quota: number) {
@@ -119,11 +119,11 @@ class ShiftSlotService {
 
     } catch (error) {
       console.error("Database query error for Leave Types")
-      throw new Error("Database error")
+      throw new Error(error.message || "Database error")
     }
   }
 
-  async addShiftSlot(branch_id: number, title: string, short_title: string, start_time: string, end_time: string) {
+  async addShiftSlot(branch_id: number, title: string, short_title: string, start_time: string, end_time: string, work_hour:number) {
     try {
 
       const checkRepeatTitle_sql = `
@@ -138,10 +138,10 @@ class ShiftSlotService {
       }
 
       const addShiftSlot_sql = `
-      INSERT INTO shift_slots (branch_id, title, short_title, start_time, end_time)
-      VALUES ($1, $2, $3, $4, $5);
+      INSERT INTO shift_slots (branch_id, title, short_title, start_time, end_time, work_hour)
+      VALUES ($1, $2, $3, $4, $5, $6);
       `
-        await pgClient.query(addShiftSlot_sql, [branch_id, title, short_title, start_time, end_time])
+        await pgClient.query(addShiftSlot_sql, [branch_id, title, short_title, start_time, end_time, work_hour])
 
       return {
         success: true,
@@ -149,7 +149,7 @@ class ShiftSlotService {
       }
     } catch (error) {
       console.error("Database query error for Shift Slot adding")
-      throw new Error("Database error")
+      throw new Error(error.message || "Database error")
     }
   }
 
@@ -180,7 +180,7 @@ class ShiftSlotService {
 
     } catch (error) {
       console.error("Database query error for Leave Types")
-      throw new Error("Database error")
+      throw new Error(error.message || "Database error")
     }
   }
 

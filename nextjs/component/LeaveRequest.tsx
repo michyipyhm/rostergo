@@ -50,6 +50,8 @@ function LeaveRequest(props : LeaveRequestProps) {
         try {
             const token = localStorage.getItem('token')
 
+            console.log("localStorage: ", token)
+            
             const response = await fetch("/api/admin/handleleaverequest", {
                 method: "POST",
                 headers: {

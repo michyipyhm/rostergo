@@ -4,7 +4,7 @@ import { shiftSlotService } from "@/services/admin/shiftSlotService";
 export async function POST(req: NextRequest) {
   try {
     const { id, name, short_name, quota } = await req.json()
-
+    console.log(id, name, short_name, quota)
     await shiftSlotService.updateLeaveType(id, name, short_name, quota)
 
     return NextResponse.json(
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     console.error("Error updating Leave Type:", error);
 
     return NextResponse.json(
-      { success: false, message: "Internal Server Error" },
+      { success: false, message: error.message || "Internal Server Error" },
       { status: 500 }
     );
   }

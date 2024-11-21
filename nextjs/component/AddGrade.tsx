@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Form, Modal, Spinner } from 'react-bootstrap';
-import styles from './EditRoster.module.scss';
 
 interface AddGradeProps {
     onClose: () => void
