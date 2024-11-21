@@ -79,8 +79,18 @@ class AdminEmployeeService {
         JOIN grades ON positions.grade_id = grades.id
         WHERE users.id = $1
       `;
+      
+      const getPosition_sql =`
+      SELECT
+        positions.*,
+        grades.name AS grade_name,
+        grades.annual_leave_quota AS annual_leave_quota
+      FROM positions
+      JOIN grades ON positions.grade_id = grades.id
+      `
       const result = await pgClient.query(sql, [id]);
-      return result.rows[0];
+      const positionResult = await pgClient.query(getPosition_sql);
+      return [result.rows[0], positionResult.rows]
     } catch (error) {
       console.log("cannot get employeeById:", error);
       throw new Error("EmployeeById not found");
