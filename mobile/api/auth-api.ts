@@ -151,7 +151,7 @@ export async function login(nickname: string, password: string): Promise<any> {
 
     const data = await res.json();
     const token = data.token
-    // console.log(token)
+    console.log(token)
     // Store the token using SecureStore instead of localStorage
     try {
       await storageUtil.setItem('token', token);

@@ -20,12 +20,12 @@ export default function settings() {
       await logout
       Alert.alert("Success", "Logout successfully");
       router.push({
-        pathname: '/login',
+        pathname: '/(auth)',
         params: { justLoggedOut: 'true' }
       });
     } catch (error) {
       Alert.alert("Error");
-      router.push("/login");
+      // router.push("/login");
     }
   };
 

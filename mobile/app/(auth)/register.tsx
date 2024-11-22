@@ -19,9 +19,9 @@ export default function RegisterScreen() {
   const router = useRouter();
   const { phoneNumber } = useAuthStore();
   const [formData, setFormData] = useState<RegisterData>({
-    nickname: 'michaelyip',
-    password: '123456',
-    confirmPassword: '123456',
+    nickname: '',
+    password: '',
+    confirmPassword: '',
     gender: 'male',
   });
 

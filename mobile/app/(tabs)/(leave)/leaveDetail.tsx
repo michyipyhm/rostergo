@@ -95,7 +95,9 @@ export default function LeaveRequestDetail() {
     mutationFn: updateLeaveRequest,
     onSuccess: () => {
       console.log("Leave request updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["getAllLeaves", "getLeaveDetail"] });
+      queryClient.invalidateQueries({
+        queryKey: ["getAllLeaves", "getLeaveDetail"],
+      });
       Alert.alert("Success", "Leave request updated successfully", [
         { text: "OK", onPress: () => router.replace("/(tabs)/(leave)") },
       ]);
@@ -151,22 +153,21 @@ export default function LeaveRequestDetail() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardAvoidingView}
-      >
+      <ScrollView>
         <View style={styles.card}>
           <View style={styles.content}>
             <LeaveRequestItem
               item={data}
               onDelete={handleDelete}
               onUpdate={(updatedData) =>
-                leaveId !== null ? updateMutation.mutate({ id: leaveId, ...updatedData }) : null
+                leaveId !== null
+                  ? updateMutation.mutate({ id: leaveId, ...updatedData })
+                  : null
               }
             />
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -178,7 +179,11 @@ function LeaveRequestItem({
 }: {
   item: LeaveRequestItem;
   onDelete: () => void;
-  onUpdate: (data: { start_date: string; end_date: string; duration: string }) => void;
+  onUpdate: (data: {
+    start_date: string;
+    end_date: string;
+    duration: string;
+  }) => void;
 }) {
   const [startDate, setStartDate] = useState(new Date(item.start_date));
   const [endDate, setEndDate] = useState(new Date(item.end_date));
@@ -221,7 +226,11 @@ function LeaveRequestItem({
   };
 
   const handleSave = () => {
-    const updatedData: { start_date: string; end_date: string; duration: string } = {
+    const updatedData: {
+      start_date: string;
+      end_date: string;
+      duration: string;
+    } = {
       start_date: startDateString,
       end_date: endDateString,
       duration: duration,
@@ -269,17 +278,19 @@ function LeaveRequestItem({
 
   const formatDate = (inputDate: DateType): string => {
     let dateToFormat: Date;
-    if (typeof inputDate === 'string') {
+    if (typeof inputDate === "string") {
       dateToFormat = new Date(inputDate);
     } else {
       dateToFormat = inputDate;
     }
 
     if (isNaN(dateToFormat.getTime())) {
-      return 'Invalid Date';
+      return "Invalid Date";
     }
-    const adjustedDate = new Date(dateToFormat.getTime() - dateToFormat.getTimezoneOffset() * 60000);
-    return adjustedDate.toISOString().split('T')[0];
+    const adjustedDate = new Date(
+      dateToFormat.getTime() - dateToFormat.getTimezoneOffset() * 60000
+    );
+    return adjustedDate.toISOString().split("T")[0];
   };
 
   const renderDropdown = (
@@ -304,8 +315,9 @@ function LeaveRequestItem({
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.itemContainer}>
-      <View style={styles.itemContainer}>
+    // <SafeAreaView style={styles.itemContainer}>
+    <ScrollView>
+      <View>
         <View style={styles.formGroup}>
           <Text style={styles.label}>Leave Type:</Text>
           <Text style={styles.value}>{leaveType}</Text>
@@ -335,7 +347,7 @@ function LeaveRequestItem({
               testID="startDatePicker"
               value={startDate}
               mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              display={Platform.OS === "ios" ? "spinner" : "default"}
               onChange={onChangeStartDate}
             />
           )}
@@ -402,6 +414,7 @@ function LeaveRequestItem({
         )}
       </View>
     </ScrollView>
+    // </SafeAreaView>
   );
 }
 
@@ -566,4 +579,3 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
 });
-

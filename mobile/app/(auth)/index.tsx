@@ -163,11 +163,11 @@ export default function verifyMobileNumberScreen() {
         </>
       )}
 
-      <Button onPress={() => router.push("/(auth)/login")} title="Log In" />
-      <Button
+      {/* <Button onPress={() => router.push("/(auth)/login")} title="Log In" /> */}
+      {/* <Button
         onPress={() => router.push("/(auth)/register")}
         title="Register"
-      />
+      /> */}
     </SafeAreaView>
 
   );
@@ -193,10 +193,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#E1E1E1",
-    paddingBottom: 5,
+    // paddingBottom: 5,
     marginBottom: 16,
     marginRight: 25,
     marginLeft: 25,
+    paddingTop: 20,
   },
   prefix: {
     fontSize: 16,

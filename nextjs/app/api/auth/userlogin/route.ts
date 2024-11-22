@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
       password
     );
 
+    console.log("result", result)
+    
     // Check for successful authentication
     if (result.success && result.user) {
       // Create JWT payload

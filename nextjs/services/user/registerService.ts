@@ -1,3 +1,4 @@
+import { hashPassword } from "@/lib/bcrypt";
 import { mobileRegisterResult } from "@/lib/models";
 import { pgClient } from "@/lib/pgClient";
 
@@ -7,6 +8,11 @@ export async function mobileRegister(
   password: string,
   gender: "male" | "female"
 ): Promise<mobileRegisterResult> {
+
+  const hashedNewPassword = await hashPassword(password)
+
+  console.log("hashed password",hashedNewPassword)
+  
   try {
 
     const query = `
@@ -18,7 +24,7 @@ export async function mobileRegister(
 
     const result = await pgClient.query(query, [
       nickname,
-      password,
+      hashedNewPassword,
       gender,
       phone,
     ]);

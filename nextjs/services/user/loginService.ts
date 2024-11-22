@@ -20,6 +20,7 @@ class MobileLoginService {
         WHERE users.nickname = $1 AND users.admin = false AND users.status = 'active'
       `;
   
+      
       const result = await pgClient.query(sql, [nickname]);
 
       if (result.rows.length === 0) {
@@ -27,6 +28,8 @@ class MobileLoginService {
       }
   
       const userData = result.rows[0];
+      console.log("userData", userData)
+      
       const isPasswordValid = await checkPassword(password, userData.password);
   
       if (!isPasswordValid) {

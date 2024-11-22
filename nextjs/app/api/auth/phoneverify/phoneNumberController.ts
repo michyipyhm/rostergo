@@ -49,6 +49,8 @@ export async function handleVerifyPhoneNumber(
       };
       const generatedOtp = generateOtp();
 
+      console.log(`Generated OTP for ${phone}: ${generatedOtp}`);
+      
       //call whatsappppp
       try {
         await axios.post(
