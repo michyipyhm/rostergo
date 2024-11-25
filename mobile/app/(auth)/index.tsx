@@ -163,7 +163,7 @@ export default function verifyMobileNumberScreen() {
         </>
       )}
 
-      {/* <Button onPress={() => router.push("/(auth)/login")} title="Log In" /> */}
+      <Button onPress={() => router.push("/(auth)/login")} title="Log In" />
       {/* <Button
         onPress={() => router.push("/(auth)/register")}
         title="Register"

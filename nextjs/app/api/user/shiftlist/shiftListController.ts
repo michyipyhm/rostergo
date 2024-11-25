@@ -17,7 +17,11 @@ export async function getShiftList(req: NextRequest) {
   }
 
   try {
-    const shifts = await mobileShiftListService.getShiftListById(userId);
+    const { searchParams } = new URL(req.url);
+    const yearMonth = searchParams.get('yearMonth');
+
+    console.log("yearMonth from shift list controller: ", yearMonth)
+    const shifts = await mobileShiftListService.getShiftListById(userId, yearMonth);
 
     console.log("shift from shift list controller: ", shifts);
 

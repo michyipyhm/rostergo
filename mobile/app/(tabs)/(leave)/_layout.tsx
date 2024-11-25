@@ -1,12 +1,22 @@
 import Header from "@/components/Header";
 import { Redirect, Stack } from "expo-router";
-import { SafeAreaView } from "react-native";
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TextInput,
+//   ScrollView,
+//   TouchableOpacity,
+//   Platform,
+//   Image,
+//   Alert,
+// } from "react-native";
+// import { SafeAreaView } from "react-native";
 
 export default function leaveLayout() {
   return (
     <>
       <Stack initialRouteName="index">
-        
         <Stack.Screen
           name="index"
           options={{
@@ -26,6 +36,8 @@ export default function leaveLayout() {
         <Stack.Screen
           name="leaveDetail"
           options={{
+            headerBackVisible: true,
+            headerBackTitle: "Back",
             headerTitle: "Leave Detail",
             headerLargeTitle: true,
             headerShadowVisible: false,
@@ -38,6 +50,8 @@ export default function leaveLayout() {
         <Stack.Screen
           name="applyLeave"
           options={{
+            headerBackVisible: true,
+            headerBackTitle: "Back",
             headerTitle: "Apply leave",
             headerLargeTitle: true,
             headerShadowVisible: false,
@@ -50,6 +64,8 @@ export default function leaveLayout() {
         <Stack.Screen
           name="applySickLeave"
           options={{
+            headerBackVisible: true,
+            headerBackTitle: "Back",
             headerTitle: "Apply Sick leave",
             headerLargeTitle: true,
             headerShadowVisible: false,

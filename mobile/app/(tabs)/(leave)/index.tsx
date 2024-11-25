@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllLeaves } from "@/api/leave-api";
 import { ChevronRight } from 'lucide-react-native';
 import { useRouter } from "expo-router";
+import Header from "@/components/Header";
 
 export default function LeaveRequestList() {
   const router = useRouter();
@@ -49,7 +50,6 @@ export default function LeaveRequestList() {
 
   return (
     <SafeAreaView style={styles.container}>
-
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       
        

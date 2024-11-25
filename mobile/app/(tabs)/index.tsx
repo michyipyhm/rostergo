@@ -12,7 +12,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Calendar } from "react-native-calendars";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "expo-router";
 import { Shift, getUserShifts } from "@/api/calendar-api";
 import { useQuery } from "@tanstack/react-query";
@@ -35,11 +35,16 @@ export default function HomeScreen() {
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const slideAnim = useRef(new Animated.Value(400)).current;
   const router = useRouter();
-  const { data, isLoading, error } = useQuery<Shift[], Error>({
+  const { data, isLoading, error, isError } = useQuery<Shift[], Error>({
     queryKey: ["getUserShifts"],
     queryFn: getUserShifts,
   });
 
+  useEffect(() => {
+    if (isError) {
+      router.replace('/(auth)/login')
+    }
+  }, [isError])
   const nickname = data && data.length > 0 ? data[0].nickname : "";
 
   const markedDates = useMemo<MarkedDates>(() => {

@@ -1,8 +1,13 @@
-import Header from "@/components/Header";
-import { Redirect, Stack } from "expo-router";
-import { SafeAreaView } from "react-native";
+import { useSearchContext } from "@/components/SearchContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { Stack } from "expo-router";
+import { useState } from "react";
 
 export default function shiftLayout() {
+  // const [searchTerm, setSearchTerm] = useState("");
+
+  const { setSearchText } = useSearchContext();
+
   return (
     <Stack initialRouteName="index">
       <Stack.Screen
@@ -17,13 +22,12 @@ export default function shiftLayout() {
           headerSearchBarOptions: {
             placeholder: "Search for shifts",
             hideWhenScrolling: false,
+            onChangeText: (e) => {
+              const text = e.nativeEvent.text;
+              setSearchText(text);
+            },
           },
         }}
-      />
-
-      <Stack.Screen
-        name="shiftDetail"
-        options={{ headerShown: false, title: "Shift Detail Screen" }}
       />
     </Stack>
   );

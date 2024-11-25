@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import { FlatList } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getShiftList } from "@/api/shift-api";
 import { MarkedDates } from "react-native-calendars/src/types";
+import { useSearchContext } from "@/components/SearchContext";
 
 interface ShiftPage {
   date: string;
@@ -38,14 +39,19 @@ const getShiftColor = (shiftSlotId: number) => {
 
 
 export default function shiftList() {
+  const { searchText } = useSearchContext();
+
   const router = useRouter();
-  const { data, isLoading, error } = useQuery<ShiftPage[], Error>({
-    queryKey: ["getShiftList"],
+  const { data, isLoading, error, refetch } = useQuery<ShiftPage[], Error>({
+    queryKey: ["getShiftList", searchText],
     queryFn: async () => {
-      const result = await getShiftList();
+      const result = await getShiftList(searchText);
       return Array.isArray(result) ? result : [result];
     },
   });
+  useEffect(() => {
+    refetch()
+  }, [searchText])
 
   if (isLoading) {
     return (

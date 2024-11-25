@@ -14,6 +14,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import SplashScreen from "@/components/SplashScreen";
+import { SearchProvider } from "@/components/SearchContext";
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -54,7 +55,8 @@ export default function RootLayout() {
   }
 
   return (
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <SearchProvider>
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
@@ -65,7 +67,8 @@ export default function RootLayout() {
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>
-      </QueryClientProvider>
+      </SearchProvider>
+    </QueryClientProvider>
   );
 }
 
