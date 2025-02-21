@@ -1,19 +1,45 @@
+.mainContainer {
+  padding: 20px;
+}
 
 .employeeList {
-  max-height: 45vh;
-  overflow-y: auto;
-}
-
-.table {
-  border: 2px solid #333;
-  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 8px;
+  // padding: 10px;
+  box-shadow: 0 2px 4px black;
   width: 95%;
+  height: 100%;
+  gap: 20px;
+  margin-left: 20px;
 }
 
-.table th,
-.table td {
-  border: 1px solid #333;
-  text-align: center;
-  vertical-align: middle;
+.headerRow,
+.employeeRow {
+  display: flex;
+  justify-content: space-between;
   padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.headerCell,
+.employeeCell {
+  flex: 1;
+  text-align: center
+  // padding: px;
+}
+
+.headerRow {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+.employeeRow {
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.employeeRow:hover {
+  background-color: #f9f9f9;
 }

@@ -84,15 +84,18 @@ export default function LeaveApplicationForm() {
 
   const onChangeStartDate = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || startDate;
-    setShowStartDatePicker(Platform.OS === "ios");
-    setStartDate(currentDate);
-    setStartDateString(currentDate.toISOString().split("T")[0]);
+    setShowStartDatePicker(Platform.OS === "ios"); 
+    if (selectedDate) {
+      setStartDate(selectedDate);
+      setStartDateString(selectedDate.toISOString().split("T")[0]);
+  
 
     // Ensure end date is not earlier than start date
     if (currentDate > endDate) {
       setEndDate(currentDate);
       setEndDateString(currentDate.toISOString().split("T")[0]);
     }
+  }
   };
 
   const onChangeEndDate = (event: any, selectedDate?: Date) => {
@@ -239,7 +242,7 @@ export default function LeaveApplicationForm() {
                 />
                 <TouchableOpacity
                   style={styles.calendarIcon}
-                  onPress={() => setShowStartDatePicker(true)}
+                  onPress={() => setShowStartDatePicker((prev) => !prev)}
                 >
                   <MaterialIcons
                     name="calendar-today"
@@ -253,10 +256,12 @@ export default function LeaveApplicationForm() {
                   testID="startDatePicker"
                   value={startDate}
                   mode="date"
-                  display="default"
+                  display={showStartDatePicker ? "spinner" : "default"}
                   onChange={onChangeStartDate}
                 />
               )}
+             
+
             </View>
 
             <View style={styles.formGroup}>
@@ -271,7 +276,7 @@ export default function LeaveApplicationForm() {
                 />
                 <TouchableOpacity
                   style={styles.calendarIcon}
-                  onPress={() => setShowEndDatePicker(true)}
+                  onPress={() => setShowEndDatePicker((prev) => !prev)}
                 >
                   <MaterialIcons
                     name="calendar-today"
@@ -285,7 +290,7 @@ export default function LeaveApplicationForm() {
                   testID="endDatePicker"
                   value={endDate}
                   mode="date"
-                  display="default"
+                  display={showEndDatePicker ? "spinner" : "default"}
                   onChange={onChangeEndDate}
                 />
               )}
@@ -440,7 +445,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
-
+  // closeButton: {
+  //   alignItems: "center",
+  //   color: "#fff",
+  //   fontSize: 16,
+  //   fontWeight: "700",
+  // }, 
+  // closeButtonText: {
+  //   color: "#fff",
+  //   fontSize: 16,
+  //   fontWeight: "700",
+  // },
   shiftTime: {
     fontSize: 14,
     color: "#666",

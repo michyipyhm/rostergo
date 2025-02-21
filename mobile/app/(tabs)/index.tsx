@@ -38,6 +38,7 @@ export default function HomeScreen() {
   const { data, isLoading, error, isError } = useQuery<Shift[], Error>({
     queryKey: ["getUserShifts"],
     queryFn: getUserShifts,
+    refetchInterval: 5000,
   });
 
   useEffect(() => {

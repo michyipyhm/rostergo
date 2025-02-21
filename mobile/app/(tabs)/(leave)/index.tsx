@@ -11,15 +11,14 @@ import {
 } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { getAllLeaves } from "@/api/leave-api";
-import { ChevronRight } from 'lucide-react-native';
 import { useRouter } from "expo-router";
-import Header from "@/components/Header";
 
 export default function LeaveRequestList() {
   const router = useRouter();
   const { data, isLoading, error } = useQuery({
     queryKey: ["getAllLeaves"],
     queryFn: getAllLeaves,
+    refetchInterval: 5000,
   });
 
   const navigateToLeaveRequestDetail = (id: any) => {
@@ -74,6 +73,7 @@ export default function LeaveRequestList() {
                     <Text style={styles.itemType}>{leaveType}</Text>
                     <Text style={[styles.itemStatus, { color: status.toLowerCase() === 'approve' ? 'green' : status.toLowerCase() === 'disapprove' ? 'red' : status.toLowerCase() === 'waiting list' ? 'yellow' : 'orange' }]}>{status}</Text>
                   </View>
+                  
                   <TouchableOpacity
                     style={styles.detailButton}
                     onPress={() => navigateToLeaveRequestDetail(item.id)}

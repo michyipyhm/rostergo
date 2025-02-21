@@ -22,6 +22,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Calendar, ChevronDown } from "lucide-react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 interface ShiftSlot {
   start_time?: string;
@@ -315,106 +316,114 @@ function LeaveRequestItem({
   );
 
   return (
-    // <SafeAreaView style={styles.itemContainer}>
-    <ScrollView>
-      <View>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Leave Type:</Text>
-          <Text style={styles.value}>{leaveType}</Text>
-        </View>
-
-        <View style={styles.dateInputWrapper}>
+    <SafeAreaView style={styles.itemContainer}>
+      <ScrollView>
+        <View>
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Start Date:</Text>
-            <View style={styles.dateInputContainer}>
-              <TextInput
-                style={styles.dateInput}
-                value={formatDate(startDateString)}
-                onChangeText={handleStartDateInput}
-                onBlur={validateStartDate}
-                placeholder="YYYY-MM-DD"
+            <Text style={styles.label}>Leave Type:</Text>
+            <Text style={styles.value}>{leaveType}</Text>
+          </View>
+
+          <View style={styles.dateInputWrapper}>
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Start Date:</Text>
+              <View style={styles.dateInputContainer}>
+                <TextInput
+                  style={styles.dateInput}
+                  value={formatDate(startDateString)}
+                  onChangeText={handleStartDateInput}
+                  onBlur={validateStartDate}
+                  placeholder="YYYY-MM-DD"
+                />
+                <TouchableOpacity
+                  style={styles.calendarIcon}
+                  onPress={() => setShowStartDatePicker((prev) => !prev)}
+                >
+                  <MaterialIcons
+                    name="calendar-today"
+                    size={20}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {showStartDatePicker && (
+              <DateTimePicker
+                testID="startDatePicker"
+                value={startDate}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                onChange={onChangeStartDate}
               />
+            )}
+          </View>
+
+          <View style={styles.dateInputWrapper}>
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>End Date:</Text>
+              <View style={styles.dateInputContainer}>
+                <TextInput
+                  style={styles.dateInput}
+                  value={endDateString}
+                  onChangeText={handleEndDateInput}
+                  onBlur={validateEndDate}
+                  placeholder="YYYY-MM-DD"
+                />
+                <TouchableOpacity
+                  style={styles.calendarIcon}
+                  onPress={() => setShowEndDatePicker((prev) => !prev)}
+                >
+                  <MaterialIcons
+                    name="calendar-today"
+                    size={20}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {showEndDatePicker && (
+              <DateTimePicker
+                testID="endDatePicker"
+                value={endDate}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                onChange={onChangeEndDate}
+              />
+            )}
+          </View>
+
+          <View style={[styles.formGroup, styles.durationContainer]}>
+            <Text style={styles.label}>Duration:</Text>
+            <View style={styles.dropdownContainer}>
               <TouchableOpacity
-                style={styles.calendarIcon}
-                onPress={() => setShowStartDatePicker(true)}
+                style={styles.dropdown}
+                onPress={() => setShowDurationDropdown(!showDurationDropdown)}
               >
-                <Calendar color="#000" size={20} />
+                <Text style={styles.dropdownText}>{duration}</Text>
+                <MaterialIcons name="schedule" size={20} color="black" />
               </TouchableOpacity>
+              {showDurationDropdown &&
+                renderDropdown(durationOptions, duration, setDuration)}
             </View>
           </View>
-          {showStartDatePicker && (
-            <DateTimePicker
-              testID="startDatePicker"
-              value={startDate}
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
-              onChange={onChangeStartDate}
-            />
-          )}
-        </View>
 
-        <View style={styles.dateInputWrapper}>
           <View style={styles.formGroup}>
-            <Text style={styles.label}>End Date:</Text>
-            <View style={styles.dateInputContainer}>
-              <TextInput
-                style={styles.dateInput}
-                value={endDateString}
-                onChangeText={handleEndDateInput}
-                onBlur={validateEndDate}
-                placeholder="YYYY-MM-DD"
-              />
-              <TouchableOpacity
-                style={styles.calendarIcon}
-                onPress={() => setShowEndDatePicker(true)}
-              >
-                <Calendar color="#000" size={20} />
+            <Text style={styles.label}>Status:</Text>
+            <Text style={styles.value}>{status}</Text>
+          </View>
+          {status.toLowerCase() === "pending" && (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                <Text style={styles.buttonText}>Delete</Text>
               </TouchableOpacity>
             </View>
-          </View>
-          {showEndDatePicker && (
-            <DateTimePicker
-              testID="endDatePicker"
-              value={endDate}
-              mode="date"
-              display={Platform.OS === "ios" ? "spinner" : "default"}
-              onChange={onChangeEndDate}
-            />
           )}
         </View>
-
-        <View style={[styles.formGroup, styles.durationContainer]}>
-          <Text style={styles.label}>Duration:</Text>
-          <View style={styles.dropdownContainer}>
-            <TouchableOpacity
-              style={styles.dropdown}
-              onPress={() => setShowDurationDropdown(!showDurationDropdown)}
-            >
-              <Text style={styles.dropdownText}>{duration}</Text>
-              <ChevronDown color="#000" size={20} />
-            </TouchableOpacity>
-            {showDurationDropdown &&
-              renderDropdown(durationOptions, duration, setDuration)}
-          </View>
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Status:</Text>
-          <Text style={styles.value}>{status}</Text>
-        </View>
-        {status.toLowerCase() === "pending" && (
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
-              <Text style={styles.buttonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-    </ScrollView>
-    // </SafeAreaView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -491,6 +500,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContainer: {
+    zIndex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 16,
@@ -548,16 +558,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   dropdownList: {
-    position: "absolute",
-    top: "100%",
-    left: 0,
-    right: 0,
+    // position: "absolute",
+    // top: "100%",
+    // left: 0,
+    // right: 0,
     backgroundColor: "#fff",
     borderRadius: 4,
     marginTop: 4,
     borderWidth: 1,
     borderColor: "#e0e0e0",
-    zIndex: 1000,
+    // zIndex: 2,
     elevation: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

@@ -3,7 +3,7 @@ import { pgClient } from "@/lib/pgClient";
 class MobileShiftListService {
   constructor() {}
 
-  async getShiftListById(id: string, month: string) {
+  async getShiftListById(id: string, yearMonth: string) {
     try {
       const sql = `
       SELECT 
@@ -19,7 +19,7 @@ class MobileShiftListService {
     ORDER BY
     shifts.date ASC
     `;
-      const result = await pgClient.query(sql, [id, [`${month}-01`]]);
+      const result = await pgClient.query(sql, [id, [`${yearMonth}-01`]]);
 
       return result.rows;
     } catch (error) {

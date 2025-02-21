@@ -17,6 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { applySickLeave } from "@/api/leave-api";
 import Header from "@/components/Header";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 interface ShiftSlot {
   id: number;
@@ -219,7 +220,7 @@ export default function ApplySickLeave() {
                     {shiftSlots.find((slot) => slot.id === shiftSlot)?.name} (
                     {shiftSlots.find((slot) => slot.id === shiftSlot)?.time})
                   </Text>
-                  <ChevronDown color="#000" size={20} />
+                  <MaterialIcons name="schedule" size={20} color="black" />
                 </TouchableOpacity>
                 {showShiftSlotDropdown &&
                   rendeShiftSlotDropdown(shiftSlots, (id: number) => {
@@ -251,9 +252,13 @@ export default function ApplySickLeave() {
                   />
                   <TouchableOpacity
                     style={styles.calendarIcon}
-                    onPress={() => setShowEndDatePicker(true)}
+                    onPress={() => setShowEndDatePicker((prev) => !prev)}
                   >
-                    <Calendar color="#000" size={20} />
+                    <MaterialIcons
+                      name="calendar-today"
+                      size={20}
+                      color="black"
+                    />{" "}
                   </TouchableOpacity>
                 </View>
                 {showEndDatePicker && (
@@ -275,7 +280,7 @@ export default function ApplySickLeave() {
                   onPress={() => setShowDurationDropdown(!showDurationDropdown)}
                 >
                   <Text style={styles.dropdownText}>{duration}</Text>
-                  <ChevronDown color="#000" size={20} />
+                  <MaterialIcons name="schedule" size={20} color="black" />
                 </TouchableOpacity>
                 {showDurationDropdown && renderDropdown(durations, setDuration)}
               </View>
@@ -287,9 +292,8 @@ export default function ApplySickLeave() {
                   onPress={pickImage}
                   disabled={uploading}
                 >
-                  <Upload color="#000" size={20} />
                   <Text style={styles.uploadButtonText}>
-                    {uploading ? "Uploading..." : "Upload"}
+                    {uploading ? "Uploading..." : "Upload here"}
                   </Text>
                 </TouchableOpacity>
                 {image && (
@@ -371,10 +375,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   dropdownList: {
-    position: "absolute",
-    top: "100%",
-    left: "50%",
-    right: 0,
+    // position: "absolute",
+    // top: "100%",
+    // left: "50%",
+    // right: 0,
     backgroundColor: "#fff",
     borderRadius: 4,
     marginTop: 4,
@@ -427,7 +431,8 @@ const styles = StyleSheet.create({
   },
   uploadButtonText: {
     fontSize: 16,
-    marginLeft: 8,
+    // marginLeft: 8,
+    color: "gray",
   },
   imagePreview: {
     width: "100%",

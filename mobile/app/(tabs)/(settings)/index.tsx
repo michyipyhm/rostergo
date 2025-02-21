@@ -17,10 +17,10 @@ export default function settings() {
 
   const handleLogout = async () => {
     try {
-      await logout
+      await logout();
       Alert.alert("Success", "Logout successfully");
       router.push({
-        pathname: '/(auth)',
+        pathname: '/(auth)/login',
         params: { justLoggedOut: 'true' }
       });
     } catch (error) {

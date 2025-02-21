@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from "next/navigation"
 import * as jose from 'jose';
 import ChangePasswordModal from "@/component/ChangePassword"
-
+import styles from "./header.module.scss";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const [nickname, setNickname] = useState('');
@@ -62,17 +62,17 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
   
-    <div className="layoutContainer">
+    <div className={styles.layoutContainer}>
 
-      <div className="firstSection">
+      <div className={styles.firstSection}>
           <Link href="/">
             <Image src="/rostergo10_final_transparent.png" alt="RosterGo" width={80} height={80} />
           </Link>
         <div className="fs-3">Hi! {nickname} 👋</div>
      </div>
 
-      <div className="userActions">
-        <div className="fs-5">{dateFormat}</div>
+     <div className={styles.userActions}>
+     <div className="fs-5">{dateFormat}</div>
         <div>
           <Button
             onClick={() => setShowPasswordModal(true)}>Change Password</Button>
@@ -102,4 +102,5 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div>{children}</div>
       </>  
   )
+  
 }

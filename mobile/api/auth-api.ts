@@ -156,7 +156,7 @@ export async function login(nickname: string, password: string): Promise<any> {
     try {
       await storageUtil.setItem('token', token);
       await storageUtil.setItem('userPayload', JSON.stringify(data.payload));
-      console.log('Token and user data saved successfully.');
+      console.log('Token and user data saved successfully FROM auth-API.');
     } catch (secureStoreError) {
       console.error('Error storing token in SecureStore:', secureStoreError);
       // You might want to handle this error differently depending on your app's requirements
@@ -172,7 +172,7 @@ export async function logout(): Promise<void> {
   try {
     await storageUtil.removeItem('token');
     await storageUtil.removeItem('userPayload');
-    console.log('Token and user data removed successfully.');
+    console.log('Token and user data removed successfully FROM auth-API..');
   } catch (error) {
     console.error('Error during logout:', error);
     throw error;

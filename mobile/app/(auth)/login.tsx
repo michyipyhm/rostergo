@@ -19,7 +19,6 @@ export default function Login() {
 
  
   const handleLogin = async () => {
-    // Here you would typically handle the login logic
 
     if (nickname && password) {
       const data = await login(nickname, password);

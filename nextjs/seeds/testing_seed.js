@@ -204,15 +204,15 @@ exports.seed = async function (knex) {
   ]);
 
   await knex("leave_requests").insert([
-    {
-      user_id: 2,
-      shift_slot_id: 1,
-      start_date: "2024-11-26",
-      end_date: "2024-11-29",
-      duration: "Half day(Pm)",
-      leave_type_id: 1,
-      status: "pending",
-    },
+    // {
+    //   user_id: 2,
+    //   shift_slot_id: 1,
+    //   start_date: "2025-03-02",
+    //   end_date: "2025-03-02",
+    //   duration: "Half day(Pm)",
+    //   leave_type_id: 1,
+    //   status: "pending",
+    // },
     {
       user_id: 3,
       shift_slot_id: 2,
@@ -225,26 +225,26 @@ exports.seed = async function (knex) {
     {
       user_id: 2,
       shift_slot_id: 1,
-      start_date: "2024-12-20",
-      end_date: "2024-12-21",
+      start_date: "2025-02-28",
+      end_date: "2025-02-28",
       duration: "Half day(Pm)",
       leave_type_id: 2,
       status: "approve",
     },
-    {
-      user_id: 2,
-      shift_slot_id: 1,
-      start_date: "2024-12-25",
-      end_date: "2024-12-26",
-      duration: "Half day(Pm)",
-      leave_type_id: 1,
-      status: "pending",
-    },
+    // {
+    //   user_id: 2,
+    //   shift_slot_id: 1,
+    //   start_date: "2025-03-10",
+    //   end_date: "2025-03-10",
+    //   duration: "Half day(Pm)",
+    //   leave_type_id: 1,
+    //   status: "pending",
+    // },
   ]);
 
   await knex("shifts").insert([
     {
-      date: "2024-11-25",
+      date: "2025-02-15",
       shift_slot_id: 1,
       user_id: 2,
       checkin_time: "08:52:33",
@@ -253,7 +253,7 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-25",
+      date: "2025-02-02",
       shift_slot_id: 2,
       user_id: 3,
       checkin_time: "11:55:48",
@@ -262,7 +262,7 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-25",
+      date: "2025-02-16",
       shift_slot_id: 1,
       user_id: 4,
       checkin_time: "08:59:53",
@@ -271,7 +271,7 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-25",
+      date: "2025-02-17",
       shift_slot_id: 2,
       user_id: 5,
       checkin_time: "11:54:18",
@@ -280,36 +280,66 @@ exports.seed = async function (knex) {
       status: "check out",
     },
     {
-      date: "2024-11-26",
+      date: "2025-02-04",
       shift_slot_id: 1,
-      user_id: 2,
+      user_id: 3,
       checkin_time: "08:57:16",
       checkout_time: "12:30:49",
       over_time_approve: true,
       status: "check out",
     },
     {
-      date: "2024-11-14",
+      date: "2025-02-14",
       shift_slot_id: 2,
       user_id: 2,
     },
     {
-      date: "2024-11-20",
+      date: "2025-02-10",
       shift_slot_id: 3,
       user_id: 2,
     },
     {
-      date: "2024-11-22",
+      date: "2025-02-18",
       shift_slot_id: 4,
       user_id: 2,
     },
     {
-      date: "2024-11-04",
+      date: "2025-02-17",
       shift_slot_id: 5,
       user_id: 2,
     },
     {
-      date: "2024-10-29",
+      date: "2025-02-05",
+      shift_slot_id: 2,
+      user_id: 2,
+    },
+    {
+      date: "2025-02-08",
+      shift_slot_id: 4,
+      user_id: 2,
+    },
+    {
+      date: "2025-02-22",
+      shift_slot_id: 3,
+      user_id: 2,
+    },
+    {
+      date: "2025-02-27",
+      shift_slot_id: 1,
+      user_id: 2,
+    },
+    {
+      date: "2025-03-02",
+      shift_slot_id: 1,
+      user_id: 2,
+    },  
+    {
+      date: "2025-03-04",
+      shift_slot_id: 2,
+      user_id: 2,
+    },
+    {
+      date: "2025-02-07",
       shift_slot_id: 3,
       user_id: 4,
       checkin_time: "09:11:16",
