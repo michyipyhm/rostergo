@@ -7,8 +7,10 @@ export interface Shift {
   minute_over_time: number;
 }
 
-export interface Params {
-  date: string;
+export interface DatePageProps {
+  params: {
+    date: string
+  }
 }
 
 export interface Employee {

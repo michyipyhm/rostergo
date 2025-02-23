@@ -4,17 +4,17 @@ import ManpowerTable from "@/component/ManpowerTable";
 import DayShiftRecord from "@/component/DayShiftRecord";
 import styles from "@/app/page.module.scss";
 import { manpowerService } from "@/services/admin/manpowerService";
-import { Params } from "@/lib/models";
+import { DatePageProps } from "@/lib/models";
 import { notFound } from "next/navigation";
 import { Calendar, LayoutDashboard, Users, ClipboardList } from "lucide-react"
 
-const DatePage = async ({ params }: { params: Params }) => {
-  const { date } = await params;
-  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+const DatePage = async ({ params }: DatePageProps) => {
+  const { date } = params
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/
   if (!datePattern.test(date)) {
-    notFound();
+    notFound()
   }
-  const result = await manpowerService.getDailyManpower(date);
+  const result = await manpowerService.getDailyManpower(date)
 
   return (
     <div className={styles.container}>
