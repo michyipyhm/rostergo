@@ -3,7 +3,7 @@ name: nextjs
 on:
   push:
     branches:
-      - "production"
+      - "main"
 
 jobs:
   build-server:
