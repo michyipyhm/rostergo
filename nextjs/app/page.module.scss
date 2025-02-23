@@ -1,31 +1,111 @@
+.container {
+  padding: 28px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
 
-
-.secondSection{
+.header {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  height: 70%;
-  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.calendar {
-  height: 70%;
-  width: 40%;
+.pageTitle {
+  font-size: 30px;
+  font-weight: 600;
+  color: #1a1f36;
+  margin: 0;
 }
 
-.manpower{
+.dateDisplay {
   display: flex;
-  flex-direction: column;
-  // align-items: center;
-  height: 70%;
-  width: 15%;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  .icon {
+    color: #6b7280;
+  }
+
+  span {
+    color: #374151;
+    font-weight: 500;
+  }
 }
 
-.record{
-  height: 70%;
-  width: 35%;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-areas: 
+    "calendar manpower"
+    "records records";
+  gap: 24px;
+  margin: 0 auto;
+  max-width: 180000px;
 }
 
-.addButton {
-  margin-left: 20px;
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+
+  .icon {
+    color: #6b7280;
+  }
+
+  h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+  }
+}
+
+.cardContent {
+  padding: 20px;
+}
+
+.calendarSection {
+  grid-area: calendar;
+}
+
+.manpowerSection {
+  grid-area: manpower;
+}
+
+.recordSection {
+  grid-area: records;
+}
+
+// Responsive adjustments
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "calendar"
+      "manpower"
+      "records";
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+

@@ -1,219 +1,224 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from './ShiftSlotList.module.scss';
-import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap"
+import styles from "./ShiftSlotList.module.scss";
+import { Button, Col, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import EditShiftSlot from "./EditShiftSlot";
 import EditLeaveType from "./EditLeaveType";
 import AddGrade from "./AddGrade";
 import AddLeaveType from "./AddLeaveType";
 import AddShiftSlot from "./AddShiftSlot";
+import { Plus, Edit, Clock, Calendar } from "lucide-react"
 
 function ShiftSlotList() {
+  const [shiftSlotData, setShiftSlotData] = useState([]);
+  const [leaveTypeData, setLeaveTypeData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showEditShiftSlot, setShowEditShiftSlot] = useState(false);
+  const [showEditLeaveType, setShowEditLeaveType] = useState(false);
+  const [showAddShiftSlot, setShowAddShiftSlot] = useState(false);
+  const [showAddLeaveType, setShowAddLeaveType] = useState(false);
+  const [currentShiftSlot, setCurrentShiftSlot] = useState<any | null>(null);
+  const [currentLeaveType, setCurrentLeaveType] = useState<any | null>(null);
 
-    const [shiftSlotData, setShiftSlotData] = useState([]);
-    const [leaveTypeData, setLeaveTypeData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [showEditShiftSlot, setShowEditShiftSlot] = useState(false);
-    const [showEditLeaveType, setShowEditLeaveType] = useState(false);
-    const [showAddShiftSlot, setShowAddShiftSlot] = useState(false);
-    const [showAddLeaveType, setShowAddLeaveType] = useState(false);
-    const [currentShiftSlot, setCurrentShiftSlot] = useState<any | null>(null);
-    const [currentLeaveType, setCurrentLeaveType] = useState<any | null>(null);
+  useEffect(() => {
+    const fetchShiftSlotData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token has been found.");
+        }
 
-    useEffect(() => {
-        const fetchShiftSlotData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    throw new Error("No token has been found.");
-                }
+        const response = await fetch(`/api/admin/getshiftslot`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-                const response = await fetch(`/api/admin/getshiftslot`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch shift slot data: ${response.status} ${response.statusText}`
+          );
+        }
 
-                if (!response.ok) {
-                    throw new Error(
-                        `Failed to fetch shift slot data: ${response.status} ${response.statusText}`
-                    );
-                }
-
-                const result = await response.json()
-                setShiftSlotData(result.shiftSlots)
-                setLeaveTypeData(result.leaveTypes)
-            } catch (err: any) {
-                console.error("Error fetching shift data:", err.message)
-                setError(err.message || "Failed to fetch shift data.")
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchShiftSlotData();
-    }, []);
-
-    if (loading) {
-        return <div>Loading shift slot data...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
-    const handleAddShiftSlot = () => setShowAddShiftSlot(true);
-    const handleAddLeaveType = () => setShowAddLeaveType(true);
-
-    const handleEditShiftSlot = (shiftSlot: any) => {
-        setCurrentShiftSlot(shiftSlot);
-        setShowEditShiftSlot(true);
+        const result = await response.json();
+        setShiftSlotData(result.shiftSlots);
+        setLeaveTypeData(result.leaveTypes);
+      } catch (err: any) {
+        console.error("Error fetching shift data:", err.message);
+        setError(err.message || "Failed to fetch shift data.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const handleEditLeaveType = (leaveType: any) => {
-        setCurrentLeaveType(leaveType);
-        setShowEditLeaveType(true);
-    };
+    fetchShiftSlotData();
+  }, []);
 
-    const closeWindow = () => {
-        setShowEditShiftSlot(false);
-        setShowEditLeaveType(false);
-        setShowAddShiftSlot(false);
-        setShowAddLeaveType(false);
-        setCurrentShiftSlot(null);
-        setCurrentLeaveType(null);
-    };
+  if (loading) {
+    return <div>Loading shift slot data...</div>;
+  }
 
-    return (
-        <div>
-            <div className={styles.positionList}>
-                <div className={styles.titleAddBtn}>
-                    <h2>Shift Slot List</h2>
-                    <Button
-                        
-                        className={styles.addBtn}
-                        onClick={handleAddShiftSlot}
-                    >
-                        Add
-                    </Button>
-                </div>
-                <ListGroup>
-                    <ListGroupItem className={styles.headerRow}>
-                        <Row>
-                            <Col><strong>Title</strong></Col>
-                            <Col><strong>Short Title</strong></Col>
-                            <Col><strong>Start Time</strong></Col>
-                            <Col><strong>End Time</strong></Col>
-                            <Col><strong>Work Hour</strong></Col>
-                            <Col><strong>Action</strong></Col>
-                        </Row>
-                    </ListGroupItem>
-                    {shiftSlotData.length > 0 ? (
-                        shiftSlotData.map((shiftSlot: any) => (
-                            <ListGroupItem key={shiftSlot.id}>
-                                <Row>
-                                    <Col>{shiftSlot.title}</Col>
-                                    <Col>{shiftSlot.short_title}</Col>
-                                    <Col>{shiftSlot.start_time}</Col>
-                                    <Col>{shiftSlot.end_time}</Col>
-                                    <Col>{shiftSlot.work_hour}</Col>
-                                    <Col>
-                                        <Button
-                                            variant="outline-success"
-                                            className={styles.appBtn}
-                                            onClick={() => handleEditShiftSlot(shiftSlot)}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </ListGroupItem>
-                        ))
-                    ) : (
-                        <div>No Shift Slot data found.</div>
-                    )}
-                </ListGroup>
-            </div>
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-            <div className={styles.positionList}>
-                <div className={styles.titleAddBtn}>
-                    <h2>Leave Type List</h2>
-                    <Button
-                    
-                        className={styles.addBtn}
-                        onClick={handleAddLeaveType}
-                    >
-                        Add
-                    </Button>
-                </div>
-                <ListGroup>
-                    <ListGroupItem className={styles.headerRow}>
-                        <Row>
-                            <Col><strong>Name</strong></Col>
-                            <Col><strong>Short Name</strong></Col>
-                            <Col><strong>Quota</strong></Col>
-                            <Col><strong>Action</strong></Col>
-                        </Row>
-                    </ListGroupItem>
-                    {leaveTypeData.length > 0 ? (
-                        leaveTypeData.map((leaveType: any) => (
-                            <ListGroupItem key={leaveType.id}>
-                                <Row>
-                                    <Col>{leaveType.name}</Col>
-                                    <Col>{leaveType.short_name}</Col>
-                                    <Col>{leaveType.quota}</Col>
-                                    <Col>
-                                        <Button
-                                            variant="outline-success"
-                                            className={styles.appBtn}
-                                            onClick={() => handleEditLeaveType(leaveType)}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </ListGroupItem>
-                        ))
-                    ) : (
-                        <div>No Leave Type data found.</div>
-                    )}
+  const handleAddShiftSlot = () => setShowAddShiftSlot(true);
+  const handleAddLeaveType = () => setShowAddLeaveType(true);
 
-                    {showEditShiftSlot && currentShiftSlot ? (
-                        <EditShiftSlot
-                            onClose={closeWindow}
-                            id={currentShiftSlot.id}
-                            title={currentShiftSlot.title}
-                            shortTitle={currentShiftSlot.short_title}
-                            startTime={currentShiftSlot.start_time}
-                            endTime={currentShiftSlot.end_time}
-                            workHour={currentShiftSlot.work_hour}
-                        />
-                    ) : null}
-                    {showEditLeaveType && currentLeaveType ? (
-                        <EditLeaveType
-                            onClose={closeWindow}
-                            id={currentLeaveType.id}
-                            name={currentLeaveType.name}
-                            shortName={currentLeaveType.short_name}
-                            quota={currentLeaveType.quota}
-                        />
-                    ) : null}
-                    {showAddShiftSlot ? (
-                        <AddShiftSlot onClose={closeWindow} />
-                    ) : null}
-                    {showAddLeaveType ? (
-                        <AddLeaveType onClose={closeWindow} />
-                    ) : null}
+  const handleEditShiftSlot = (shiftSlot: any) => {
+    setCurrentShiftSlot(shiftSlot);
+    setShowEditShiftSlot(true);
+  };
 
-                </ListGroup>
-            </div>
+  const handleEditLeaveType = (leaveType: any) => {
+    setCurrentLeaveType(leaveType);
+    setShowEditLeaveType(true);
+  };
+
+  const closeWindow = () => {
+    setShowEditShiftSlot(false);
+    setShowEditLeaveType(false);
+    setShowAddShiftSlot(false);
+    setShowAddLeaveType(false);
+    setCurrentShiftSlot(null);
+    setCurrentLeaveType(null);
+  };
+
+  if (loading)
+    return <div className={styles.loading}>Loading shift slot data...</div>;
+  if (error) return <div className={styles.error}>Error: {error}</div>;
+
+  return (
+    <div className={styles.mainContainer}>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <Clock className={styles.icon} size={20} />
+          <h2>Shift Slot List</h2>
+          <button className={styles.addButton} onClick={handleAddShiftSlot}>
+            <Plus size={20} />
+            Add Shift Slot
+          </button>
         </div>
-    )
+        {/* <div className={styles.cardContent}> */}
+          <table className={styles.listTable}>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Short Title</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Work Hour</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shiftSlotData.length > 0 ? (
+                shiftSlotData.map((shiftSlot: any) => (
+                  <tr key={shiftSlot.id}>
+                    <td>{shiftSlot.title}</td>
+                    <td>{shiftSlot.short_title}</td>
+                    <td>{shiftSlot.start_time}</td>
+                    <td>{shiftSlot.end_time}</td>
+                    <td>{shiftSlot.work_hour}</td>
+                    <td>
+                      <button
+                        className={styles.editButton}
+                        onClick={() => handleEditShiftSlot(shiftSlot)}
+                      >
+                        <Edit size={16} />
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className={styles.noData}>
+                    No Shift Slot data found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        {/* </div> */}
+      </div>
 
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <Calendar className={styles.icon} size={20} />
+          <h2>Leave Type List</h2>
+          <button className={styles.addButton} onClick={handleAddLeaveType}>
+            <Plus size={20} />
+            Add Leave Type
+          </button>
+        </div>
+        {/* <div className={styles.cardContent}> */}
+          <table className={styles.listTable}>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Short Name</th>
+                <th>Quota</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaveTypeData.length > 0 ? (
+                leaveTypeData.map((leaveType: any) => (
+                  <tr key={leaveType.id}>
+                    <td>{leaveType.name}</td>
+                    <td>{leaveType.short_name}</td>
+                    <td>{leaveType.quota}</td>
+                    <td>
+                      <button
+                        className={styles.editButton}
+                        onClick={() => handleEditLeaveType(leaveType)}
+                      >
+                        <Edit size={16} />
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className={styles.noData}>
+                    No Leave Type data found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        {/* </div> */}
+      </div>
+
+      {showEditShiftSlot && currentShiftSlot && (
+        <EditShiftSlot
+          onClose={closeWindow}
+          id={currentShiftSlot.id}
+          title={currentShiftSlot.title}
+          shortTitle={currentShiftSlot.short_title}
+          startTime={currentShiftSlot.start_time}
+          endTime={currentShiftSlot.end_time}
+          workHour={currentShiftSlot.work_hour}
+        />
+      )}
+      {showEditLeaveType && currentLeaveType && (
+        <EditLeaveType
+          onClose={closeWindow}
+          id={currentLeaveType.id}
+          name={currentLeaveType.name}
+          shortName={currentLeaveType.short_name}
+          quota={currentLeaveType.quota}
+        />
+      )}
+      {showAddShiftSlot && <AddShiftSlot onClose={closeWindow} />}
+      {showAddLeaveType && <AddLeaveType onClose={closeWindow} />}
+    </div>
+  );
 }
-
 
 export default ShiftSlotList;

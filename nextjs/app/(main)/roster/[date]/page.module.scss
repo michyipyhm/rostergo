@@ -1,0 +1,81 @@
+.container {
+    padding: 24px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .pageTitle {
+    font-size: 30px;
+    font-weight: 600;
+    color: #1a1f36;
+    margin: 0;
+  }
+  
+
+  
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0 auto;
+    max-width: 1800px;
+  }
+  
+  .card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+  
+    .icon {
+      color: #6b7280;
+    }
+  
+    h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin: 0;
+    }
+  }
+  
+  .cardContent {
+    padding: 20px;
+  }
+  
+  .selectorSection {
+    grid-area: selector;
+    width: 100%;
+  }
+  
+  .rosterSection {
+    grid-area: roster;
+    width: 100%;
+  }
+  
+  .shiftSlotSection {
+    grid-area: shiftslot;
+    width: 100%;
+  }
+  
+  .leaveRequestSection {
+    grid-area: leaverequest;
+    width: 100%;
+  }
+  
+  

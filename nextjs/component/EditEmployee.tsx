@@ -1,60 +1,60 @@
-'use client'
+"use client"
+import { useEffect, useState } from "react"
+import type React from "react"
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Employee } from '@/lib/models';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap'
-import styles from './EditEmployee.module.scss';
-import { formatYYYYMMDD } from '@/lib/dateFormatters'
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import styles from "./EditEmployee.module.scss"
+import type { Employee } from "@/lib/models"
+import { formatYYYYMMDD } from "@/lib/dateFormatters"
+import { Calendar, Save, X } from "lucide-react"
 
+interface EditEmployeeModalProps {
+  show: boolean
+  onHide: () => void
+  employeeId: string
+  onEditComplete: () => void
+}
 
-export default function EditEmployee({ id }: { id: string }) {
+export default function EditEmployeeModal({ show, onHide, employeeId, onEditComplete }: EditEmployeeModalProps) {
   const [employee, setEmployee] = useState<Employee | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  const router = useRouter()
 
   useEffect(() => {
-    async function fetchEmployee() {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No token found');
-        }
-
-        setIsLoading(true)
-        setError(null)
- 
-        const response = await fetch(`/api/admin/employee/${id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-        const editPageData =  await response.json()
-        const data = editPageData[0]
-        const positionData = editPageData[1]
-        console.log("editPageData:",positionData)
-        
-        setEmployee(data)
-      } catch (err) {
-        console.error('Error fetching employee:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch employee data')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    if (id) {
+    if (show) {
       fetchEmployee()
     }
-  }, [id])
+  }, [show])
+
+  async function fetchEmployee() {
+    try {
+      const token = localStorage.getItem("token")
+      if (!token) {
+        throw new Error("No token found")
+      }
+
+      setIsLoading(true)
+      setError(null)
+
+      const response = await fetch(`/api/admin/employee/${employeeId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const editPageData = await response.json()
+      const data = editPageData[0]
+      setEmployee(data)
+    } catch (err) {
+      console.error("Error fetching employee:", err)
+      setError(err instanceof Error ? err.message : "Failed to fetch employee data")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleSave = async () => {
     if (!employee) return
@@ -63,18 +63,18 @@ export default function EditEmployee({ id }: { id: string }) {
     setError(null)
 
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`/api/admin/employee/${id}`, {
-        method: 'PUT',
+      const token = localStorage.getItem("token")
+      const response = await fetch(`/api/admin/employee/${employeeId}`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           phone: employee.phone,
           position: employee.position,
           status: employee.status,
-          resign_date: employee.resign_date
+          resign_date: employee.resign_date,
         }),
       })
 
@@ -84,69 +84,72 @@ export default function EditEmployee({ id }: { id: string }) {
 
       const updatedEmployee = await response.json()
       setEmployee(updatedEmployee)
-      alert('Employee information updated successfully!')
+      onEditComplete()
     } catch (err) {
-      console.error('Error updating employee:', err)
-      setError(err instanceof Error ? err.message : 'Failed to update employee data')
+      console.error("Error updating employee:", err)
+      setError(err instanceof Error ? err.message : "Failed to update employee data")
     } finally {
       setIsSaving(false)
     }
   }
 
-  const handleResignDateChange = (date: Date | null) => {
-    if (date && employee) {
+  const handleResignDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (employee) {
       setEmployee({
         ...employee,
-        resign_date: formatYYYYMMDD(date.toISOString())
-      });
+        resign_date: e.target.value,
+      })
     }
-  };
+  }
 
   const isResignDateEditable = () => {
-    return !employee?.resign_date || employee.resign_date === '1970-01-01';
-  };
+    return !employee?.resign_date || employee.resign_date === "1970-01-01"
+  }
 
-
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
-  if (!employee) return <div>No employee data found</div>
-
+  if (!show) return null
 
   return (
-    <Container className={styles.editContainer}>
-      <Form>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>Nickname</Form.Label>
-              <Form.Control
-                type="text"
-                value={employee.nickname}
-                disabled
-              />
-            </Form.Group>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <div className={styles.modalHeader}>
+          <h2>Edit Employee</h2>
+          <button className={styles.closeButton} onClick={onHide}>
+            <X size={20} />
+          </button>
+        </div>
+        {isLoading ? (
+          <div className={styles.loading}>Loading...</div>
+        ) : error ? (
+          <div className={styles.error}>Error: {error}</div>
+        ) : !employee ? (
+          <div className={styles.error}>No employee data found</div>
+        ) : (
+          <form className={styles.form}>
+            {/* Form fields */}
+            <div className={styles.formGroup}>
+              <label htmlFor="nickname">Nickname</label>
+              <input id="nickname" type="text" value={employee.nickname} disabled />
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Gender</Form.Label>
-              <Form.Control
-                type="text"
-                value={employee.gender}
-                disabled
-              />
-            </Form.Group>
+            <div className={styles.formGroup}>
+              <label htmlFor="gender">Gender</label>
+              <input id="gender" type="text" value={employee.gender} disabled />
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Phone</Form.Label>
-              <Form.Control
+            <div className={styles.formGroup}>
+              <label htmlFor="phone">Phone</label>
+              <input
+                id="phone"
                 type="tel"
                 value={employee.phone}
                 onChange={(e) => setEmployee({ ...employee, phone: e.target.value })}
               />
-            </Form.Group>
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Position</Form.Label>
-              <Form.Select
+            <div className={styles.formGroup}>
+              <label htmlFor="position">Position</label>
+              <select
+                id="position"
                 value={employee.position}
                 onChange={(e) => setEmployee({ ...employee, position: e.target.value })}
               >
@@ -154,92 +157,67 @@ export default function EditEmployee({ id }: { id: string }) {
                 <option value="Salesperson1">Salesperson1</option>
                 <option value="Salesperson2">Salesperson2</option>
                 <option value="Salesperson(PT)">Salesperson(PT)</option>
-              </Form.Select>
-            </Form.Group>
+              </select>
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Grade</Form.Label>
-              <Form.Control
-                type="text"
-                value={employee.grade}
-                disabled
-              />
-            </Form.Group>
+            <div className={styles.formGroup}>
+              <label htmlFor="grade">Grade</label>
+              <input id="grade" type="text" value={employee.grade} disabled />
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Employee Type</Form.Label>
-              <Form.Control
-                value={employee.employee_type}
-                disabled
-              >
-              </Form.Control>
-            </Form.Group>
+            <div className={styles.formGroup}>
+              <label htmlFor="employeeType">Employee Type</label>
+              <input id="employeeType" type="text" value={employee.employee_type} disabled />
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Annual Leave</Form.Label>
-              <Form.Control
-                type="number"
-                value={employee.annual_leave}
-                disabled
-              />
-            </Form.Group>
+            <div className={styles.formGroup}>
+              <label htmlFor="annualLeave">Annual Leave</label>
+              <input id="annualLeave" type="number" value={employee.annual_leave} disabled />
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Status</Form.Label>
-              <Form.Select
+            <div className={styles.formGroup}>
+              <label htmlFor="status">Status</label>
+              <select
+                id="status"
                 value={employee.status}
                 onChange={(e) => setEmployee({ ...employee, status: e.target.value })}
               >
                 <option value="active">Active</option>
                 <option value="resigned">Resigned</option>
-              </Form.Select>
-            </Form.Group>
+              </select>
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Join Date</Form.Label>
-              <Form.Control
-                type="text"
-                value={formatYYYYMMDD(employee.join_date)}
-                disabled
-              />
-            </Form.Group>
+            <div className={styles.formGroup}>
+              <label htmlFor="joinDate">Join Date</label>
+              <input id="joinDate" type="text" value={formatYYYYMMDD(employee.join_date)} disabled />
+            </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Resign Date</Form.Label>
+            <div className={styles.formGroup}>
+              <label htmlFor="resignDate">Resign Date</label>
               {isResignDateEditable() ? (
-            <DatePicker
-              selected={employee.resign_date && employee.resign_date !== '1970-01-01' ? new Date(employee.resign_date) : null}
-              onChange={handleResignDateChange}
-              dateFormat="yyyy-MM-dd"
-              className="form-control"
-              isClearable
-            />
-          ) : (
-              <Form.Control
-                type="text"
-                value={formatYYYYMMDD(employee.resign_date)}
-                disabled
-              />
-          )}
-            </Form.Group>
-          </Col>
-        </Row>
+                <div className={styles.datePickerWrapper}>
+                  <Calendar className={styles.calendarIcon} size={20} />
+                  <input
+                    id="resignDate"
+                    type="date"
+                    value={employee.resign_date !== "1970-01-01" ? employee.resign_date : ""}
+                    onChange={handleResignDateChange}
+                  />
+                </div>
+              ) : (
+                <input id="resignDate" type="text" value={formatYYYYMMDD(employee.resign_date)} disabled />
+              )}
+            </div>
 
-        
-
-        <div className={styles.buttonGroup}>
-          {/* <Button variant="danger" className="me-2">
-            Delete
-          </Button> */}
-          <Button variant="primary" className="me-2" onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save'}
-          </Button>
-          <Button variant="secondary" onClick={() => router.back()}>
-            Back
-          </Button>
-        </div>
-      </Form>
-    </Container>
+            <div className={styles.buttonGroup}>
+              <button type="button" className={styles.saveButton} onClick={handleSave} disabled={isSaving}>
+                <Save size={20} />
+                {isSaving ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
   )
 }
-

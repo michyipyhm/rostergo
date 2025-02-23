@@ -1,121 +1,169 @@
-.monthlyRosterContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    margin-left: 1%;
-    margin-right: 1%;
-    margin-bottom: 1%;
-    gap: 10px;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
 }
 
-.dateSelectCard {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 2px 4px black;
-    width: 18%;
-    gap: 5px;
+.dateSelectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.summitButton {
+  display: flex;
+  align-items: center;
+  background-color: #0a1423;
+  color: #fff;
+  border: #0a1423 1px solid;
+  border-radius: 50px;
+  padding: 8px 16px;
+  transition: 0.3s background-color;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #fff;
+    color: #0a1423;
+  }
 }
 
 .explainCard {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 2px 4px black;
-    width: 80%;
-    height: 100%;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: white;
+  gap: 20px;
+  width: 100%;
 }
 
-.explainText{
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
+.explainText {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.explainColor{
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
+.explainColor {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .explainBoxForText {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 3px solid;
-    font-size: 20px;
-    font-weight: bold;
-    margin-right: -20px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .explainBoxForColor {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid;
-    font-size: 20px;
-    font-weight: bold;
-    margin-right: -20px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .confirmed {
-    background-color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
 }
 
 .request {
-    background-color: rgb(210, 250, 250);
+  background-color: rgb(210, 250, 250);
 }
 
 .requestConfirmed {
-    background-color: rgb(210, 250, 250);
+  background-color: rgb(210, 250, 250);
 }
 
 .restday {
-    background-color: #ffff95;
+  background-color: #ffff95;
 }
 
-.explainBoxFont{
-    font-size: 20px;
-    font-weight: bold;
+.explainBoxFont {
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .selectorLabel {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
 }
+
 .rosterDateFont {
-    display: flex;
-    flex-direction: row;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1f36;
+  white-space: nowrap;
 }
+
 .rosterDateSelector {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .dateSelect {
-    width: 100%;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #333;
-    outline: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #374151;
+  outline: none;
+  min-width: 120px;
+
+  &:focus {
+    border-color: #0a1423;
+    box-shadow: 0 0 0 1px #0a1423;
+  }
 }
 
 .rosterDateOption {
-    font-size: 16px;
-    color: #333;
+  font-size: 14px;
+  color: #374151;
+}
+
+@media (max-width: 768px) {
+  .dateSelectHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rosterDateSelector {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .dateSelect {
+    width: 100%;
+  }
+
+  .summitButton {
+    width: 100%;
+  }
+
+  .explainText,
+  .explainColor {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
