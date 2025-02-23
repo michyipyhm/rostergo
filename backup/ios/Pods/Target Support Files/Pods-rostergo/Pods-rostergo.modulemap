@@ -1,0 +1,6 @@
+module Pods_rostergo {
+  umbrella header "Pods-rostergo-umbrella.h"
+
+  export *
+  module * { export * }
+}
